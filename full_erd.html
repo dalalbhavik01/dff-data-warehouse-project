@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>DFF Full-Scale Data Warehouse ERD</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: white;
+    }
+
+    .page {
+      width: 1550px;
+      height: 1700px;
+      margin: 0 auto;
+      background: white;
+      padding: 25px 30px;
+      position: relative;
+    }
+
+    .title-bar {
+      text-align: center;
+      margin-bottom: 8px;
+      border-bottom: 3px solid #1F497D;
+      padding-bottom: 8px;
+    }
+
+    .title-bar h1 {
+      font-size: 24px;
+      color: #1F497D;
+    }
+
+    .title-bar p {
+      font-size: 12px;
+      color: #666;
+      margin-top: 3px;
+    }
+
+    .db-table {
+      position: absolute;
+      border: 2px solid #4472C4;
+      border-radius: 3px;
+      background: white;
+      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+      font-size: 11px;
+    }
+
+    .db-table.fact {
+      border-color: #1F497D;
+      border-width: 3px;
+    }
+
+    .db-table .tbl-header {
+      padding: 6px 10px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 12px;
+      color: white;
+    }
+
+    .db-table.fact .tbl-header {
+      background: #1F497D;
+    }
+
+    .db-table.dim .tbl-header {
+      background: #4472C4;
+    }
+
+    .db-table .tbl-sub {
+      padding: 3px 8px;
+      text-align: center;
+      font-size: 9.5px;
+      color: #444;
+      background: #D6DCE4;
+      border-bottom: 1px solid #B4C6D7;
+    }
+
+    .db-table table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .db-table table td {
+      padding: 2px 6px;
+      border-bottom: 1px solid #eee;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .db-table table tr:nth-child(even) {
+      background: #F2F6FA;
+    }
+
+    .k {
+      font-weight: bold;
+      font-size: 9px;
+      width: 28px;
+      text-align: center;
+    }
+
+    .k.pk {
+      color: #C00000;
+    }
+
+    .k.fk {
+      color: #E36C09;
+    }
+
+    .k.pfk {
+      color: #7030A0;
+    }
+
+    .cn {
+      font-family: Consolas, monospace;
+      font-size: 11px;
+    }
+
+    .cn.b {
+      font-weight: bold;
+    }
+
+    .ct {
+      color: #595959;
+      font-size: 10px;
+      font-style: italic;
+      text-align: right;
+    }
+
+    .ci {
+      color: #00B050;
+      font-size: 9px;
+      font-weight: bold;
+      text-align: right;
+    }
+
+    .pn {
+      padding: 4px 8px;
+      background: #FFF2CC;
+      border-top: 2px solid #D6B656;
+      font-size: 10px;
+      color: #A67C00;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    svg.lines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .legend {
+      position: absolute;
+      border: 1px solid #BDD7EE;
+      background: #F8FAFC;
+      padding: 10px 14px;
+      font-size: 10px;
+      border-radius: 3px;
+    }
+
+    .legend h3 {
+      color: #1F497D;
+      margin-bottom: 4px;
+      font-size: 12px;
+    }
+
+    .legend ul {
+      padding-left: 16px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <div class="title-bar">
+      <h1>Dominick's Finer Foods (DFF) &mdash; Full-Scale Data Warehouse Star Schema</h1>
+      <p>Physical ERD | 2 Fact Tables | 5 Dimension Tables | ~135.2M Total Rows | Star Schema Design per Task 3B</p>
+    </div>
+
+    <!-- LEFT COLUMN: DimCategory (top), DimProduct (mid), DimPromotion (bottom) -->
+
+    <!-- DimCategory -->
+    <div class="db-table dim" style="left:20px; top:80px; width:270px;">
+      <div class="tbl-header">DimCategory</div>
+      <div class="tbl-sub">24 Rows | Derived from Source Filenames</div>
+      <table>
+        <tr>
+          <td class="k pk">PK</td>
+          <td class="cn b">category_key</td>
+          <td class="ct">INT</td>
+          <td class="ci">Unique B-Tree</td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">category_code</td>
+          <td class="ct">CHAR(3)</td>
+          <td class="ci">Unique</td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">category_name</td>
+          <td class="ct">VARCHAR(30)</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">department</td>
+          <td class="ct">VARCHAR(20)</td>
+          <td class="ci">Bitmap</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- DimProduct -->
+    <div class="db-table dim" style="left:20px; top:280px; width:310px;">
+      <div class="tbl-header">DimProduct</div>
+      <div class="tbl-sub">14,249 Rows | Source: 28 UPC Files | SCD Type 1</div>
+      <table>
+        <tr>
+          <td class="k pk">PK</td>
+          <td class="cn b">product_key</td>
+          <td class="ct">INT</td>
+          <td class="ci">Unique B-Tree</td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">upc</td>
+          <td class="ct">BIGINT</td>
+          <td class="ci">Unique B-Tree</td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">description</td>
+          <td class="ct">VARCHAR(100)</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">size</td>
+          <td class="ct">VARCHAR(20)</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">case_pack</td>
+          <td class="ct">INT</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">commodity_code</td>
+          <td class="ct">INT</td>
+          <td class="ci">B-Tree</td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">item_number</td>
+          <td class="ct">BIGINT</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k fk">FK</td>
+          <td class="cn b">category_key</td>
+          <td class="ct">INT</td>
+          <td class="ci">B-Tree</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- DimPromotion -->
+    <div class="db-table dim" style="left:20px; top:580px; width:270px;">
+      <div class="tbl-header">DimPromotion</div>
+      <div class="tbl-sub">4 Rows | Derived from SALE Flag (B/C/S/null)</div>
+      <table>
+        <tr>
+          <td class="k pk">PK</td>
+          <td class="cn b">promotion_key</td>
+          <td class="ct">INT</td>
+          <td class="ci">Unique B-Tree</td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">deal_code</td>
+          <td class="ct">CHAR(1)</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">deal_type</td>
+          <td class="ct">VARCHAR(20)</td>
+          <td class="ci">Bitmap</td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">is_promoted</td>
+          <td class="ct">BIT</td>
+          <td class="ci">Bitmap</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- TOP CENTER: DimTime -->
+    <div class="db-table dim" style="left:600px; top:80px; width:310px;">
+      <div class="tbl-header">DimTime</div>
+      <div class="tbl-sub">~400 Rows | Derived from WEEK Numbers (1989&ndash;1997)</div>
+      <table>
+        <tr>
+          <td class="k pk">PK</td>
+          <td class="cn b">time_key</td>
+          <td class="ct">INT</td>
+          <td class="ci">Unique B-Tree</td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">week_id</td>
+          <td class="ct">INT</td>
+          <td class="ci">B-Tree</td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">week_start_date</td>
+          <td class="ct">DATE</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">week_end_date</td>
+          <td class="ct">DATE</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">month</td>
+          <td class="ct">INT</td>
+          <td class="ci">Bitmap</td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">month_name</td>
+          <td class="ct">VARCHAR(10)</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">quarter</td>
+          <td class="ct">INT</td>
+          <td class="ci">Bitmap</td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">year</td>
+          <td class="ct">INT</td>
+          <td class="ci">Bitmap</td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">fiscal_year</td>
+          <td class="ct">INT</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">is_holiday_week</td>
+          <td class="ct">BIT</td>
+          <td class="ci">Bitmap</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- CENTER: FactWeeklySales -->
+    <div class="db-table fact" style="left:480px; top:490px; width:360px;">
+      <div class="tbl-header">FactWeeklySales</div>
+      <div class="tbl-sub">134.9M Rows | 24 Source Files | Grain: UPC &times; Store &times; Week</div>
+      <table>
+        <tr>
+          <td class="k pk">PK</td>
+          <td class="cn b">sales_fact_id</td>
+          <td class="ct">INT</td>
+          <td class="ci">IDENTITY</td>
+        </tr>
+        <tr>
+          <td class="k pfk">PFK</td>
+          <td class="cn b">product_key</td>
+          <td class="ct">INT</td>
+          <td class="ci">Clustered</td>
+        </tr>
+        <tr>
+          <td class="k pfk">PFK</td>
+          <td class="cn b">store_key</td>
+          <td class="ct">INT</td>
+          <td class="ci">Clustered</td>
+        </tr>
+        <tr>
+          <td class="k pfk">PFK</td>
+          <td class="cn b">time_key</td>
+          <td class="ct">INT</td>
+          <td class="ci">Clustered</td>
+        </tr>
+        <tr>
+          <td class="k fk">FK</td>
+          <td class="cn b">category_key</td>
+          <td class="ct">INT</td>
+          <td class="ci">B-Tree</td>
+        </tr>
+        <tr>
+          <td class="k fk">FK</td>
+          <td class="cn b">promotion_key</td>
+          <td class="ct">INT</td>
+          <td class="ci">Bitmap</td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">units_sold</td>
+          <td class="ct">INT</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">unit_price</td>
+          <td class="ct">DECIMAL(8,2)</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">shelf_price</td>
+          <td class="ct">DECIMAL(8,2)</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">price_qty</td>
+          <td class="ct">INT</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">revenue</td>
+          <td class="ct">DECIMAL(12,2)</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">gross_profit</td>
+          <td class="ct">DECIMAL(10,2)</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">profit_margin_pct</td>
+          <td class="ct">DECIMAL(5,2)</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">is_valid</td>
+          <td class="ct">BIT</td>
+          <td class="ci">Bitmap</td>
+        </tr>
+      </table>
+      <div class="pn">&#9889; Horizontally Partitioned by Category (24 Partitions)</div>
+    </div>
+
+    <!-- RIGHT: FactCustomerTraffic -->
+    <div class="db-table fact" style="left:1100px; top:490px; width:360px;">
+      <div class="tbl-header">FactCustomerTraffic</div>
+      <div class="tbl-sub">327K Rows | Source: CCOUNT.csv | Grain: Store &times; Week</div>
+      <table>
+        <tr>
+          <td class="k pk">PK</td>
+          <td class="cn b">traffic_fact_id</td>
+          <td class="ct">INT</td>
+          <td class="ci">IDENTITY</td>
+        </tr>
+        <tr>
+          <td class="k pfk">PFK</td>
+          <td class="cn b">store_key</td>
+          <td class="ct">INT</td>
+          <td class="ci">Clustered</td>
+        </tr>
+        <tr>
+          <td class="k pfk">PFK</td>
+          <td class="cn b">time_key</td>
+          <td class="ct">INT</td>
+          <td class="ci">Clustered</td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">total_customers</td>
+          <td class="ct">DECIMAL(10,2)</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">grocery_count</td>
+          <td class="ct">DECIMAL(10,2)</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">dairy_count</td>
+          <td class="ct">DECIMAL(10,2)</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">frozen_count</td>
+          <td class="ct">DECIMAL(10,2)</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">meat_count</td>
+          <td class="ct">DECIMAL(10,2)</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">produce_count</td>
+          <td class="ct">DECIMAL(10,2)</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">deli_count</td>
+          <td class="ct">DECIMAL(10,2)</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">bakery_count</td>
+          <td class="ct">DECIMAL(10,2)</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">pharmacy_count</td>
+          <td class="ct">DECIMAL(10,2)</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">beer_count</td>
+          <td class="ct">DECIMAL(10,2)</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">wine_count</td>
+          <td class="ct">DECIMAL(10,2)</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">spirits_count</td>
+          <td class="ct">DECIMAL(10,2)</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">mvp_club_count</td>
+          <td class="ct">DECIMAL(10,2)</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">total_coupon_redmpt</td>
+          <td class="ct">DECIMAL(10,2)</td>
+          <td class="ci"></td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- BOTTOM: DimStore -->
+    <div class="db-table dim" style="left:500px; top:1100px; width:350px;">
+      <div class="tbl-header">DimStore</div>
+      <div class="tbl-sub">108 Rows | Source: DEMO.csv (510 census cols) | SCD Type 1</div>
+      <table>
+        <tr>
+          <td class="k pk">PK</td>
+          <td class="cn b">store_key</td>
+          <td class="ct">INT</td>
+          <td class="ci">Unique B-Tree</td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">store_id</td>
+          <td class="ct">INT</td>
+          <td class="ci">Unique B-Tree</td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">store_name</td>
+          <td class="ct">VARCHAR(50)</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">city</td>
+          <td class="ct">VARCHAR(40)</td>
+          <td class="ci">Bitmap</td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">zip_code</td>
+          <td class="ct">VARCHAR(10)</td>
+          <td class="ci">B-Tree</td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">zone</td>
+          <td class="ct">INT</td>
+          <td class="ci">Bitmap</td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">is_urban</td>
+          <td class="ct">BIT</td>
+          <td class="ci">Bitmap</td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">weekly_volume</td>
+          <td class="ct">INT</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">avg_income</td>
+          <td class="ct">DECIMAL(10,4)</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">education_pct</td>
+          <td class="ct">DECIMAL(5,2)</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">poverty_pct</td>
+          <td class="ct">DECIMAL(5,2)</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">avg_household_size</td>
+          <td class="ct">DECIMAL(4,2)</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">ethnic_diversity</td>
+          <td class="ct">DECIMAL(5,2)</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">population_density</td>
+          <td class="ct">DECIMAL(10,2)</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">price_tier</td>
+          <td class="ct">VARCHAR(10)</td>
+          <td class="ci">Bitmap</td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">age_under_9_pct</td>
+          <td class="ct">DECIMAL(5,2)</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">age_over_60_pct</td>
+          <td class="ct">DECIMAL(5,2)</td>
+          <td class="ci"></td>
+        </tr>
+        <tr>
+          <td class="k"></td>
+          <td class="cn">working_women_pct</td>
+          <td class="ct">DECIMAL(5,2)</td>
+          <td class="ci"></td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- SVG RELATIONSHIP LINES -->
+    <svg class="lines" viewBox="0 0 1550 1700" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+          <path d="M0,0 L8,3 L0,6" fill="#4472C4" />
+        </marker>
+      </defs>
+
+      <!-- 1. DimCategory -> DimProduct (category_key) -->
+      <line x1="155" y1="225" x2="175" y2="280" stroke="#4472C4" stroke-width="2" />
+      <rect x="110" y="240" width="95" height="18" rx="3" fill="white" stroke="#4472C4" stroke-width="1" />
+      <text x="157" y="253" text-anchor="middle" font-size="9" fill="#1F497D" font-weight="bold">category_key</text>
+      <text x="200" y="243" font-size="8" fill="#888">1:N</text>
+
+      <!-- 2. DimCategory -> FactWeeklySales (category_key) -->
+      <line x1="290" y1="155" x2="480" y2="590" stroke="#4472C4" stroke-width="2" marker-end="url(#arr)" />
+      <rect x="340" y="350" width="95" height="18" rx="3" fill="white" stroke="#4472C4" stroke-width="1" />
+      <text x="387" y="363" text-anchor="middle" font-size="9" fill="#1F497D" font-weight="bold">category_key</text>
+      <text x="440" y="353" font-size="8" fill="#888">1:N</text>
+
+      <!-- 3. DimProduct -> FactWeeklySales (product_key) -->
+      <line x1="330" y1="400" x2="480" y2="540" stroke="#4472C4" stroke-width="2" marker-end="url(#arr)" />
+      <rect x="355" y="450" width="95" height="18" rx="3" fill="white" stroke="#4472C4" stroke-width="1" />
+      <text x="402" y="463" text-anchor="middle" font-size="9" fill="#1F497D" font-weight="bold">product_key</text>
+      <text x="455" y="453" font-size="8" fill="#888">1:N</text>
+
+      <!-- 4. DimPromotion -> FactWeeklySales (promotion_key) -->
+      <line x1="290" y1="655" x2="480" y2="700" stroke="#4472C4" stroke-width="2" marker-end="url(#arr)" />
+      <rect x="330" y="660" width="105" height="18" rx="3" fill="white" stroke="#4472C4" stroke-width="1" />
+      <text x="382" y="673" text-anchor="middle" font-size="9" fill="#1F497D" font-weight="bold">promotion_key</text>
+      <text x="440" y="663" font-size="8" fill="#888">1:N</text>
+
+      <!-- 5. DimTime -> FactWeeklySales (time_key) -->
+      <line x1="700" y1="380" x2="660" y2="490" stroke="#4472C4" stroke-width="2" marker-end="url(#arr)" />
+      <rect x="630" y="420" width="80" height="18" rx="3" fill="white" stroke="#4472C4" stroke-width="1" />
+      <text x="670" y="433" text-anchor="middle" font-size="9" fill="#1F497D" font-weight="bold">time_key</text>
+      <text x="715" y="423" font-size="8" fill="#888">1:N</text>
+
+      <!-- 6. DimTime -> FactCustomerTraffic (time_key) -->
+      <line x1="870" y1="380" x2="1280" y2="490" stroke="#4472C4" stroke-width="2" marker-end="url(#arr)" />
+      <rect x="1020" y="415" width="80" height="18" rx="3" fill="white" stroke="#4472C4" stroke-width="1" />
+      <text x="1060" y="428" text-anchor="middle" font-size="9" fill="#1F497D" font-weight="bold">time_key</text>
+      <text x="1105" y="418" font-size="8" fill="#888">1:N</text>
+
+      <!-- 7. DimStore -> FactWeeklySales (store_key) -->
+      <line x1="600" y1="1100" x2="660" y2="930" stroke="#4472C4" stroke-width="2" marker-end="url(#arr)" />
+      <rect x="580" y="1000" width="80" height="18" rx="3" fill="white" stroke="#4472C4" stroke-width="1" />
+      <text x="620" y="1013" text-anchor="middle" font-size="9" fill="#1F497D" font-weight="bold">store_key</text>
+      <text x="665" y="1003" font-size="8" fill="#888">1:N</text>
+
+      <!-- 8. DimStore -> FactCustomerTraffic (store_key) -->
+      <line x1="780" y1="1100" x2="1280" y2="960" stroke="#4472C4" stroke-width="2" marker-end="url(#arr)" />
+      <rect x="980" y="1015" width="80" height="18" rx="3" fill="white" stroke="#4472C4" stroke-width="1" />
+      <text x="1020" y="1028" text-anchor="middle" font-size="9" fill="#1F497D" font-weight="bold">store_key</text>
+      <text x="1065" y="1018" font-size="8" fill="#888">1:N</text>
+    </svg>
+
+    <!-- Legend -->
+    <div class="legend" style="left:30px; top:1560px; width:440px;">
+      <h3>Physical Design Legend (Task 3B)</h3>
+      <ul>
+        <li><span style="color:#C00000;font-weight:bold">PK</span> = Primary Key &nbsp;|&nbsp; <span
+            style="color:#E36C09;font-weight:bold">FK</span> = Foreign Key &nbsp;|&nbsp; <span
+            style="color:#7030A0;font-weight:bold">PFK</span> = Primary + Foreign Key</li>
+        <li><span style="color:#00B050;font-weight:bold">Clustered</span> = B-Tree Clustered Index on composite fact
+          table keys</li>
+        <li><span style="color:#00B050;font-weight:bold">Unique B-Tree</span> = B-Tree Index on high-selectivity
+          dimension keys</li>
+        <li><span style="color:#00B050;font-weight:bold">Bitmap</span> = Bitmap Index on low-selectivity columns (ZONE,
+          URBAN, SALE)</li>
+        <li><strong>Partitioning:</strong> FactWeeklySales horizontally partitioned by Category (24 partitions)</li>
+        <li><strong>SCD Type 1:</strong> Slowly Changing Dimension &mdash; overwrite on change</li>
+      </ul>
+    </div>
+
+    <!-- Source Info -->
+    <div class="legend" style="left:850px; top:1560px; width:440px;">
+      <h3>Source Data Summary</h3>
+      <table style="border-collapse:collapse;width:100%;">
+        <tr>
+          <td style="padding:2px 6px;font-weight:bold;border-bottom:1px solid #ddd">Movement Files</td>
+          <td style="padding:2px 6px;border-bottom:1px solid #ddd">24 CSVs, 134.9M rows, ~5GB total</td>
+        </tr>
+        <tr>
+          <td style="padding:2px 6px;font-weight:bold;border-bottom:1px solid #ddd">UPC Files</td>
+          <td style="padding:2px 6px;border-bottom:1px solid #ddd">28 CSVs, ~14K unique products</td>
+        </tr>
+        <tr>
+          <td style="padding:2px 6px;font-weight:bold;border-bottom:1px solid #ddd">DEMO.csv</td>
+          <td style="padding:2px 6px;border-bottom:1px solid #ddd">108 stores, 510 census attributes</td>
+        </tr>
+        <tr>
+          <td style="padding:2px 6px;font-weight:bold;border-bottom:1px solid #ddd">CCOUNT.csv</td>
+          <td style="padding:2px 6px;border-bottom:1px solid #ddd">327K rows, 61 department traffic cols</td>
+        </tr>
+        <tr>
+          <td style="padding:2px 6px;font-weight:bold;border-bottom:1px solid #ddd">Time Span</td>
+          <td style="padding:2px 6px;border-bottom:1px solid #ddd">Sep 1989 &ndash; May 1997 (~400 weeks)</td>
+        </tr>
+        <tr>
+          <td style="padding:2px 6px;font-weight:bold">Categories</td>
+          <td style="padding:2px 6px">SDR, CSO, FRE, CHE, CIG, BER, CER, BJU, CRA, COO, etc.</td>
+        </tr>
+      </table>
+    </div>
+
+  </div>
+</body>
+
+</html>

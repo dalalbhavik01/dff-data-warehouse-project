@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DFF Physical ERD</title>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'default' });
+  </script>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f9; padding: 20px; }
+    .container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    h1 { color: #2c3e50; text-align: center; }
+    .notes { background: #e8f4f8; padding: 15px; border-left: 4px solid #3498db; margin-top: 30px; font-size: 14px; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>DFF Physical Data Warehouse Design (Task 3B)</h1>
+  
+  <div class="mermaid">
+    erDiagram
+      FactWeeklySales {
+          int STORE_ID PK,FK "B-Tree Clustered"
+          int WEEK_ID PK,FK "B-Tree Clustered"
+          bigint UPC PK,FK "B-Tree Clustered"
+          int MOVE " "
+          int QTY " "
+          decimal PRICE " "
+          char SALE "Bitmap Index (Low Selectivity)"
+          decimal PROFIT " "
+          tinyint OK "Bitmap Index"
+      }
+      
+      DimProduct {
+          bigint UPC PK "Unique B-Tree Index"
+          int COM_CODE "B-Tree Index"
+          varchar DESCRIP " "
+          varchar SIZE " "
+          int CASE " "
+      }
+      
+      DimStore {
+          int STORE_ID PK "Unique B-Tree Index"
+          varchar CITY "Bitmap Index"
+          int ZONE "Bitmap Index"
+          tinyint URBAN "Bitmap Index"
+          decimal INCOME " "
+      }
+      
+      FactTraffic {
+          int STORE_ID PK,FK "B-Tree Index"
+          int WEEK_ID PK,FK "B-Tree Index"
+          int CUSTCOUN " "
+      }
+
+      FactWeeklySales }o--|| DimProduct : "Matches via UPC"
+      FactWeeklySales }o--|| DimStore : "Matches via STORE_ID"
+      FactWeeklySales }|--|| FactTraffic : "Shares STORE_ID, WEEK_ID"
+  </div>
+
+  <div class="notes">
+    <h3>Physical Implementation Notes:</h3>
+    <ul>
+      <li><strong>Partitioning:</strong> The large <code>FactWeeklySales</code> table (~135M rows) is horizontally partitioned by Category to manage data volume.</li>
+      <li><strong>Clustered Indexes:</strong> Used on the composite primary keys in Fact tables to group physically contiguous records.</li>
+      <li><strong>Bitmap Indexes:</strong> Applied specifically to low-cardinality flags (SALE, URBAN, ZONE) as per Slide 21.</li>
+      <li><strong>B-Tree Indexes:</strong> Used for highly selective dimension keys (UPC, STORE_ID) as per Slide 25.</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>
