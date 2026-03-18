@@ -1,0 +1,368 @@
+
+--- Slide 1 ---
+Task 3b. Physical Design of Data Warehouse
+Arun Sen
+Department of Information & Operations Mgmt.
+Mays Business School
+Texas A&M University
+
+
+--- Slide 2 ---
+Different Design Fundamentals
+Copyrighted to Arun Sen
+2
+A.  What have we done so far in the Design?
+ Conceptual Design (use ERD or Dimensional Modeling) on paper
+ Logical Design (Translates to a RDBMS ) 
+ Physical Model – adding physical characteristics like indexing style, etc.
+  Implementation model --  use of SQL Server specifics
+Physical Design
+It is a way for understanding the data requirements within a given context or environment.
+
+--- Slide 3 ---
+LOGICAL DESIGN FUNDAMENTALS
+Copyrighted to Arun Sen
+3
+Logical Design (ERD)
+It is a way to understand the overall data requirements.
+
+--- Slide 4 ---
+Physical Design Fundamentals
+Copyrighted to Arun Sen
+4
+B.  What is a Physical Design?
+ The physical design transforms the logical design to a particular OS, a DBMS, a hardware and a platform.
+  The major objectives of the physical design are:
+	1.   Improve Performance
+  Response in OLTP is < 3 secs, while in OLAP is less stringent
+  Response still should be very quick even if we are processing a very large volume of data
+
+--- Slide 5 ---
+Physical Design Fundamentals 
+Copyrighted to Arun Sen
+5
+B.  What is a Physical Design?
+2.    Ensure Scalability
+   Usage increases over time
+   Usage increases due to number of users increases and number 	of concurrent users increase
+3.  Manage Storage
+  Proper management of stored data will boost performance
+
+--- Slide 6 ---
+Physical Design Fundamentals 
+Copyrighted to Arun Sen
+6
+B.  What is a Physical Design?
+4.  Provide Ease of Administration
+  Methods for proper arrangement of table rows in storage so 	that frequent reorganization is avoided.
+  Back up and recovery of database tables
+5.   Design for Flexibility
+  Keep the design open so that the changes to the physical 	model is achieved.
+
+
+--- Slide 7 ---
+Physical Design Fundamentals 
+Copyrighted to Arun Sen
+7
+C.  Steps to create a Physical Design
+ 1.	Develop standards
+Standards ensure consistency across various areas
+It is very important in the data warehouse world as users can be from other disciplines
+Naming of Database Objects -- a clear method must be present for composing names of the data warehouse objects.
+Naming of the files and tables in the staging area
+Standards for physical files -- source code files, database files and application documents
+
+--- Slide 8 ---
+Physical Design Fundamentals 
+Copyrighted to Arun Sen
+8
+C.  Steps to create a Physical Design
+  2.	Create Aggregate Plan
+Worry about the summary tables
+If you have data stored in the lowest level of granularity, accessing summery data can involve lot of calculations
+How many summary tables need to be created?
+Need a comprehensive plan for aggregation
+
+--- Slide 9 ---
+Physical Design Fundamentals
+Copyrighted to Arun Sen
+9
+C.  Steps to create a Physical Design
+ 3.	Denormalization of Logical Design (if needed)
+Logical Design
+It is a way to understand the overall data requirements.
+
+--- Slide 10 ---
+Physical Design Fundamentals 
+Copyrighted to Arun Sen
+10
+C.  Steps to create a Physical Design
+3.	Denormalization of Logical Design (if needed)
+
+--- Slide 11 ---
+Physical Design Fundamentals 
+Copyrighted to Arun Sen
+11
+C.  Steps to create a Physical Design
+4.	 Determine the Data Partitioning Scheme
+  In dimensional world, most dimension tables are small.
+  But some DIMENSION TABLES (like Product table)  and the 	FACT TABLES ARE VERY LARGE.
+  Large tables are not easy to manage
+  In the load process, the entire table needs to be closed to the 	users
+  Backup and recovery are problems for such large tables
+  Think about “partitioning” the tables
+
+--- Slide 12 ---
+Physical Design Fundamentals 
+Copyrighted to Arun Sen
+12
+C.  Steps to create a Physical Design
+4.	Determine the Data Partitioning Scheme
+  The partitioning scheme must include
+ Horizontal or vertical?
+  Number of partitions for each table
+  The criteria for dividing each table
+  Description how to make queries aware of partitions
+
+--- Slide 13 ---
+Physical Design Fundamentals 
+Copyrighted to Arun Sen
+13
+C.  Steps to create a Physical Design
+4.	 Determine the Data Partitioning Scheme
+Vertical partitioning: to store Dessert price amount in its own table as it might change much more frequently
+
+--- Slide 14 ---
+Physical Design Fundamentals 
+Copyrighted to Arun Sen
+14
+C.  Steps to create a Physical Design
+5.	Prepare an Indexing Strategy
+   Unlike OLTP system, data warehouse is query-centric
+  Create Indexing plan to support query performance
+   Indexing is very specific to the DBMS (so please check it)
+
+--- Slide 15 ---
+Indexing the Data Warehouse
+Copyrighted to Arun Sen
+15
+(i).  Why indexing is important in DW?
+ Indexing is important in any DB application
+  Indexing is very important in Data Warehouse as it is very “query-centric”
+  Types of indexes supported:
+  Index sequential 
+  B-Tree indexing
+  Bit-mapped indexing
+
+--- Slide 16 ---
+Indexing the Data Warehouse
+Copyrighted to Arun Sen
+16
+(ii).  Indexing Issues in Data Warehouse
+ Indexes and Loading
+  When you have many indexes, loading of data in the warehouse slows down
+  The problem is more acute at the time of initial load
+  one solution -  kill the indexes before the load and after the load 	is complete recreate the indexes
+
+
+--- Slide 17 ---
+Indexing the Data Warehouse
+Copyrighted to Arun Sen
+17
+(ii).  Indexing Issues in Data Warehouse
+ Index-Only Records
+   Remember that any DBMS will read index record first
+   Add columns in the index record to provide for other 	information so that unnecessary records are not 	read.
+  Selecting Columns for Indexing
+  Examine the queries and see which columns are being 	used frequently
+
+
+--- Slide 18 ---
+Indexing the Data Warehouse
+Copyrighted to Arun Sen
+18
+(ii).  Indexing Issues in Data Warehouse
+ Indexing for Large Tables
+  When the table is too large, many indexes for this table 	can create problems
+  In such cases, consider splitting the table and then create 	indexes
+
+
+--- Slide 19 ---
+Indexing the Data Warehouse
+Copyrighted to Arun Sen
+19
+(iii).  Indexing Types -- B-Tree Index
+ B-Tree is a hierarchical levels of “index records”
+ The lowest level index records point the rows in the data tables
+  If a column has many unique vales, then the selectivity of the column is said to high.
+ In a “sales territory” dimension table, the “city” column has high selectivity and should be used for Indexing.
+  For some columns, the selectivity may not be there.  You can make the selectivity of columns higher by concatenating the columns --- but this increases the size of the “index” file
+
+--- Slide 20 ---
+Indexing the Data Warehouse
+Copyrighted to Arun Sen
+20
+(iii).  Indexing Types -- B-Tree Index
+A- K
+L - Z
+A – D
+E – G
+H -K
+L - O
+P - R
+S - Z
+ALLEN
+BUSH
+CLYNE
+ENGEL
+FARIS
+GORE
+LOEWE
+MAHER
+NIXON
+OTIO
+HAIG
+IGNAR
+JONES
+KUMAR
+PAINED
+QUINN
+RAJ
+Pointers to data rows
+
+--- Slide 21 ---
+Indexing the Data Warehouse
+Copyrighted to Arun Sen
+21
+(iii).  Indexing Type – Bitmapped Index
+ Bitmapped is ideally suited for low-selectivity data.
+ A bitmap is an ordered series of bits, one for each distinct value of the indexed column.
+  Example:
+ Product Color – 	white      100
+  		almond    010
+ 			black       001
+  Product             – 	dishwasher   001
+  		washer    100
+ 			dryer       010
+
+ Region	  --	east   1000,     west  0100
+		north 0010,     south 0001
+
+bit mapped indexes
+When a column is said to be highly selective, this means that a very low percentage of the total rows possible is returned which is another way of saying that the column contains a lot of unique values. Columns with high selectivity are often the best candidates for indexes. 
+Columns with low selectivity, very few unique values, are often not good candidates for indexes as often the index will be ignored in favor of a table scan or clustered index scan as the index does not offer any benefits to the optimizer.
+
+--- Slide 22 ---
+Indexing the Data Warehouse
+Copyrighted to Arun Sen
+22
+(iii).  Indexing Type – Bitmapped Index
+ 
+Product –100
+Color  -- 010
+Region – 1000 or 	0001
+
+Pick columns that have low selectivity for indexing
+Product
+Color
+Region
+
+--- Slide 23 ---
+Indexing the Data Warehouse
+Copyrighted to Arun Sen
+23
+(iv). Indexing Type – Clustered Index
+Does not use a separate data record and segment record
+All index data and real data are in one place
+Improve performance as the disk look up is reduced – one read gets data and index
+ 
+
+--- Slide 24 ---
+Indexing the Data Warehouse
+Copyrighted to Arun Sen
+24
+(v).  Indexing Fact Table
+  the primary key of the fact table is the primary keys of all dimension tables
+  Create a B-Tree Index on the “full” primary key
+  Carefully design the order of the full concatenated key for indexing
+   Bitmapped indexes do not apply to fact table as there is no low-selectivity column in the fact table
+  etc.
+
+--- Slide 25 ---
+Indexing the Data Warehouse
+Copyrighted to Arun Sen
+25
+(vi). Indexing the Dimension Table
+  Columns of the dimensional table are used for the predicates of queries
+  Create a unique B-Tree index on single-column primary key
+  Examine the columns that are commonly used to constrain queries.  These are actually ready for bitmapped indexing.
+  Look for columns that are frequently accessed together in large dimension tables – think about multicolumn indexes
+
+--- Slide 26 ---
+Physical Design Fundamentals 
+Copyrighted to Arun Sen
+26
+C.  Steps to create a Physical Design
+6.	Assign Storage Structures
+ Storage plan must include “temporary data extract files”, the 	staging area, and any storage needed for front-end 	applications
+  Need to be concerned with the physical files also
+
+--- Slide 27 ---
+Physical Storage 
+Copyrighted to Arun Sen
+27
+A.  Storage Area Data Structures
+ Data Staging Area
+ Data Extract Files
+  RDBMS files (with transformed data)
+  RDBS Index files
+ Data Warehouse Tables (DB files and Index Files)
+  OLAP System files (proprietary matrix format for storing multidimensional cubes)
+Physical Storage is important for project
+
+--- Slide 28 ---
+Physical Storage 
+Copyrighted to Arun Sen
+28
+B.  Estimate the Storage Sizes
+ For each database table, determine
+  initial estimate of number of rows
+  average length of rows
+  anticipated monthly increase
+  For all tables, determine 
+ the total number of indexes
+  space needed for indexes
+  Estimate
+  temporary file sizes in the data staging area
+  temporary workspace for sorting and merging
+
+--- Slide 29 ---
+Physical Design Fundamentals 
+Copyrighted to Arun Sen
+29
+C.  Steps to create a Physical Design
+Create “smart” views
+Views can offer the same benefits as denormalization without the drawbacks associated with data redundancy
+
+--- Slide 30 ---
+Physical Design Fundamentals 
+Copyrighted to Arun Sen
+30
+C.  Steps to create a Physical Design
+Create “smart” views
+
+--- Slide 31 ---
+Physical Design Fundamentals 
+Copyrighted to Arun Sen
+31
+C.  Steps to create a Physical Design
+8.	Convert Snowflake into Star Schema 
+Initial dimension model -  a snowflake
+
+--- Slide 32 ---
+Physical Design Fundamentals 
+32
+C.  Steps to create a Physical Design
+8.	Use of Star Schema 
+Star Schema folds each set of tables that make up a dimension into a single table.
+Snowflake schema, on the other hand, when the initial dimension model is implemented without “folding.”

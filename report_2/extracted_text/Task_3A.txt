@@ -1,0 +1,1109 @@
+
+--- Slide 1 ---
+Task 3a.  data base design in Data Warehousing Process
+Arun Sen
+Department of Information & Operations Mgmt.
+Mays Business School
+Texas A&M University
+
+--- Slide 2 ---
+Following the Data Warehousing Process
+9/30/2025
+Copyrighted by Arun Sen
+2
+
+--- Slide 3 ---
+Data Design for Data Warehousing
+A.  Data Design Process used by Data Architect
+Decide on a data modeling technique
+Build the logical model
+Business Questions and Requirements documents
+Build the physical model -- schema
+9/30/2025
+Copyrighted by Arun Sen
+3
+
+--- Slide 4 ---
+B. Terms to be used in Data Modeling --
+ Conceptual Model  -- world model  -- ERD
+  Logical Model --   model used by a DBMS  - RDM
+  Physical Model – adding physical characteristics like indexing style, etc.
+  Implementation model --  use of Oracle or SQL Server style
+Data Design for Data Warehousing
+9/30/2025
+Copyrighted by Arun Sen
+4
+
+--- Slide 5 ---
+C.  Two Choices in Data Design --
+ERD (conceptual) and Relational Schema (logical)
+Dimensional model (conceptual+logical) and 	Star/Snowflake Schema (logical)
+Data Design for Data Warehousing
+9/30/2025
+Copyrighted by Arun Sen
+5
+
+--- Slide 6 ---
+I.  ERD (conceptual) & Relational Schema (logical) – Targeted for EDW
+
+--- Slide 7 ---
+I.  ERD and Relational Schema
+Traditional data base design
+  Step 1:   Build the ERD for the enterprise (either directly or through conformable data 	marts)  -		-  	“conceptual model”
+  Step 2:   Translate it to a set of relations  using translation 	rules
+  Step 3:   Evaluate the relations (called a process of 	Normalization with an objective to have all 		relations in the “3NF model”
+ Step 4:    Denormalize as needed
+
+9/30/2025
+Copyrighted by Arun Sen
+7
+
+--- Slide 8 ---
+I.  ERD and Relational Schema
+For Lucid chart   https://lucid.app/lucidchart/6f67e4b8-b2d4-40c5-b61e-a8b426c2f487/edit?beaconFlowId=81B2705DE817D131&page=0_0#?folder_id=home&browser=icon 
+Step 1
+To understand database design, watch this video: https://www.youtube.com/watch?v=I_rxqSJAj6U 
+Download Visio from https://azureforeducation.microsoft.com/devtools 
+9/30/2025
+Copyrighted by Arun Sen
+8
+
+--- Slide 9 ---
+I.  ERD and Relational Schema
+Step 2.  Translated Relations are as follows:
+Employee (enum, employee-name, employee-addr)
+Supplier (s-ID, s-name, s-address, enum)
+Product (prod-id, product-name, product-desc, product-price, enum, s-ID) 
+
+Translation Rule 1
+[a] Each entity type in an ERD (that is not ”weak”) is transformed to a relation.
+[b] The PK of the entity becomes the PK of the relation
+[c] The non-key attributes of the entity become the non-key attributes of the relation. 
+Translation Rule 2
+[a]For each weak entity type generate a new relation.
+[b] The PK is the composite key created by concatenation of its own key and primary key of the supporting entity.
+[c] The non-key attributes of the entity become the non-key attributes of the relation. 
+Translation Rule 3
+For each n-ary relationship, generate a corresponding relation.  The key is the “composite key” consisting of primary key for each of the entities in the relationship. 
+Translation Rule 4
+For each binary relationship WITH attributes, generate a new relation.  The key of this relation is the “composite key” consisting of primary key for each of the entities in the relationship.
+Translation Rule 5
+For each binary relationship WITHOUT attributes, generate a new relation only if the relationship is (many, many).  The key of this relation is the composite key consisting of primary key for each of the two entities in the relationship.
+Translation Rule 6
+For each binary relationship WITHOUT attributes, if the relationship is (1,many) or (1,1), place a foreign key in the relation that represents the entity on the many-side of the relationship.  The foreign key is the primary-key of the entity on one-side of the relationship.  For (1,1), the foreign key can be placed in either relation.
+Step 2
+9/30/2025
+Copyrighted by Arun Sen
+9
+
+--- Slide 10 ---
+I.  ERD and Relational Schema
+Step 3
+First normal form (1NF) is a property of a relation in a relational database. A relation is in first normal form if and only if the domain of each attribute contains only atomic (indivisible) values, and the value of each attribute contains only a single value from that domain.
+A relation is in the second normal (2NF) form if it fulfills the following two requirements: 
+It is in first normal form.
+It does not have any non-prime attribute that is functionally dependent on any proper subset of any candidate key of the relation. A non-prime attribute of a relation is an attribute that is not a part of any candidate key of the relation.
+A database relation is said to meet third normal form (3NF) standards if all the attributes (e.g. database columns) are functionally dependent on solely the primary key. Codd defined this as a relation in second normal form where all non-prime attributes depend only on the candidate keys and do not have a transitive dependency on another key.
+9/30/2025
+Copyrighted by Arun Sen
+10
+
+--- Slide 11 ---
+I.  ERD and Relational Schema
+https://www.geeksforgeeks.org/normal-forms-in-dbms/ to understand normal forms
+
+Based up on Normal form definitions, we evaluate the relations with an objective to create Third Normal From relations as follows:
+Employee (enum, employee-name, employee-addr)   -- 3rd Normal Form
+Supplier (s-ID, s-name, s-address)  - - 3rd Normal form
+Order (s-ID, enum)  --  3rd Normal Form
+Product (prod-id, product-name, product-desc, product-price) --  3rd Normal Form
+Supply (prod-id, enum, s-ID) --  3rd Normal Form
+Step 3
+9/30/2025
+Copyrighted by Arun Sen
+11
+
+--- Slide 12 ---
+Denormalization of 3NF Relations
+  Advantages:
+--	improve performance
+  Disadvantages
+--	reduces data flexibility
+--	introduces the potential for data anomalies
+-- 	increases programming cost and complexity
+9/30/2025
+Copyrighted by Arun Sen
+12
+
+--- Slide 13 ---
+Denormalization of 3NF Relations
+A.    Recreating Repeating Column Groups
+
+Why?
+A report is needed to compare and calculate percentages of an employee's sales for the last six months.
+
+How is it done now?
+Have a 3NF Relation called Employee_Sales_Report (emp#, sales-date, sales-amount).
+This is a history table that tends to grow very big over time.
+
+9/30/2025
+Copyrighted by Arun Sen
+13
+
+--- Slide 14 ---
+Denormalization of 3NF Relations
+Recreating Repeating Column Groups
+
+Choice 1: Denormalize inside the Logical Model 
+Providing repeating groups with a meaningful name such January, February, etc.  ...  but SQL statement must be changed each time
+Use of non-meaningful column names such as Month-1, Month-2, etc. ... leads to confusion as someone may not know what Month-1 means.
+No matter how many columns we provide, there will be more needed ...
+
+Bad Choice
+
+
+9/30/2025
+Copyrighted by Arun Sen
+14
+
+--- Slide 15 ---
+Denormalization of 3NF Relations
+A. Recreating Repeating Column Groups
+  
+ Choice 2:
+ Keep original in 3NF and add an additional temporary table created and refreshed every month.
+ Denormalization is outside the logical model ...
+ cost and complexity
+
+Good Choice
+
+
+
+9/30/2025
+Copyrighted by Arun Sen
+15
+
+--- Slide 16 ---
+Denormalization of 3NF Relations
+  B.   Derived Data
+
+  Derived data is defined as redundant stored data whose values can be determined or calculated from other column values.
+ Example
+
+Employee(emp#, lastname, store#) 
+Store (store#, storename)
+
+ Choice
+We need to find employee count.  We can find it by doing a total table scan (expensive!) of Employee table.  Instead, we can have:
+	Store(store#, storename, employee-count)
+9/30/2025
+Copyrighted by Arun Sen
+16
+
+--- Slide 17 ---
+Denormalization of 3NF Relations
+  C.  Pre-Joins
+  Some DBMSs like Teradata RDBMS is capable of performing 64-table joins.  But this is costly ...
+  Try to avoid joins to minor relations by carrying their attributes in the major relations.
+  Example:
+		
+		Employee(emp#, lastname, store#) needs to be joined with Store(store#, storename)
+
+ Example:
+Instead ...
+	Employee(emp#, lastname, store#, storename)
+
+  Make sure to update properly.  Also, keep the Store Relation to avoid anomalies.
+9/30/2025
+Copyrighted by Arun Sen
+17
+
+--- Slide 18 ---
+II.  Dimensional model (conceptual+logical) and Star/Snowflake 	Schema (logical) – Targeted for 	Independent Data marts
+
+--- Slide 19 ---
+Following the Data Warehousing Process
+9/30/2025
+Copyrighted by Arun Sen
+19
+
+--- Slide 20 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+ 1.   History of Dimensional Modeling
+  first used by General Mills and Dartmouth University in 	1960’s
+  in 1970’s it is used by Nielson Marketing
+  in 1984 -- Kimball introduced it as a data modeling tool 	for conformable Data marts
+9/30/2025
+Copyrighted by Arun Sen
+20
+
+--- Slide 21 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+2.   What is Dimensional Modeling?
+  It is a logical design technique that seeks to present data in a standard format that is intuitive and allows for high-performance access
+  Fundamental idea of dimensional modeling is that every type of business data can be represented as a Cube or Hypercube.
+  More suitable for Kimball’s strategy
+  Not much use in creating an enterprise-wise star schema!!
+9/30/2025
+Copyrighted by Arun Sen
+21
+
+--- Slide 22 ---
+Star Schema
+9/30/2025
+Copyrighted by Arun Sen
+22
+
+--- Slide 23 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+ 3.   Components of Dimensional Model
+  It consists of two types of tables --
+  Fact table with attributes
+  Dimension table with attributes
+9/30/2025
+Copyrighted by Arun Sen
+23
+
+--- Slide 24 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+ 4.   What is a Fact Table?
+  It contains the observations of the market place
+  Facts should be
+  Additive (e.g., sales data)
+  Non-additive  (some facts could be non-additive such as account balance over time)
+  Semi-additive (some account balance could be additive along other dimensions)
+  Textual (keep them at minimum)
+9/30/2025
+Copyrighted by Arun Sen
+24
+
+--- Slide 25 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+ 4.   What is a Fact Table?
+  It is usually the m:n relationship of the ERD
+  contains lot of FKs
+  
+9/30/2025
+Copyrighted by Arun Sen
+25
+
+--- Slide 26 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+ 4.   What is a Fact Table?
+  Characteristics of a fact table 
+  it will contain concatenated key
+  data granularity is important for a fact table.
+  fully additive measures
+  semi-additive measures 
+  table is deep and not wide (i.e., not too many attributes)
+  sparse data
+  Degenerate dimension 
+ Sometimes when we start to collect attributes from OLTP systems for dimension tables and fact tables, we may left out with attributes like Order# or Order-line#.  These are neither facts nor strictly dimension attributes.  Usually, we put them in the fact table are called “degenerate dimensions.”  They are needed to relate orders to products
+
+
+  
+9/30/2025
+Copyrighted by Arun Sen
+26
+
+--- Slide 27 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+5.   Types of Fact Table?
+  Different types of Fact Tables –
+  Single fact table
+  Multiple fact tables
+9/30/2025
+Copyrighted by Arun Sen
+27
+
+--- Slide 28 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+6.   Single Fact Table
+9/30/2025
+Copyrighted by Arun Sen
+28
+
+--- Slide 29 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+6.  Single Fact Table  
+Look at AdventureWorks DW database
+9/30/2025
+Copyrighted by Arun Sen
+29
+
+--- Slide 30 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+ 6.  Single Fact Table  
+9/30/2025
+Copyrighted by Arun Sen
+30
+
+--- Slide 31 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+6.   Single Fact Table
+  Factless Fact Table
+·        A fact table can be factless if it records an event 	e.g., student attendance event 
+·        A fact table is factless if it records coverage.  For 	example, if a fact table is used to store the 	promotion coverage only, it cannot have product data 	for those that did not sell in spite of promotions.   
+
+Date_Key
+Course_Key
+Professor_Key 
+Room_Key
+Student_Key
+Student attendance Fact Table
+Time_Key
+Product_Key
+Store_Key 
+Promo_Key
+9/30/2025
+Copyrighted by Arun Sen
+31
+
+--- Slide 32 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+ 7.   Why Need Multiple Fact Tables?
+      Multiple fact tables are needed in several scenarios like: 
+  value chain
+  value circle
+  heterogeneous product schemas
+  Transaction and snapshot schemas
+  Aggregates
+9/30/2025
+Copyrighted by Arun Sen
+32
+
+--- Slide 33 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+ 7.   Why Need Multiple Fact Tables?
+·  Case of Value chain    
+Multiple fact tables are needed to support a business with many processes.  Each process creates one or more fact tables.  When these processes are arranged in order, they are called Value Chain.  
+9/30/2025
+Copyrighted by Arun Sen
+33
+
+--- Slide 34 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+ 7.   Why Need Multiple Fact Tables?
+·  For a Value chain   
+  In Manufacturing business, a product travels through various steps, starting off as raw materials and ending as finished goods in the warehouse inventory.  Steps include addition of ingredients, assembly of materials, process control, packaging etc.  
+ From finished goods inventory, a product moves into shipment to distributor, distributor inventory, distributor shipment, retail inventory, …  
+ At each step, value is added to the product.  This workflow forms value chain or supply chain.   
+Other Examples are Insurance, Order Processing, and others.
+9/30/2025
+Copyrighted by Arun Sen
+34
+
+--- Slide 35 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+ 7.   Why Need Multiple Fact Tables?
+·  A Typical Value chain    
+  If you are in one of these businesses, you need to track important metrics at different steps along the value chain.
+9/30/2025
+Copyrighted by Arun Sen
+35
+
+--- Slide 36 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+ 7.   Why Need Multiple Fact Tables?
+ For a Value circle
+·   The businesses can be organized in a  value circle so that they are performing or measuring the same kind of transaction.  Examples are hospitals, clinics, physician offices, etc. for patient treatments.
+Hospital fact table
+laboratories
+pharmacies
+Clinics fact table
+medicare
+insurance
+PATIENT
+PROVIDER
+LOCATION
+TIME dimension
+TREATMENT
+DIAGNOSIS
+PAYER
+GENERATING “PATIENT TREATMENT” OR MEASURING IT
+9/30/2025
+Copyrighted by Arun Sen
+36
+
+--- Slide 37 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+ 7.   Why Need Multiple Fact Tables?
+  For a Heterogeneous product schema
+  There are many business that apparently “produce” things that are quite dissimilar.  For example, a bank may have different lines of businesses, some of which are similar and others are dissimilar.  The  “savings a/c” and “checking a/c” are similar businesses while they are different from “credit card ops.”  These are called “heterogeneous products.”  How do you track these dissimilar services or products?   
+   We use CORE FACT TABLE and CUSTOM FACT TABLE.  
+
+9/30/2025
+Copyrighted by Arun Sen
+37
+
+--- Slide 38 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+ 7.   Why Need Multiple Fact Tables?
+Core fact table
+time-key
+account-key
+branch-key
+Household-key
+:
+fees earned
+Num_transactions
+Primary balance
+Core Account dimension
+Household dimension
+Time dimension
+Branch dimension
+Bank Example: Global View of all accounts
+9/30/2025
+Copyrighted by Arun Sen
+38
+
+--- Slide 39 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+ 7.   Why Need Multiple Fact Tables?
+Bank Example: Line of Business View
+9/30/2025
+Copyrighted by Arun Sen
+39
+
+--- Slide 40 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+ 7.   Why Need Multiple Fact Tables?
+·  Transaction and Snapshot Schema  Case
+ATM Transaction 
+Fact Table
+Time_key (FK)
+Account_key (FK)
+Transaction_key (FK)
+Location_key (FK)
+account-_num
+Transaction_ref
+amount
+Time Dim
+Transaction Dim
+Account Dim
+Location Dim
+Audit Dim
+ATM Snapshot 
+Fact Table
+Time_key (FK)
+Account_key (FK)
+Status_key (FK)
+Earned_revenue
+Transaction_count
+Ending_balance, ETC.
+Time Dim
+Account Dim
+Audit Dim
+Status Dim
+Models raw ATM transactions
+Models periodic snapshots obtained from ATM transactions
+9/30/2025
+Copyrighted by Arun Sen
+40
+
+--- Slide 41 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+ 7.   Why Need Multiple Fact Tables?
+  Notion of Aggregates
+  Aggregates are stored summaries built primarily to improve query performance.
+  The creation of aggregates introduces a family of fact tables that are usually derived from the most granular fact table in each data mart. 
+  Each member of the family represents a particular degree of summarization alone one or more of the fact table’s dimensions.
+  A mature and full set of aggregates could involve a dozen separate aggregate fact tables, all echoing the original structure of the base fact table.
+
+9/30/2025
+Copyrighted by Arun Sen
+41
+
+--- Slide 42 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+ 8.   What is a Dimension Table?
+
+Contains descriptive and textual information
+
+ Attributes of Dimension Table are the source of most of constraints in the SQL Queries
+
+ Examples of dimension are:
+a.	product dimension
+b.	store dimension
+c.	customer dimension
+d.    time dimension
+e.    customer address  - (commercial customers 		usually have hierarchies -- location to region)
+9/30/2025
+Copyrighted by Arun Sen
+42
+
+--- Slide 43 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+ 8.   What is a Dimension Table?
+Time-key (PK)
+Day-of-week
+week-number
+Month
+Time Dimension
+Product-key (PK)
+SKU
+description
+brand
+category
+Product Dim
+Store-key (PK)
+store-ID
+store-name
+City
+State
+Region
+Store Dimension
+9/30/2025
+Copyrighted by Arun Sen
+43
+
+--- Slide 44 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+ 8.   What is a Dimension Table?
+See AdventureWorks DW database
+9/30/2025
+Copyrighted by Arun Sen
+44
+
+--- Slide 45 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+ 8.   What is a Dimension Table?
+See AdventureWorks DW database
+9/30/2025
+Copyrighted by Arun Sen
+45
+
+--- Slide 46 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+ 8.   What is a Dimension Table?
+ Dimensions can be lumped to create more meaningful dimension such as
+<product, store>  -- 	in case products are branded to sell in certain stores and also used for browsing
+
+Drilling Up and Down
+Each dimension can have hierarchies (which could be more than one; also will talk about implementing this in SSAS) and browsers can be used to see the number of distinct values and to enumerate distinct relationships
+"Drill down" means adding more details 
+"Drill up" means summarization or aggregation
+.
+9/30/2025
+Copyrighted by Arun Sen
+46
+
+--- Slide 47 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+ 9.   Types of Dimension Table
+  Slowly Changing Dimension
+even if product key or production-customer key do not change the description of the product or customer does.  To handle this problem, three options are available
+
+ Type 1 Response: Overwrite the dimension record with the new values.  This is used when old description is not useful any more.
+9/30/2025
+Copyrighted by Arun Sen
+47
+
+--- Slide 48 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+ 9.   Types of Dimension Table
+  Slowly Changing Dimension
+Type 2 Response: Create effective date attributes in the dimension table.  This is used when a true physical change has taken place and it is appropriate to perfectly partition history by different descriptions. That is “Adding one row per change.”
+
+Type 3 Response: We do not have a change that perfectly partitions history.  We create an "old" field in the dimension record to store the immediate previous attribute value.  This is used when the sales district has occurred and the change is "soft."
+9/30/2025
+Copyrighted by Arun Sen
+48
+
+--- Slide 49 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+ 9.   Types of Dimension Table
+  Rapidly Changing Small Dimension
+   Rate structures continuously change in telecom 	industry
+   Use Type 2 of the above
+
+9/30/2025
+Copyrighted by Arun Sen
+49
+
+--- Slide 50 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+ 9.   Types of Dimension Table
+  Large Dimensions 
+With large granularity in data, we may end up with dimensions that are very large.
+Examples:  product dimension can contain "million" records; insurance companies can have "human" dimension that is very large along with "house" and "automobile" dimensions.
+Although current RDBMS can handle such large tables, some conservative design approaches must be chosen.
+
+9/30/2025
+Copyrighted by Arun Sen
+50
+
+--- Slide 51 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+ 9.   Types of Dimension Table
+  Rapidly Changing Monster Dimension
+  Large Dimension has a tendency to change more likely than medium-sized one.  For example, customer dimension can change more rapidly than the product dimension.  This is because retailers may want to update customer data, etc.  OR huge customer dimension with continuously revised demographics
+
+Solution is:
+Break the dimension table (customer) into two tables (like customer and demographics)
+9/30/2025
+Copyrighted by Arun Sen
+51
+
+--- Slide 52 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+ 9.   Types of Dimension Table
+  Rapidly Changing Monster Dimension
+Customer Dim
+customer-key (PK)
+name
+original-address
+date-of-birth
+Demographics Dim
+demog-key (PK)
+income-band
+education-level
+number-children
+Customer Dim
+customer-key (PK)
+name
+original-address
+date-of-birth
+…
+income
+education
+number-children
+9/30/2025
+Copyrighted by Arun Sen
+52
+
+--- Slide 53 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+ 9.   Types of Dimension Table
+ However, there are some compromises:
+ attributes such as income, etc. must be converted to income_band
+ build demographics dimension with all possible discrete attribute combinations
+9/30/2025
+Copyrighted by Arun Sen
+53
+
+--- Slide 54 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+ 9.   Types of Dimension Table
+  Junk dimension 
+Sometimes you are left with flags and text attributes.  These flags and text attributes do not organize in any coherent way.  Often the meaning of these is quite obscure.
+It is a bad idea
+  Choices:
+ Discard them – Not a good option as removing them may create problems for the business.
+ Leaving them in the fact table and they will swell the definition of fact table
+ Making each separate flag and attribute into its own dimension will increase the number of dimension!!
+9/30/2025
+Copyrighted by Arun Sen
+54
+
+--- Slide 55 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+ 9.   Types of Dimension Table
+  Junk dimension
+Best will be ---
+Create a dimension called Junk Dimension that is a convenient grouping of random flags and attributes to get them out of a fact table and into a useful dimensional framework.
+
+
+9/30/2025
+Copyrighted by Arun Sen
+55
+
+--- Slide 56 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+10.  Different Keys used in Dimensional Modeling
+  Foreign Keys   (mostly reside in fact tables; can appear in dimension table also in snowflake schema)
+  Primary Keys   (same notion as we know; appears mostly in dimension tables)
+  Surrogate Keys   (These are DW Keys and are meaningless.  They are used to connect dimension tables with the fact table.  Usually, it is a 4-byte integer.  Also applicable to Dates.)
+  
+9/30/2025
+Copyrighted by Arun Sen
+56
+
+--- Slide 57 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+10.  Different Keys used in Dimensional Modeling
+   Avoid Smart Keys  (Avoid the temptation of making overloaded keys.)
+  Do not use production keys (These are the PKs in the production process.)
+  
+9/30/2025
+Copyrighted by Arun Sen
+57
+
+--- Slide 58 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+ Kimball Methodology to Build Star/Snowflake Schema using
+
+Step-1:	  Requirements Analysis as discussed earlier
+ get business questions
+ look for business objectives and issues
+ collect analysis requirements
+
+Step-2: 	Build the Matrix
+  The best way to build the schema is to create a matrix with data marts in one axis  (x-axis) and dimensions in the other axis (y-axis).  
+  We define a data mart as a pragmatic collection of related facts.  
+
+9/30/2025
+Copyrighted by Arun Sen
+58
+
+--- Slide 59 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+11.  Steps to Build Star/Snowflake Schema 	(Kimball)
+9/30/2025
+Copyrighted by Arun Sen
+59
+Step 2.1.   List the Data Marts in the Matrix
+  Choose single-source data marts first.  Single-source data marts involve single kind of data source.
+  This is easier to handle.  Also, you will be able to deliver something worthwhile to the end users quickly.
+ Single-source data marts are customer billing, customer inquiries, promotion tracking [Each uses several dimensions but come from same source data]
+ Create multiple-source data marts from the single-source data marts, if possible.
+ Multiple-source data marts are customer relationship management using customer billing, customer inquiries and promotion tracking single-source data marts.
+
+--- Slide 60 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+11.  Steps to Build Star/Snowflake Schema 	(Kimball)
+
+	Step 2.2.   List the Dimensions in the Matrix
+	
+	Step 2.3.  Mark the intersection in the Matrix
+  Matrix is usually very dense
+  Each data mart has on the average 10 dimensions.
+
+9/30/2025
+Copyrighted by Arun Sen
+60
+
+--- Slide 61 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+11.  Steps to Build Star/Snowflake Schema (Kimball)
+Dimensions (will be used as dimension tables later)   
+Data Marts  ↓
+9/30/2025
+Copyrighted by Arun Sen
+61
+
+--- Slide 62 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+11.  Steps to Build Star/Snowflake Schema 	(Kimball)
+
+  One data mart can overlap with another data mart. 
+
+  Go for 10-30 data marts for a large organization.
+
+  In case you go with 30-40 data marts, you have probably divided the problem down to too fine a grain.
+
+9/30/2025
+Copyrighted by Arun Sen
+62
+
+--- Slide 63 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+11.  Steps to Build Star/Snowflake Schema 	(Kimball)
+	
+Step 3:	Design Fact Tables
+	Step 3A. Choose the Data Mart
+ Look down the row headings of our matrix and choose one of the data marts.  Go for single-source data mart first.
+	Step 3B.  Declare the Grain
+Declaring the grain means declaring what is an individual fact record.
+	Step 3C. Choose the Facts Based Upon the Grain
+Remember the things that we discussed about facts, their additive, semi-additive and non-additive properties
+
+
+
+9/30/2025
+Copyrighted by Arun Sen
+63
+
+--- Slide 64 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+11.  Steps to Build Star/Snowflake Schema 	(Kimball)
+
+Step 3D.   Include Derived Facts
+  Some facts in the fact table are derived such as YTD sales, Gross Profit, etc.  Keep track of them.
+  There are two kinds of derived facts.  First, derived facts can be additive.  Easy stuff.  Two, derived facts can be a nonadditive calculation such as Ratio.
+  Remember:  Include your derived facts at the time you are creating other facts.  Do not wait till you reach end user applications.
+
+9/30/2025
+Copyrighted by Arun Sen
+64
+
+--- Slide 65 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+11.  Steps to Build Star/Snowflake Schema 	(Kimball)
+
+	Step 3E.	  Follow the following Steps for Base Facts and Derived Facts
+Identify all possible base and derived facts.  Collect all reports submitted during the requirements analysis phase.
+Create a spreadsheet of facts and derived facts along with the name of person who provided it, etc.
+Remove duplicate facts
+Discover and document the underlying calculations
+Cross reference base facts
+Get approval for the derived facts
+9/30/2025
+Copyrighted by Arun Sen
+65
+
+--- Slide 66 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+11.  Steps to Build Star/Snowflake Schema 	(Kimball)
+
+Step 3F.  Create Fact Table Diagram
+It is very worthwhile to create a logical diagram for each fact table constructed along with its dimensions.  This will not only show the context of the fact table but also the context of the fact table with respect to the data mart.
+The diagram can be used to: (A) communicate with the end users; (B) help select data access tool selection; and (C) end user training.
+9/30/2025
+Copyrighted by Arun Sen
+66
+
+--- Slide 67 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+11.  Steps to Build Star/Snowflake Schema 	(Kimball)
+
+Step 3F.  Create Fact Table Diagram
+9/30/2025
+Copyrighted by Arun Sen
+67
+
+--- Slide 68 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+11.  Steps to Build Star/Snowflake Schema 	(Kimball)
+
+Step 4:	  Design the Dimension Tables
+  We draw a dimension table diagram for each dimension
+  The diagram shows explicit grain of each dimension.
+  It also shows the approximate cardinality of each dimension attribute.
+  It allows the user to quickly see the multiple hierarchies and relationships between the attributes.  This shows the default drill path.
+  Full descriptive data must be provided to support the above diagram
+9/30/2025
+Copyrighted by Arun Sen
+68
+
+--- Slide 69 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+11.  Steps to Build Star/Snowflake Schema 	(Kimball)
+
+Step 4:	  Design the Dimension Tables
+9/30/2025
+Copyrighted by Arun Sen
+69
+
+--- Slide 70 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+11.  Steps to Build Star/Snowflake Schema 	(Kimball)
+
+Step 5:	Feedback for the Design (Fact And Dimension Tables)
+
+	Step 5 A.  Get Inputs from the IS Team
+  Focus:  Need to see what are missed in the current dimensional model
+
+	Step 5 B.  Get Inputs from the Core Business Users
+  Focus:  (a) See if the dimension model helps all the types of reports the core business users are envisioning to have; (b) Navigation through the large dimensions
+
+	Step 5 C. Present to Business Users
+  Focus: (a) check the model against the business questions; 
+9/30/2025
+Copyrighted by Arun Sen
+70
+
+--- Slide 71 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+11.  Steps to Build Star/Snowflake Schema 	(Kimball)
+
+Step 6:	Data Sourcing
+There are two kinds of data sources: informal and formal.
+Informal data sources are personal databases and new data input.  In both cases, make sure to clean the data before you let them in the data warehouse.
+Formal sources are usually supported by the database staff
+9/30/2025
+Copyrighted by Arun Sen
+71
+
+--- Slide 72 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+11.  Steps to Build Star/Snowflake Schema 	(Kimball)
+
+Step 6:	Data Sourcing
+Create Data Source Definitions 
+source -- name of the source system
+business owner -- the name of the primary contact responsible
+IS owner -- the name of the person who is responsible for the source system
+platform
+location
+description
+9/30/2025
+Copyrighted by Arun Sen
+72
+
+--- Slide 73 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+11.  Steps to Build Star/Snowflake Schema 	(Kimball)
+
+Step 6:	Data Sourcing
+Remember that there will be external data providers (could be data vendors, or could be from other divisions of the organization)
+Facts need to come from one data source system
+Data Extraction Planning
+Data Accessibility -- pick the easier access data source
+Look for the step that feeds the data
+Data Accuracy
+Mapping Data from Source to Staging (type 1)
+9/30/2025
+Copyrighted by Arun Sen
+73
+
+--- Slide 74 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+11.  Steps to Build Star/Snowflake Schema 	(Kimball)
+
+Step 6:	Data Sourcing
+  Data Loading from Staging to Presentation Server
+	You need to load the data from staging to presentation server after doing all the 	transformations
+
+  Mapping Data from Staging to Presentation Server (type 2)
+9/30/2025
+Copyrighted by Arun Sen
+74
+
+--- Slide 75 ---
+Star Schema
+9/30/2025
+Copyrighted by Arun Sen
+75
+
+--- Slide 76 ---
+Star Schema
+http://www.youtube.com/watch?v=A-G5UVohwQQ 
+9/30/2025
+Copyrighted by Arun Sen
+76
+
+--- Slide 77 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+Fact Table  
+9/30/2025
+Copyrighted by Arun Sen
+77
+
+--- Slide 78 ---
+II.  Dimensional Modeling and Star/Snowflake Schema
+dimEmployee Table  
+9/30/2025
+Copyrighted by Arun Sen
+78
+
+--- Slide 79 ---
+Snowflake Schema
+Time-key (PK)
+Day-of-week
+week-number
+Month
+Time Dimension
+Product-key (PK)
+SKU
+description
+marketing-brand-key
+Product Dim
+Store-key (PK)
+store-ID
+store-name
+address
+Store Dimension
+Marketing-brand-key
+marketing brand
+9/30/2025
+Copyrighted by Arun Sen
+79
+
+--- Slide 80 ---
+Snowflake Schema
+12.  Permissible Snowflaking
+   A dimension is said to be “snowflaked” when the low cardinality fields in the dimension have been removed to separate tables and linked back into the original table with artificial key.  This helps if the user is asking only for the distinct values of the category….
+  Snowflaking makes most forms of browsing among the dimension attributes slower.
+  Not always a good idea because --
+    creates confusion with the users’ understanding
+    create problems with “bit mapped indexes”
+    more administration cost
+(Low-cardinality refers to columns with few unique values. Low-cardinality column values are typically status flags, Boolean values, or major classifications such as gender. An example of a data table column with low-cardinality would be a CUSTOMER table with a column named NEW_CUSTOMER. This column would contain only 2 distinct values: Y or N, denoting whether the customer was new or not. Since there are only 2 possible values held in this column, its cardinality type would be referred to as low-cardinality. – Wikipedia) 
+9/30/2025
+Copyrighted by Arun Sen
+80
+
+--- Slide 81 ---
+Examples from a TELCO Case Study (Kimball)
+Dimension Tables 
+9/30/2025
+Copyrighted by Arun Sen
+81
+
+--- Slide 82 ---
+A TELCO Case Study (Kimball)
+Dimension Tables 
+9/30/2025
+Copyrighted by Arun Sen
+82
+
+--- Slide 83 ---
+A TELCO Case Study (Kimball)
+Dimension Tables 
+9/30/2025
+Copyrighted by Arun Sen
+83
+
+--- Slide 84 ---
+A TELCO Case Study (Kimball)
+Dimension Tables 
+9/30/2025
+Copyrighted by Arun Sen
+84
+
+--- Slide 85 ---
+A TELCO Case Study (Kimball)
+Dimension Tables 
+9/30/2025
+Copyrighted by Arun Sen
+85
+
+--- Slide 86 ---
+A TELCO Case Study (Kimball)
+Star Schema  Customer Usage Billing
+9/30/2025
+Copyrighted by Arun Sen
+86
+
+--- Slide 87 ---
+A TELCO Case Study (Kimball)
+Star Schema  Call Detail Tracking 
+9/30/2025
+Copyrighted by Arun Sen
+87
+
+--- Slide 88 ---
+A TELCO Case Study (Kimball)
+Star Schema Vendor Contract 
+9/30/2025
+Copyrighted by Arun Sen
+88
+
+--- Slide 89 ---
+A TELCO Case Study (Kimball)
+Star Schema Purchased Product Tracking 
+9/30/2025
+Copyrighted by Arun Sen
+89
+
+--- Slide 90 ---
+A TELCO Case Study (Kimball)
+Star Schema Materials Inventory 
+9/30/2025
+Copyrighted by Arun Sen
+90
+
+--- Slide 91 ---
+A TELCO Case Study (Kimball)
+Star Schema Service Call Tracking 
+9/30/2025
+Copyrighted by Arun Sen
+91
+
+--- Slide 92 ---
+A TELCO Case Study (Kimball)
+Star Schema Repaired Items 
+9/30/2025
+Copyrighted by Arun Sen
+92

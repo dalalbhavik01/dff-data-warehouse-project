@@ -1,0 +1,13 @@
+
+The business questions are 2,3,4,8,9
+
+ BQ2:What were the total weekly unit sales of Soft Drinks across all stores for each week?
+
+BQ3:How do promotion weeks compare to non-promotion weeks in terms of sales volume?
+
+BQ4:Which promotion type (B = Bonus Buy, C = Coupon, S = Sale) generated the highest incremental unit sales lift in the Canned Soup category?
+
+BQ8: Which stores fall into the top 25%, middle 50%, and bottom 25% of total revenue for the Toothpaste category, and how do their demographics differ?
+
+ 
+BQ9:For each week, rank the top 10 individual products (UPCs) in the Crackers category by unit sales, and show their week-over-week sales change.

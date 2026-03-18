@@ -1,0 +1,596 @@
+
+--- Slide 1 ---
+Task 2.  choice of architecture in Data Warehousing Process
+Arun Sen
+Department of Information & Operations Mgmt.
+Mays Business School
+Texas A&M University
+
+
+--- Slide 2 ---
+Task 2.  Choice of Data Warehouse Architecture
+1.  What is Architecture?
+  It is a blueprint that dictates how the entire the project will look like and is very similar to an architectural blueprint for a house.
+
+2.  Types of DW Architecture
+  Enterprise-wide Data Warehouse
+  Data Marts (are of many types)
+ Vendor-supplied packaged data mart (one data mart in a box)
+ Vendor-supplied packaged data marts (multiple data marts)
+ Architected data mart (built in-house)
+ Multiple architected data marts (also built in-house)
+
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+2
+
+--- Slide 3 ---
+3.  Types of Architecture
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+3
+
+--- Slide 4 ---
+3.  Types of Architecture
+Independent Data Mart Architecture
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+4
+
+--- Slide 5 ---
+3.  Types of Architecture
+Hub-and-spoke Data Mart Architecture
+Local Metadata
+Local Metadata
+Data Analysis
+Data Analysis
+Data Analysis
+Central               Metadata
+Local Metadata
+RDBMS
+RDBMS
+MDB
+
+E
+T
+L
+Source Systems
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+5
+
+--- Slide 6 ---
+3.  Types of Architecture
+Enterprise Warehouse with Operational Data Store
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+6
+
+--- Slide 7 ---
+3.  Types of Architecture
+Cloud-based Data Warehouse Architecture  -- Amazon Redshift
+https://docs.aws.amazon.com/redshift/latest/dg/c_high_level_system_architecture.html 
+Amazon Redshift is a relational database management system (RDBMS)
+Amazon Redshift is based on PostgreSQL 8.0.2 and is somewhat different
+The leader node manages communications with client programs and all communication with compute nodes.
+Each compute node has its own dedicated CPU, memory, and attached disk storage, which are determined by the node type.
+A compute node is partitioned into slices.
+User data is stored on the compute nodes. Your SQL client communicates with the leader node, which in turn coordinates query execution with the compute nodes.
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+7
+https://www.linkedin.com/learning/search?categoryIds=ALL&contentBy=ALL&continuingEducationUnits=ALL&difficultyLevel=ALL&durations=ALL&entityType=ALL&keywords=redshift%20&language=en_US&learningCategoryIds=ALL&purchaseModel=ALL&software=ALL&sortBy=RELEVANCE&sourceUrn=ALL&spellcheck=true&u=74650722  
+https://linkedinlearning.tamu.edu/ 
+Get to “Work with Redshift”
+Click Watch full course
+Explore the AWS data warehouse
+Work with Redshift
+
+--- Slide 8 ---
+3.  Types of Architecture
+Cloud-based Data Warehouse Architecture  -- Others
+Google BigQuery  
+
+https://www.linkedin.com/learning/google-cloud-platform-essential-training-for-administrators/bigquery?u=74650722  and then check BigQuery tab
+
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+8
+
+--- Slide 9 ---
+3.  Types of Architecture
+Cloud-based Data Warehouse Architecture  -- Others
+Panoply     
+https://panoply.io/data-warehouse-guide/data-warehouse-architecture-traditional-vs-cloud/ 
+
+
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+9
+Purpose: It serves as a central repository where businesses can collect, store, and analyze structured and semi-structured data from multiple sources.
+Deployment: 100% cloud-based, built on Amazon Redshift technology, but adds a management layer that automates many administrative tasks.
+ETL/ELT: Panoply includes built-in data connectors for popular services (Salesforce, HubSpot, Google Analytics, etc.), so users can bring in data without building custom ETL pipelines.
+
+--- Slide 10 ---
+4. Focusing on Technical Architecture 
+
+We divide the entire technical architecture into two big pieces: back room and front room. 
+ 
+There are two major types of components in the technical architecture: services and data stores.  Services are functions needed to accomplish the required tasks of the warehouse.  For example, copying tables from one to another is a data transport service.  Data stores are temporary or permanent landing places for data.
+ 
+ 
+Key technical issues:
+Metadata
+Flexible service layers with the help of metadata catalog
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+10
+
+--- Slide 11 ---
+Information Supply Chain
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+11
+
+--- Slide 12 ---
+4.1.   Back Room Technical Architecture
+
+This is the place where data staging takes place.
+Components
+4.1.1.  Data Stores
+Source Systems
+Data Staging Area
+Presentation Servers
+4.1.2.  Data Staging Services
+Extraction
+Replication
+Transformation
+Data loading
+Data staging job control
+Backup and recovery
+Archive and retrieval
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+12
+
+--- Slide 13 ---
+4.1.1.  Source Systems (Data Store)
+  Most transaction systems are source systems.  Examples are older legacy systems, IMS, ISMS, VSAM, flat files 	and DB2 systems.
+
+ Sometimes they are batch reports are sources also.  Try to reverse-engineer these.
+
+  Data Models used in this stage are hierarchical, fully denormalized flat files, third normal forms etc.
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+13
+
+--- Slide 14 ---
+4.1.1.  Source Systems (Data Store)
+  Other examples of source systems are:
+
+ Client-server based ERP systems (ERP cannot support decision support)
+ Reporting Instance (another copy of operational data for reporting purposes only)
+ Operational data store (ODS) (it is a subject-oriented, integrated, frequently updated store of detailed data to support transaction systems with integrated data.)
+
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+14
+
+--- Slide 15 ---
+4.1.1.  Data Staging Area (Data Store)
+It is a construction site for the warehouse.
+Investment in data staging, that services a broad range of transformation requirements, will avoid requiring each business process to invest understanding of the sources.
+create dimensions at this stage in flat files
+keep things available for emergency recovery operations
+Storage Types
+flat files -- probably fastest
+relations -- not very efficient, slow; but tools are available to work with relations.
+Data Models  -- mostly 3NFs
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+15
+
+--- Slide 16 ---
+4.1.2.  Data Staging Services 
+Overall requirements for data staging services -
+Productivity support.
+code library check in/check out
+version control
+development tools
+Usability
+the data staging system must be usable.  Should have GUI, documentation tools
+Metadata driven
+SQL code and Cobol code must be driven by the metadata
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+16
+
+--- Slide 17 ---
+Service 1:  Extraction Services
+60% of the DW development hours are spent on the extract process.
+Most often, the challenge is determining what data to extract and what kinds of filters to apply.
+Most extract processes generate temporary load files that become the input data to the next activity downstream.
+Most extracts are based on the host platform and are designed to get the data out of the source and into a simplified and easily accessible form.
+Data needs to be pulled from the multiple systems built with multiple data stores hosted on multiple platforms ...
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+17
+
+--- Slide 18 ---
+Service 1:  Extraction Services
+ Generating codes to extract files.
+Types of extracts:
+incremental loads  (only the records that have changed or have been added since the previous load)
+transaction events (we may want all kinds of events like insertion, deletion and modification)
+full refresh (sometimes it is better to pull the full table rather than worry about figuring out what has changed)
+
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+18
+
+--- Slide 19 ---
+Service 2:  Replication Services
+ It may mean to continuously update a table in the staging database during the day, so it is up-to-date and available to support the data staging process at night
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+19
+
+--- Slide 20 ---
+Service 3:  Transformation Services
+ Once the data is extracted from the source system, a range of unnatural acts is performed on it to convert it into something presentable to the users and valuable to the business.
+Following is a tentative list of transformation that may need to be included in the warehouse.
+integration (involves generating surrogate keys, mapping keys from one system to another, etc.)
+slowly changing dimension maintenance
+referential integrity checking
+
+
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+20
+
+--- Slide 21 ---
+Service 3:  Transformation Services
+ denormalization 
+ renormalization (source may come as a denormalized flat file and we need to normalize parts of it)
+ cleansing
+ merge/purge
+ data type conversion
+ calculation, derivation and allocation
+ aggregation
+ etc.
+
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+21
+
+--- Slide 22 ---
+Service 3:  Data Loading Services
+   The capability that you need during the data loading process are a function of target platform. 
+ Support for multiple targets (atomic data marts may be on one DBMS and the business process data marts may be on another.  Each may have its own syntax.)
+ Load optimization (Most DBMS has bulk loading capabilities that can be scripted and invoked by the data staging tool through an API.)
+ Load process support
+
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+22
+
+--- Slide 23 ---
+ETL Tools
+  First Generation ETL Tools
+  used mostly Cobol as source code since data was originally stored in the main frame
+ generated mostly Cobol 
+ performance was very good
+ Limitations
+ needed an in-depth knowledge of programming on the different platforms
+ maintenance is difficult because the code was disseminated to different platforms and differed with the type of sources and target.
+
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+23
+
+--- Slide 24 ---
+ETL Tools
+  Second Generation ETL Tools
+  generation and compilation of source code
+  use of intermediate files to pass data from the extraction to the transformation process, and from transformation process to the load process.
+  use of single-threaded engines
+  lack of support for parallelism
+  Advantages
+tools are mature as they are out there for 20 years
+tools are good for extracting data from the legacy systems
+  Limitations
+high cost
+ use of intermediate files limits the throughput
+  significant number of metadata must be generated manually
+  Examples: 
+PASSPORT from Carleton Corporation
+Prism from Ardent Software
+SAS/Warehouse Administrator from SAS Institute, Inc
+
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+24
+
+--- Slide 25 ---
+ETL Tools
+ Third Generation ETL Tools
+extract program is generated automatically as executable code
+extraction/transformation/load process runs on a server platform
+functions supported include monitoring, scheduling, 	extraction, scrubbing, transformation, bulk load, 	etc.
+higher throughput because data are not written to intermediate files
+higher percentage of metadata is generated automatically.
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+25
+
+--- Slide 26 ---
+ETL Tools
+Advantages
+lower cost suites
+products are easy to learn and need very little training
+ETL functions are highly integrated, etc.
+Limitations
+some 2nd generation ETL tools are limited to RDBMS source databases
+not mature
+Examples:  
+PowerMart from Informatica 
+Ardent 3.5 DataStage from Ardent Software Inc
+Sagent Data Mart Solution from Sagent Technology
+
+
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+26
+
+--- Slide 27 ---
+Current Well-known ETL Tools (2025)
+Task 2.  Choice of Data Warehouse Architecture
+https://www.passionned.com/products/etl-data-integration-guide/
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+27
+
+--- Slide 28 ---
+5.  Presentation Server (Data Warehouse/Data Mart)
+These are the target platforms where the data is stored for direct querying by end users, reporting systems and other end-user tools.
+  Two kinds of Presentation Servers:
+  Enterprise-wide Data Warehouse (Inmon)
+  Data warehouse is a collection of data marts that sit on a bus  (Kimball)
+There are two kinds of data marts:
+Atomic data marts
+it holds data at the lowest-common-denominator level i.e., lowest level of detail necessary to meet most of the high-value business requirements.
+Atomic data marts should be relational due to the details in the data.  
+Atomic data marts should be built around dimensional model with details.
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+28
+start
+
+--- Slide 29 ---
+5.  Presentation Server (Data Warehouse/Data Mart)
+Aggregated business process data marts
+The data related to each core business process is called a business process data mart.  
+For example, Marketing might like to analyze the data to get a sense for promotional effectiveness.
+Business process data marts should be either relational or proprietary Multidimensional OLAP databases.  
+Business process data marts should be built around same dimensional structure of the data in the atomic data mart.
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+29
+
+--- Slide 30 ---
+5.  Presentation Server (Data Warehouse/Data Mart)
+https://www.informatica.com/data-integration-magic-quadrant.html?formid=26118&programName=24Q4-DPDS-NAM-CLO-NP-NI-NV-GartnerQuadrantDatIntgrtn-0-PT5088-G&utm_source=google&utm_medium=paid_search&utm_campaign=24Q4-DPDS-NAM-CLO-NP-NI-NV-GartnerQuadrantDatIntgrtn-0-PT5088-G&utm_country=us&utm_creative=Cloud-IT_Data-Integration_NB_Exact_Google_Search_NAM_US_Leads_CPA_English&utm_journey=clo&utm_cost=cpc&utm_term=gartner%20magic%20quadrant%20for%20data%20integration%20tools&gad_source=1&gad_campaignid=21156044056&gbraid=0AAAAADnfLNN_ndzqtSs-7tzrQo0zz6VHH&gclid=CjwKCAjwisnGBhAXEiwA0zEOR3umsutTbrJZHYbyGLWc1j76ojo_O6nBYjsCs7UtLZ9iY8m4aKFMYBoC1zAQAvD_BwE 
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+30
+
+--- Slide 31 ---
+Selection of Target DBMS for DW/DM
+Choice 1:	Conventional RDBMSs in combination with ROLAP tools
+Strengths:
+No size limit on target database (scalable to terabytes)
+No need for proprietary databases and tools
+RDBMSs have been enhanced to support the specialized requirements for DW.  Techniques include parallel query execution, parallel data management, bit-mapped indexes, SQL extensions for OLAP, etc.
+Ad hoc queries can be directed to any data in the DW
+Detailed data and aggregated data can be stored in the same database
+
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+31
+
+--- Slide 32 ---
+Selection of Target DBMS for DW/DM
+Choice 1:	Conventional RDBMSs in combination with ROLAP tools
+Strengths:
+High-speed query processing using symmetric multiprocessors (SMP), massively parallel processors (MPP), and clustered multiprocessors (NUMA).
+Availability of front-end ROLAP tools from multiple vendors
+ROLAP tools support multi-dimensional analysis of relational data
+Supports open systems standards such as OLE  DB, ODBC, SQL
+Portable
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+32
+
+--- Slide 33 ---
+Selection of Target DBMS for DW/DM
+Choice 1:	Conventional RDBMSs in combination with ROLAP tools
+Limitations
+Originally designed for OLTP
+Slower than MDB
+SQL is not designed for calculations and OLAP 	functions
+Sophisticated techniques are required to generate SQL
+Examples
+Oracle, IBM DB2, Teradata, SQL Server  (Microsoft), Redbrick DW (Informix Software), CA-OpenIngres (from Computer Associates), Sybase Adaptive Server Enterprise etc.
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+33
+
+--- Slide 34 ---
+Selection of Target DBMS for DW/DM
+Choice 2:	 Multidimensional DBMS
+A multidimensional DB is a data structure with three or more independent dimensions.  MDDBs do not use relational tables, but store data in multidimensional arrays.  A spreadsheet is a 2-dim array.  MDDBs are similar to spreadsheet, but they store data in three or more dimensions
+.
+MDB/MDDB arrays are recommended for relatively small data marts ( < 50 GB) where performance is critical
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+34
+
+--- Slide 35 ---
+Selection of Target DBMS for DW/DM
+Choice 2:	 Multidimensional DBMS
+Components of a MDB include
+Relational DBMS to store detailed data
+MDDB server to store aggregate data (contains base data, pre-calculated results stored in MD array and an indexing structure required to store the data)
+Metadata (local data definitions and semantics in business terms)
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+35
+
+--- Slide 36 ---
+Selection of Target DBMS for DW/DM
+Choice 2: Multidimensional DBMS
+Multidimensional viewer
+Types of data stored in a multidimensional array
+base data - historical data that have not been aggregated into arrays
+pre-computed aggregates or summaries
+derived or calculated data
+indexes used to locate blocks of data in the array
+It typically takes 8-10 hours to pre-compute aggregated data, derived data and indexes for a larger multidimensional array
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+36
+
+--- Slide 37 ---
+Selection of Target DBMS for DW/DM
+Choice 2:	 Multidimensional DBMS
+Strengths
+High performance (sub-second response to queries and OLAP analysis), sophisticated multidimensional calculations
+Optimized for OLAP and not constrained by limitations of SQL
+Support for several complex DSS queries (e.g., trend analysis, drill down, etc.)
+Advanced indexing options (B-Trees and bitmaps)
+No complex RDBMS functions
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+37
+
+--- Slide 38 ---
+Selection of Target DBMS for DW/DM
+Choice 2:	 Multidimensional DBMS
+Limitations
+Requires yet another proprietary DB solution
+Max size of 3 GB of raw data, which may expand by a factor of 10 to 100 for calculated data.  Size limit is due to time to pre-compute.
+Most MDBs cannot load data incrementally
+Static, pre-computed dimensions and calculations.  Lack of support for dynamic changes in dimension structure
+Lack of standard multidimensional model or access method
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+38
+
+--- Slide 39 ---
+Selection of Target DBMS for DW/DM
+Choice 2: Multidimensional DBMS
+Examples
+SAS Multidimensional Database Server
+Focus/Fusion from Information Builders, etc.
+Essbase from Hyperion Solutions Corp.
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+39
+
+--- Slide 40 ---
+Selection of Target DBMS for DW/DM
+Choice 3:	 Hybrid OLAP (HOLAP)
+Combination of RDBMS and MDB (best of both worlds), controlled by OLAP server
+RDBMS used for detailed data stored in large databases
+MDB used for fast, read/write OLAP analysis and calculations
+OLAP server routes queries to either RDBMS or MDB
+Result set form RDBMS may be processed on-the-fly in server
+Examples
+Microsoft SQL Server OLAP Services
+IBM DB2 OLAP Server
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+40
+
+--- Slide 41 ---
+Selection of Target DBMS for DW/DM
+Recommendations 
+Use RDBMS and ROLAP tools to provide multidimensional views of large relational target databases
+Use RDBS features, such as parallelization, and bit-mapped indexes, to provide acceptable performance
+Use MDB for high-performance analysis of moderate size databases.  MDBs are often used for data marts.
+Use hybrid approach for applications that require access to detail data and fast OLAP computations.
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+41
+
+--- Slide 42 ---
+4.2.   Front Room Technical Architecture
+This is the public face of the warehouse
+Data Access Service is needed to help people get the information they need from the warehouse 
+Components
+Types
+Access Tool Data Stores (temporary storage)
+Standard Reporting Data Stores 
+Personal Data Marts 
+Disposable Data Marts
+Application Models
+
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+42
+
+--- Slide 43 ---
+4.2.   Focusing on Front Room Technical Architecture
+Services
+Remember that there are different user types
+Warehouse browsing
+Activity monitoring 
+Query management 
+Standard reporting 
+Data access tool capabilities (include OLAP tools, data mining, data 	visualization, and other data access tools)
+Web implications of data access
+
+
+
+Task 2.  Choice of Data Warehouse Architecture
+2/1/2026
+Copyright (c) Arun Sen Texas A&M University
+43
