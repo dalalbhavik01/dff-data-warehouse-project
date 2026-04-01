@@ -18,3 +18,25 @@ DFF data - zipped/
 # IDE
 .vscode/
 .idea/
+
+# ============================================
+# COPYRIGHTED COURSE MATERIALS — DO NOT PUSH
+# ============================================
+
+# PPT/PPTX slide decks (professor's copyrighted materials)
+*.pptx
+*.ppt
+
+# Modules/reference folder (all course slides)
+report_2/modules for reference/
+
+# PDF conversions of copyrighted slides
+report_3/pdf/
+
+# Extracted text from copyrighted slides
+report_1/extracted_text/
+report_2/extracted_text/
+report_2/slides_text.txt
+report_2/slides_full.txt
+report_3/etl_1_text.txt
+report_3/etl_2_text.txt
