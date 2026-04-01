@@ -77,9 +77,8 @@ INNER JOIN dbo.DimTime dt
     ON sm.WEEK = dt.week_id
 INNER JOIN dbo.DimCategory dc 
     ON sm.CATEGORY_CODE = dc.category_code
-LEFT JOIN dbo.DimPromotion dpr 
-    ON (sm.SALE = dpr.deal_code)
-    OR (sm.SALE = 'N' AND dpr.deal_code IS NULL);
+INNER JOIN dbo.DimPromotion dpr 
+    ON sm.SALE = dpr.deal_code;
 GO
 
 PRINT 'FactWeeklySales loaded:';

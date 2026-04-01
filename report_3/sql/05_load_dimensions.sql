@@ -58,7 +58,7 @@ GO
 -- deal_code for 'No Promotion' is stored as NULL (original source value).
 
 INSERT INTO dbo.DimPromotion (deal_code, deal_type, is_promoted) VALUES
-(NULL, 'No Promotion', 0),
+('N',  'No Promotion', 0),
 ('B',  'Bonus Buy',    1),
 ('C',  'Coupon',       1),
 ('S',  'Sale/Discount', 1);

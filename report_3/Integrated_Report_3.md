@@ -69,14 +69,15 @@ The DFF dataset consists of four categories of OLTP source files:
 
 ### 1.5 Source Data Relationships (ERD)
 
-```
-Movement.UPC    ────→  UPC.UPC         (product details)
-Movement.STORE  ────→  DEMO.STORE      (store demographics)
-Movement.STORE + WEEK → CCOUNT.STORE + WEEK  (customer traffic)
-Category code is implicit from the filename (not a column)
-```
+The following Entity Relationship Diagram shows the relationships among the OLTP source data files as they exist in the DFF dataset. This is NOT a star schema — it represents the raw source data structure only.
 
-*[ERD diagram from Visio/LucidChart to be inserted here]*
+**Entities and Relationships:**
+- **Movement Files (Wxxx)** → **UPC Files (UPCxxx)**: Many-to-one on UPC. Each movement record references one product.
+- **Movement Files (Wxxx)** → **DEMO.csv**: Many-to-one on STORE. Each movement record belongs to one store.
+- **Movement Files (Wxxx)** → **CCOUNT.csv**: Many-to-one on STORE + WEEK. Each movement week maps to customer traffic.
+- Category code is implicit from the filename (e.g., wsdr.csv → SDR), not stored as a column.
+
+*[INSERT: Source Data ERD from Visio or LucidChart showing the four entity types and their relationships. Do NOT show star schema here — only source data.]*
 
 ---
 
@@ -152,11 +153,11 @@ Our exploratory analysis of sample data confirms the feasibility of each selecte
 
 ## Section 3: Overview of Kimball's Methodology
 
-The data warehouse logical design follows Kimball's bottom-up methodology for building independent, conformable data marts. This methodology is critical for this project because it ensures each data mart is driven by specific business questions rather than merely mirroring the OLTP source systems. The six steps are:
+The data warehouse logical design follows Kimball's bottom-up methodology for building independent data marts. This methodology is critical for this project because it ensures the data mart is driven by specific business questions rather than merely mirroring the OLTP source systems. The six steps are:
 
 **Step 1: Requirements Analysis.** We gathered 10 business questions from stakeholder analysis and research on the DFF dataset (Section 2). The professor selected 5 BQs (BQ2, BQ3, BQ4, BQ8, BQ9) spanning four product categories (Soft Drinks, Canned Soup, Toothpaste, Crackers).
 
-**Step 2: Build the Bus Matrix.** A matrix was created with data marts (business processes) on one axis and dimensions on the other. FactWeeklySales supports all 5 BQs using five conformed dimensions: DimTime, DimStore, DimProduct, DimCategory, and DimPromotion. FactCustomerTraffic provides supplementary traffic analysis using DimTime and DimStore.
+**Step 2: Build the Bus Matrix.** A matrix was created identifying the dimensions needed for each business process. FactWeeklySales supports all 5 BQs using five dimensions: DimTime, DimStore, DimProduct, DimCategory, and DimPromotion. FactCustomerTraffic provides supplementary traffic analysis using DimTime and DimStore.
 
 **Step 3: Design Fact Tables.** The primary fact table, FactWeeklySales, has a grain of one row per UPC × Store × Week with both base facts (units_sold, gross_profit) and derived facts (revenue, profit_margin_pct).
 
@@ -166,7 +167,7 @@ The data warehouse logical design follows Kimball's bottom-up methodology for bu
 
 **Step 6: Data Sourcing.** Source files are identified, mapping tables are prepared (Sections 4.5–4.6), and the ETL plan is developed (Section 5).
 
-**Why is this methodology important for independent data marts?** Kimball's methodology ensures each data mart can be built and deployed independently while remaining queryable together through conformed dimensions. Shared dimensions like DimStore and DimTime guarantee consistency across data marts without requiring a monolithic enterprise data warehouse. The star schema structure provides high-performance query access and an intuitive format for business users.
+**Why is this methodology important for independent data marts?** Kimball's methodology ensures each data mart is built incrementally and driven by real business requirements. The star schema structure provides high-performance query access, an intuitive format for business users, and ensures that new business processes can be added as separate data marts without modifying existing schemas.
 
 ### Data Mart / Dimension Bus Matrix
 
@@ -174,8 +175,6 @@ The data warehouse logical design follows Kimball's bottom-up methodology for bu
 |:--|:-:|:-:|:-:|:-:|:-:|:--|
 | **FactWeeklySales** | ✓ | ✓ | ✓ | ✓ | ✓ | BQ2, BQ3, BQ4, BQ8, BQ9 |
 | **FactCustomerTraffic** | ✓ | ✓ | — | — | — | (supplementary) |
-
-All five dimensions are **conformed** and reusable across current and future data marts.
 
 ---
 
@@ -308,7 +307,7 @@ The professor selected 5 BQs from our list of 10 for implementation:
 
 | deal_code | deal_type | is_promoted |
 |:--|:--|:--|
-| NULL | No Promotion | 0 |
+| N | No Promotion | 0 |
 | B | Bonus Buy | 1 |
 | C | Coupon | 1 |
 | S | Sale/Discount | 1 |
@@ -329,7 +328,7 @@ The professor selected 5 BQs from our list of 10 for implementation:
 
 ### 4.4 Star Schema Diagram
 
-*[Visio/LucidChart ERD to be inserted here — see ER_Diagram_Reference.md for specification]*
+*[INSERT: Star Schema ERD from Visio or LucidChart. Per professor's feedback: write attributes with data types inside each table box (e.g., "store_key INT PK"). Do NOT label the relationship lines — just draw plain lines connecting fact to dimensions.]*
 
 ### 4.5 Mapping Table #1: Source Files → Staging Tables
 
