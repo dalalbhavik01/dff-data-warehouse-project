@@ -1,19 +1,20 @@
-# Data files (too large for GitHub)
-DFF data - zipped/
-backup-Movement/
-
 # Python
 .venv/
 __pycache__/
 *.pyc
+.mplcache/
 
 # OS
 .DS_Store
 Thumbs.db
+*.lnk
 
-# Word temp files
+# Office temp files
 ~$*
 
-# Temp files
-slides_text.txt
-slides_full.txt
+# Data files (too large for git)
+DFF data - zipped/
+
+# IDE
+.vscode/
+.idea/
