@@ -1,0 +1,1209 @@
+--- Slide 1 ---
+ARUN SEN
+DEPARTMENT OF INFORMATION &
+OPERATIONS MGMT.
+MAYS BUSINESS SCHOOL
+TEXAS A&M UNIVERSITY
+T 4: E ,
+ASK XTRACT
+T L
+RANSFORM AND OAD
+(ETL # 2)
+
+--- Slide 2 ---
+Example - 3
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 2
+
+--- Slide 3 ---
+SQL Server Integration Service (SSIS)
+1. Other kinds of ETL Operations
+• So far, we have seen “bulk copy” (either from SQL Server DBMS Engine or from SSIS engine) examples
+for
+• Table ➔ a csv file
+• csv file ➔ a table
+(We did not select rows or columns rather moved the entire data. We could have used SELECT command to
+select rows if we wanted. We also did not make changes to the field or dropped some fields.)
+• Let us do examples that are also relevant for your class
+• A table in one DB ➔ Another table in another DB (LOAD)
+• Two tables ➔ another table (using join) and then LOAD
+• Other examples are interesting which will include “transformation,” “schedule an ETL operation” or
+other operations from the toolbox. We will talk about them also.
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 3
+
+--- Slide 4 ---
+SQL Server Integration Service (SSIS)
+2. One table ➔ another table -- Example 3
+This Example
+is need to load
+data into EDW
+Data Staging
+Data in Source
+tables
+DB EXTRACT
+For students to connect from home,
+Data Stored
+you need to open Run app or
+in the CSV or
+Command Prompt app and type in text files in
+LOAD
+Source
+the following command. Replace
+“arun-sen” with your NedtID.
+Remember you are getting in using
+For Instructor: turn on SSMS
+AUTH domain.
+runas /netonly /user:mbs\asen
+"C:\Program Files (x86)\Microsoft
+runas /netonly /user:auth\arun-sen
+SQL Server Management Studio
+"C:\Program Files (x86)\Microsoft SQL EDW
+18\Common7\IDE\Ssms.exe“
+Server Management Studio
+18\Common7\IDE\Ssms.exe“
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 4
+
+--- Slide 5 ---
+SQL Server Integration Service (SSIS)
+2. A table ➔ another table
+HumanResources.Department data
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 5
+
+--- Slide 6 ---
+SQL Server Integration Service (SSIS)
+2. A table ➔ another table
+For students to connect, you need to open
+Run/Command Prompt app and type in the
+following command.
+C:\Windows\System32\runas.exe
+/netonly /user:auth\arun-sen
+"C:\Program Files (x86)\Microsoft Visual
+Studio\2019\Community\Common7\IDE\
+devenv.exe"
+For Instructor
+C:\Windows\System32\runas.exe /netonly
+/user:asen@mbs.tamu.edu "C:\Program
+Files (x86)\Microsoft Visual
+Studio\2019\Community\Common7\IDE\de
+venv.exe"
+Use MBS password to login in the dark screen
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 6
+
+--- Slide 7 ---
+SQL Server Integration Service (SSIS)
+2. A table ➔ another table
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 7
+
+--- Slide 8 ---
+SQL Server Integration Service (SSIS)
+2. A table ➔ another table
+After selection and
+authentications
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 8
+
+--- Slide 9 ---
+SQL Server Integration Service (SSIS)
+2. A table ➔ another table
+Setting up the destination
+… a database called arun-
+stagingDBKEEP
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 9
+
+--- Slide 10 ---
+SQL Server Integration Service (SSIS)
+2. A table ➔ another table
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 10
+
+--- Slide 11 ---
+SQL Server Integration Service (SSIS)
+2. A table ➔ another table
+Initially the Destination
+part of the window will
+be empty.
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 11
+
+--- Slide 12 ---
+SQL Server Integration Service (SSIS)
+2. A table ➔ another table
+We come here by
+clicking PREVIEW
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 12
+
+--- Slide 13 ---
+SQL Server Integration Service (SSIS)
+2. A table ➔ another table
+Source is [HumanResources].[Department] and the
+Destination is [dbo].[Department]. REMEMBER IF
+YOU HAVE USED [Department] BEFORE, CREATE
+COMMAND MAY NOT WORK. IT IS BETTER TO USE A
+NEW NAME FOR THE CREATE COMMAND.
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 13
+
+--- Slide 14 ---
+SQL Server Integration Service (SSIS)
+2. A table ➔ another table
+Source is
+[HumanResources].[Depart
+ment] and the Destination
+is [dbo].[Department]
+Click Edit Mapping
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 14
+
+--- Slide 15 ---
+SQL Server Integration Service (SSIS)
+2. A table ➔ another table
+Click the Edit Mappings Button to check how the
+mapping is going to happen. You can change this if
+you want. You can drop and re-create destination
+table if you want. As the stagingDB does not have
+DEPARTMENT table, SQL Server creates the table.
+You can try for all source tables and make changes if
+you want.
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 15
+
+--- Slide 16 ---
+SQL Server Integration Service (SSIS)
+2. A table ➔ another table
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 16
+
+--- Slide 17 ---
+SQL Server Integration Service (SSIS)
+2. A table ➔ another table
+You can check the data if
+you click Preview button
+for each table
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 17
+
+--- Slide 18 ---
+SQL Server Integration Service (SSIS)
+2. A table ➔ another table
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 18
+
+--- Slide 19 ---
+SQL Server Integration Service (SSIS)
+2. A table ➔ another table
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 19
+
+--- Slide 20 ---
+SQL Server Integration Service (SSIS)
+2. A table ➔ another table
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 20
+
+--- Slide 21 ---
+SQL Server Integration Service (SSIS)
+2. A table ➔ another table
+Create the
+destination table
+Append the
+destination table
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 21
+
+--- Slide 22 ---
+SQL Server Integration Service (SSIS)
+2. A table ➔ another table
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 22
+
+--- Slide 23 ---
+SQL Server Integration Service (SSIS)
+2. A table ➔ another table
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 23
+
+--- Slide 24 ---
+SQL Server Integration Service (SSIS)
+2. A table ➔ another table
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 24
+
+--- Slide 25 ---
+SQL Server Integration Service (SSIS)
+2. A table ➔ another table
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 25
+
+--- Slide 26 ---
+SQL Server Integration Service (SSIS)
+2. A table ➔ another table
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 26
+
+--- Slide 27 ---
+Multistep Examples
+Example – 4
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 27
+
+--- Slide 28 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL
+• Let us suppose, we want to import two large tables and then join
+both tables in the staging area and create new table ready to be
+loaded in the DW
+Remember that staging area should be a separate DB and
+the DW area should be a separate DB. In our examples they
+both reside in SQL Server. However, one can have staging
+DB in SQL Server and DW in Oracle.
+Also, for safety's sake, please name the staging dbo as
+<your group#>-stagingDB and data mart dbo as <your
+group#>-dwDB
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 28
+
+--- Slide 29 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL – Example 4
+Customer Data
+File on hard LOAD the
+data into a
+drive DB
+BULK
+INSERT
+STAGING DB Data Mart DB
+LOAD the data
+into the data-
+• Bulk insert to tables
+mart DB
+Order Data File • Join
+on hard drive
+CUSTOMER-ORDER
+EXCEL FILE
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 29
+
+--- Slide 30 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL – Example 4
+customer ID company name contact name contact title address city region postal code country phone fax
+ALFKI Alfreds Futterkiste Maria Anders Sales Representative Obere Str. 57 Berlin NULL 12209Germany 030-0074321 030-0076545
+ANATR Ana Trujillo Emparedados y helados Ana Trujillo Owner Avda. de la Constitución 2222 México D.F. NULL 5021Mexico (5) 555-4729 (5) 555-3745
+ANTON Antonio Moreno Taquería Antonio Moreno Owner Mataderos 2312 México D.F. NULL 5023Mexico (5) 555-3932 NULL
+AROUT Around the Horn Thomas Hardy Sales Representative 120 Hanover Sq. London NULL UK (171) 555-7788 (171) 555-6750
+BERGS Berglunds snabbköp Christina Berglund Order Administrator Berguvsvägen 8 Luleå NULL Sweden 0921-12 34 65 0921-12 34 67
+BLAUS Blauer See Delikatessen Hanna Moos Sales Representative Forsterstr. 57 Mannheim NULL 68306Germany 0621-08460 0621-08924
+BLONP Blondel père et fils Frédérique Citeaux Marketing Manager 24 place Kléber Strasbourg NULL 67000France 88.60.15.31
+BOLID Bólido Comidas preparadas Martín Sommer Owner C/ Araquil 67Madrid NULL 28023Spain (91) 555 22 82
+BONAP Bon app' Laurence Lebihan Owner 12 rue des Bouchers Marseille NULL 13008France 91.24.45.40
+BOTTM Bottom-Dollar Markets Elizabeth Lincoln Accounting Manager 23 Tsawassen Blvd. Tsawassen BC Canada (604) 555-4729 (604) 555-3745
+BSBEV B's Beverages Victoria Ashworth Sales Representative Fauntleroy Circus London NULL UK (171) 555-1212 NULL
+CACTU Cactus Comidas para llevar Patricio Simpson Sales Agent Cerrito 333 Buenos Aires NULL 1010Argentina (1) 135-5555 (1) 135-4892
+CENTC Centro comercial Moctezuma Francisco Chang Marketing Manager Sierras de Granada 9993 México D.F. NULL 5022Mexico (5) 555-3392 (5) 555-7293
+CHOPS Chop-suey Chinese Yang Wang Owner Hauptstr. 29 Bern NULL 3012Switzerland 0452-076545 NULL
+COMMI Comércio Mineiro Pedro Afonso Sales Associate Av. dos Lusíadas 23São Paulo SP Brazil (11) 555-7647
+CONSH Consolidated Holdings Elizabeth Brown Sales Representative Berkeley Gardens London NULL UK (171) 555-2282 (171) 555-9199
+12 Brewery
+DRACD Drachenblut Delikatessen Sven Ottlieb Order Administrator Walserweg 21 Aachen NULL 52066Germany 0241-039123 0241-059428
+DUMON Du monde entier Janine Labrune Owner 67 rue des Cinquante ONtaangteess NULL 44000France 40.67.88.88
+Customer spreadsheet
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 30
+
+--- Slide 31 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL – Example 4
+order ID customer ID emp ID order date required date shipped date shipvia freight ship name ship address ship city ship region ship postalcode
+10248WILMK 5 7/4/1996 0:00 8/1/1996 0:00 7/16/1996 0:00 3 32.38Vins et alcools Chevalier 59 rue de l'Abbaye Reims NULL 51100
+10249TRADH 6 7/5/1996 0:00 8/16/1996 0:00 7/10/1996 0:00 1 11.61Toms Spezialitäten Luisenstr. 48 Münster NULL 44087
+10250HANAR 4 7/8/1996 0:00 8/5/1996 0:00 7/12/1996 0:00 2 65.83Hanari Carnes Rua do Paço 67Rio de Janeiro RJ
+10251VICTE 3 7/8/1996 0:00 8/5/1996 0:00 7/15/1996 0:00 1 41.34Victuailles en stock 2 rue du Commerce Lyon NULL
+10252SUPRD 4 7/9/1996 0:00 8/6/1996 0:00 7/11/1996 0:00 2 51.3Suprêmes délices Boulevard Tirou 255Charleroi NULL
+10253HANAR 3 7/10/1996 0:00 7/24/1996 0:00 7/16/1996 0:00 2 58.17Hanari Carnes Rua do Paço 67Rio de Janeiro RJ
+10254CHOPS 5 7/11/1996 0:00 8/8/1996 0:00 7/23/1996 0:00 2 22.98Chop-suey Chinese Hauptstr. 31 Bern NULL 3012
+10255RICSU 9 7/12/1996 0:00 8/9/1996 0:00 7/15/1996 0:00 3 148.33Richter Supermarkt Starenweg 5 Genève NULL 1204
+10256WELLI 3 7/15/1996 0:00 8/12/1996 0:00 7/17/1996 0:00 2 13.97Wellington Importadora Rua do Mercado 12Resende SP
+10257HILAA 4 7/16/1996 0:00 8/13/1996 0:00 7/22/1996 0:00 3 81.91HILARIÓN-Abastos Carrera 22 con Ave. Carlos Soublette #8-35 San Cristóbal Táchira 5022
+10258ERNSH 1 7/17/1996 0:00 8/14/1996 0:00 7/23/1996 0:00 1 140.51Ernst Handel Kirchgasse 6 Graz NULL 8010
+10259CENTC 4 7/18/1996 0:00 8/15/1996 0:00 7/25/1996 0:00 3 3.25Centro comercial Moctezuma Sierras de Granada 9993 México D.F. NULL 5022
+10260OLDWO 4 7/19/1996 0:00 8/16/1996 0:00 7/29/1996 0:00 1 55.09Ottilies Käseladen Mehrheimerstr. 369 Köln NULL 50739
+10261QUEDE 4 7/19/1996 0:00 8/16/1996 0:00 7/30/1996 0:00 2 3.05Que Delícia Rua da Panificadora 12Rio de Janeiro RJ
+10262RATTC 8 7/22/1996 0:00 8/19/1996 0:00 7/25/1996 0:00 3 48.29Rattlesnake Canyon Grocery 2817 Milton Dr. Albuquerque NM 87110
+10263ERNSH 9 7/23/1996 0:00 8/20/1996 0:00 7/31/1996 0:00 3 146.06Ernst Handel Kirchgasse 6 Graz NULL 8010
+10264FOLKO 6 7/24/1996 0:00 8/21/1996 0:00 8/23/1996 0:00 3 3.67Folk och fä HB Åkergatan 24 Bräcke NULL
+10265BLONP 2 7/25/1996 0:00 8/22/1996 0:00 8/12/1996 0:00 1 55.28Blondel père et fils 24 place Kléber Strasbourg NULL
+10266WARTH 3 7/26/1996 0:00 9/6/1996 0:00 7/31/1996 0:00 3 25.73Wartian Herkku Torikatu 38 Oulu NULL 90110
+10267FRANK 4 7/29/1996 0:00 8/26/1996 0:00 8/6/1996 0:00 1 208.58Frankenversand Berliner Platz 43 München NULL 80805
+10268GROSR 8 7/30/1996 0:00 8/27/1996 0:00 8/2/1996 0:00 3 66.29GROSELLA-Restaurante 5ª Ave. Los Palos Grandes Caracas DF 1081
+10269WHITC 5 7/31/1996 0:00 8/14/1996 0:00 8/9/1996 0:00 1 4.56White Clover Markets 1029 - 12th Ave. S. Seattle WA 98124
+10270WARTH 1 8/1/1996 0:00 8/29/1996 0:00 8/2/1996 0:00 1 136.54Wartian Herkku Torikatu 38 Oulu NULL 90110
+Order Spreadsheet
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 31
+
+--- Slide 32 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL – Example 4
+We have set up
+earlier the
+StagingDB;
+otherwise create a
+new DB.
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 32
+
+--- Slide 33 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 4
+Staging DB
+got set up
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 33
+
+--- Slide 34 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 4
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 34
+
+--- Slide 35 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 4
+Customer and Order spreadsheets need to get inserted --- use CUST-ORDER as SOURCE
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 35
+
+--- Slide 36 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 4
+Use customer-order
+Make sure that both
+spreadsheets are copied
+Customer and Order into one spreadsheet with
+spreadsheets need to get several worksheets.
+inserted --- use CUST- Otherwise, you have to do
+ORDER as SOURCE this twice
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 36
+
+--- Slide 37 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL – Example 4
+Point to the
+DESTINATION DB
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 37
+
+--- Slide 38 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL – Example 4
+Point to the
+DESTINATION DB
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 38
+
+--- Slide 39 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 4
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 39
+
+--- Slide 40 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 4
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 40
+
+--- Slide 41 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 4
+Pick the Check this tab
+spreadsheets Remember that you can also use Flat
+file choice to extract the data and can
+use two separate spreadsheets. But
+this will mean that we will need two
+packages to do this.
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 41
+
+--- Slide 42 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 4
+Needs to be
+done quickly
+otherwise the
+connection
+gets broken
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 42
+
+--- Slide 43 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 4
+Needs to be
+done quickly
+otherwise the
+connection
+gets broken
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 43
+
+--- Slide 44 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 4
+If you click
+Preview
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 44
+
+--- Slide 45 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 4
+If you click
+Preview
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 45
+
+--- Slide 46 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 4
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 46
+
+--- Slide 47 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 4
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 47
+
+--- Slide 48 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL
+Commands in Control Flow tab)
+These tools
+can contribute
+to Multistep
+projects the
+control flow
+level..
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 48
+
+--- Slide 49 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 4
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 49
+
+--- Slide 50 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 4
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 50
+
+--- Slide 51 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 4
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 51
+
+--- Slide 52 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 4
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 52
+
+--- Slide 53 ---
+Example - 5
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 53
+
+--- Slide 54 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 5
+1. Remember that Excel used is a 64-bit program. Apparently, the SQL Server Data Tools
+uses 64-bit stuff. So, if you have 32-bit Excel then you need to go to the package
+properties to set it to 32-bit. (see http://social.msdn.microsoft.com/Forums/sqlserver/en-
+US/da77919c-0161-4eb5-bf89-7107d839435a/the-acquireconnection-method-call-to-the-
+connection-manager-excel-connection-manager-failed-with?forum=sqlintegrationservices
+to look for solution). Go to your Excel spreadsheet and click File -> Account.
+2. It looks like that we are targeting to JET which is the internal DB for MS Office and not
+SQL Server.
+3. Also, the tables in the arun-stagingDB have been created. We need to remember
+that. We have three options – (a) delete them; (b) keep them but make sure to
+append the data; (c) drop table inside the package design.
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 54
+
+--- Slide 55 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 5
+First, we join two
+Data from the Excel worksheets are now in
+the tables by using Export/Import Wizard tables and store in a
+like before. third table inside the
+same dbo.
+Second, we load the
+joined table to
+another dbo.
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 55
+
+--- Slide 56 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 5
+Data from the Excel worksheets are now in
+the tables by using Export/Import Wizard
+like before.
+Drag “Execute SQL
+Task” operation here
+and rename it as
+(use of JOIN and create a third table)
+“Join Tables”
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 56
+
+--- Slide 57 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 5
+Define the Connection
+by choosing the drop-
+down menu <New
+Connection> here
+Get here by
+double
+clicking the Double click to get to
+Execute SQL next screen
+Task box in
+the control
+flow window
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 57
+
+--- Slide 58 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 5
+Define the
+Connection by
+choosing New
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 58
+
+--- Slide 59 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 5
+Define the
+Connection by
+choosing
+arunstaging
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 59
+
+--- Slide 60 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 5
+Define the
+Connection by
+choosing
+arunstaging
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 60
+
+--- Slide 61 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 5
+The Connection is
+done. Close this by
+clicking OK
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 61
+
+--- Slide 62 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 5
+Use the Build
+Query button to
+build the query.
+It is like using
+Query Analyzer.
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 62
+
+--- Slide 63 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 5
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 63
+
+--- Slide 64 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 5
+SELECT [customer$-new].[customer ID], [customer$-
+new].address, [order$-new].[order ID], [order$-new].[ship
+address]
+INTO tempdb
+FROM [customer$-new] INNER JOIN
+[order$-new] ON [customer$-
+new].[customer ID] = [order$-new].[customer ID]
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 64
+
+--- Slide 65 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 5
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 65
+
+--- Slide 66 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 5
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 66
+
+--- Slide 67 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 5
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 67
+
+--- Slide 68 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 5
+Right click the Execute SQL
+Task to run this task only.
+Otherwise, you can get error.
+Do you know Why?
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 68
+
+--- Slide 69 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 5
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 69
+
+--- Slide 70 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 5
+Drag “Execute SQL
+Task” operation here
+and rename it to
+LOAD DATA INTO
+EDW. THIS ACTION
+IS USED IN
+POPULATING
+TABLES IN EDW.
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 70
+
+--- Slide 71 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 5
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 71
+
+--- Slide 72 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 5
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 72
+
+--- Slide 73 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 5
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 73
+
+--- Slide 74 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 5
+I added this by checking the SSMS side.
+The table gets created arun-EDW KEEP
+dbo.
+SELECT *
+INTO [arun-EDW KEEP].dbo.cust_order
+FROM [arun-stagingDB KEEP].dbo.temp_DB
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 74
+
+--- Slide 75 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 5
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 75
+
+--- Slide 76 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 5
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 76
+
+--- Slide 77 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 5
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 77
+
+--- Slide 78 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 5
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 78
+
+--- Slide 79 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 5
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 79
+
+--- Slide 80 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL - Example 5
+Click View from the
+ribbon and then click
+Code
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 80
+
+--- Slide 81 ---
+Other Multistep Examples
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 81
+
+--- Slide 82 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL
+Lookup Transform (in Data Flow Tab)
+The Lookup transformation performs lookups by joining data in input
+columns with columns in a reference dataset. You use the lookup to
+access additional information in a related table that is based on values
+in common columns. It is by default mimics equi-join.
+If you are going to create Dimensional Tables and Fact table, you will need many transformations like
+1. Lookup Transform – see video https://www.youtube.com/watch?v=GazT32eqdsk
+2. Comparing Lookup and Merge join –
+• see video https://stackoverflow.com/questions/6735733/what-are-the-differences-between-merge-
+join-and-lookup-transformations-in-ssis
+• see video -- https://www.hansmichiels.com/2017/01/13/how-a-ssis-lookup-works-different-from-
+a-t-sql-join-ssis-series/
+3. Also look at linkedinlearning.tamu.edu
+4. https://msdn.microsoft.com/en-us/library/ms141821.aspx
+5. https://www.sqlshack.com/an-overview-of-the-lookup-transformation-in-
+ssis/#:~:text=%20Create%20an%20SSIS%20package%20for%20Lookup%20Transformation,moves%20to%20
+the%20Data%20Flow%20tab%20More%20
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 82
+
+--- Slide 83 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL (LOOKUP example)
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 83
+
+--- Slide 84 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL
+Merge Transform (in Data Flow tab)
+If you are going to create Dimensional Tables and Fact table, you will need many
+transformations like
+1. Merge Transform – see video https://www.youtube.com/watch?v=D0IG1HYO4uc
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 84
+
+--- Slide 85 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL
+Merge Join Transform (in Data Flow tab)
+The Merge Join transformation provides an output that is
+generated by joining two sorted datasets using a FULL, LEFT, or
+INNER join. For example, you can use a LEFT join to join a table
+that includes product information with a table that lists the
+country/region in which a product was manufactured. The result
+is a table that lists all products and their country/region of origin.
+If you are going to create Dimensional Tables and Fact table, you will need many
+transformations like
+1. Merge Join Transform – see video
+1. https://www.youtube.com/watch?v=G3aqPIAqy2Y
+2. https://www.youtube.com/watch?v=srwXh42xE08
+3. https://www.youtube.com/watch?v=An3prXY_maE
+4. https://www.youtube.com/watch?v=VNuPSfE50Ak
+2. https://msdn.microsoft.com/en-us/library/ms141775.aspx
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 85
+
+--- Slide 86 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL (MERGE JOIN example)
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 86
+
+--- Slide 87 ---
+SQL Server Integration Service (SSIS)
+3. Multistep ETL (MERGE JOIN example)
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 87
+
+--- Slide 88 ---
+Example – 6
+Dimension Table loading
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 88
+
+--- Slide 89 ---
+SQL Server Integration Service (SSIS)
+Example 6. Populating a Dimension Table
+A. Create or Use a regular table
+B. If you are creating a regular table in any dbo, populate the table
+from another table or from a csv file (usually using Import/Export
+wizard) using SSIS; If not, use AdventureWorks DB.
+C. Create a dimension table with CREATE command in SSMS.
+D. Port data to the dimension table using SSIS
+For students to connect from home,
+you need to open Run app or
+Command Prompt app and type in
+the following command. Replace For Instructor: turn on SSMS
+“arun-sen” with your NedtID. runas /netonly /user:mbs\asen
+Remember you are getting in using arun-datamartDB KEEP "C:\Program Files (x86)\Microsoft
+AUTH domain. Adventureworks (dimension table) SQL Server Management Studio
+DB (regular table) 18\Common7\IDE\Ssms.exe“
+runas /netonly /user:auth\arun-sen
+"C:\Program Files (x86)\Microsoft SQL
+Server Management Studio
+18\Common7\IDE\Ssms.exe“
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 89
+
+--- Slide 90 ---
+SQL Server Integration Service (SSIS)
+Example 6. Populating a Dimension Table
+A. Use a regular table
+• I am using Adventureworks DB’s Production.product table
+as a source
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 90
+
+--- Slide 91 ---
+SQL Server Integration Service (SSIS)
+Example 6. Populating a Dimension Table
+dbo.Dim_Location CREATE TABLE [dbo].[Dim_Location](
+[storeKey] [int] IDENTITY(1,1) NOT NULL,
+[Store_Number] [int] NULL,
+[Store_City] [varchar] (255) NULL,
+[Price_Tier] [varchar] (255) NULL,
+[Zone] [int] NULL,
+PRIMARY KEY CLUSTERED
+(
+[storeKey] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF,
+IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS =
+ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+Examples of some
+dimension tables
+dbo.Dim_Product CREATE TABLE [dbo].[Dim_Product](
+[productKey] [int] IDENTITY NOT NULL,
+[UPC] [varchar](255) NULL,
+[Product_Description] [varchar](255) NULL,
+[Product_Size] [varchar](255) NULL,
+[Items_In_Case] [varchar](255) NULL,
+PRIMARY KEY CLUSTERED
+(
+[productKey] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF,
+IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS =
+ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 91
+
+--- Slide 92 ---
+SQL Server Integration Service (SSIS)
+Example 6. Populating a Dimension Table
+create table [dbo]. [dim_Product_New] (
+[productKey] [int] IDENTITY NOT NULL,
+[Product_ID] [int],
+[Name] nvarchar (50),
+[color] nvarchar (15))
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 92
+
+--- Slide 93 ---
+SQL Server Integration Service (SSIS)
+Example 6. Populating a Dimension Table
+Click Execute to create the table dim_Product_New
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 93
+
+--- Slide 94 ---
+SQL Server Integration Service (SSIS)
+Example 6. Populating a Dimension Table
+Refresh to see the table.
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 94
+
+--- Slide 95 ---
+SQL Server Integration Service (SSIS)
+Example 6. Populating a Dimension Table
+B. Create a
+dimension table
+Run the create command to
+create the dimension table …
+watch this statement
+create table [dbo]. [dim_Product_New] (
+[productKey] [int] IDENTITY NOT NULL,
+[Product_ID] [int],
+[Name] nvarchar (50),
+[color] nvarchar (15))
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 95
+
+--- Slide 96 ---
+SQL Server Integration Service (SSIS)
+Example 6. Populating a Dimension Table
+For students to connect, from home,
+you need to open Run app or
+Command Prompt and type in the
+following command.
+C:\Windows\System32\runas.exe
+/netonly /user:auth\arun-sen
+"C:\Program Files (x86)\Microsoft
+Visual
+Studio\2019\Community\Common7\IDE
+\devenv.exe"
+C. Port data into
+this dim table
+Create a new project in SSIS For Instructor
+C:\Windows\System32\run
+and drag “Data flow Task” in
+as.exe /netonly
+the Control panel
+/user:asen@mbs.tamu.edu
+"C:\Program Files
+(x86)\Microsoft Visual
+Studio\2019\Community\C
+ommon7\IDE\devenv.exe"
+Use MBS password to login
+in the dark screen
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 96
+
+--- Slide 97 ---
+SQL Server Integration Service (SSIS)
+Example 6. Populating a Dimension Table
+C. Port data into this dim 1.Use AdventureWorks.Production[Product] as data
+table source
+2.Create dimProduct_New in a dbo as destination
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 97
+
+--- Slide 98 ---
+SQL Server Integration Service (SSIS)
+Example 6. Populating a Dimension Table
+C. Port data into this dim
+table
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 98
+
+--- Slide 99 ---
+SQL Server Integration Service (SSIS)
+Example 6. Populating a Dimension Table
+C. Port data into this dim Double click OLE
+DB Source to get
+table
+this screen
+Click New to
+develop a
+connection
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 99
+
+--- Slide 100 ---
+SQL Server Integration Service (SSIS)
+Example 6. Populating a Dimension Table
+C. Port data into
+this dim table
+Create a connection
+for the Source by
+clicking New
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 100
+
+--- Slide 101 ---
+SQL Server Integration Service (SSIS)
+Example 6. Populating a Dimension Table
+Create a
+connection for the
+C. Port data into
+Source
+this dim table AdventureWorks
+DB
+(Choice #1)
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 101
+
+--- Slide 102 ---
+SQL Server Integration Service (SSIS)
+Example 6. Populating a Dimension Table
+C. Port data If Choice#1 does not work use this
+Driver.
+into this dim
+table If this one does not show up in the
+Connection Manager screen, then go
+(choice #2)
+to https://docs.microsoft.com/en-
+us/sql/connect/oledb/download-oledb-
+driver-for-sql-server?view=sql-server-
+ver15 and download in your machine
+msoledbsql.msi plug. Once you install
+this in your laptop, you should see
+this Driver.
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 102
+
+--- Slide 103 ---
+SQL Server Integration Service (SSIS)
+Example 6. Populating a Dimension Table
+C. Port data
+into this dim Connection for
+the Source got
+table
+created
+(choice #2)
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 103
+
+--- Slide 104 ---
+SQL Server Integration Service (SSIS)
+Example 6. Populating a Dimension Table
+C. Port data into this dim
+table
+1. Use
+AdventureWorks.Production[Product] as
+data source
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 104
+
+--- Slide 105 ---
+SQL Server Integration Service (SSIS)
+Example 6. Populating a Dimension Table
+C. Port data
+into this dim
+table
+1. Use
+AdventureWorks.Production
+[Product] as data source
+2. Run OLEDB source.
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 105
+
+--- Slide 106 ---
+SQL Server Integration Service (SSIS)
+Example 6. Populating a Dimension Table
+C. Port data
+into this dim
+table
+(choice #2)
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 106
+
+--- Slide 107 ---
+SQL Server Integration Service (SSIS)
+Example 6. Populating a Dimension Table
+C. Port data
+into this dim
+table
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 107
+
+--- Slide 108 ---
+SQL Server Integration Service (SSIS)
+Example 6. Populating a Dimension Table
+Click Column tab to
+C. Port data see the column
+mapping. As it is
+into this dim
+Source nothing other
+table than the attributes of
+the table show up
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 108
+
+--- Slide 109 ---
+SQL Server Integration Service (SSIS)
+Example 6. Populating a Dimension Table
+C. Port data
+Click Error Output tab
+into this dim to see the errors and
+what to do with them
+table
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 109
+
+--- Slide 110 ---
+SQL Server Integration Service (SSIS)
+Example 6. Populating a Dimension Table
+Do similar things for
+Destination
+C. Port data
+into this dim
+1. Use arun-datamartDB_KEEP_USE as
+destination table
+2. Select dimProduct_10192024 (say) in
+arun-datamartDB_KEEP_USE as
+destination
+3. Run OLEDB Destination.
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 110
+
+--- Slide 111 ---
+SQL Server Integration Service (SSIS)
+Example 6. Populating a Dimension Table
+Do similar things for
+Destination
+C. Port data
+Create New Connection into this dim
+table
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 111
+
+--- Slide 112 ---
+SQL Server Integration Service (SSIS)
+Example 6. Populating a Dimension Table
+Do similar things for
+Destination C. Port data
+into this dim
+table
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 112
+
+--- Slide 113 ---
+SQL Server Integration Service (SSIS)
+Example 6. Populating a Dimension Table
+Do similar things for C. Port data
+Destination
+into this dim
+table
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 113
+
+--- Slide 114 ---
+SQL Server Integration Service (SSIS)
+Example 6. Populating a Dimension Table
+Do similar things for
+Destination
+C. Port data
+into this dim
+1. Use arun-datamartDB_KEEP_USE as
+table
+destination
+2. Select dim_Product_10192024 (say)
+in arun-datamartDB-KEEP_USE as
+destination
+3. Run OLEDB Destination.
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 114
+
+--- Slide 115 ---
+SQL Server Integration Service (SSIS)
+Example 6. Populating a Dimension Table
+C. Port data
+into this dim
+table
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 115
+
+--- Slide 116 ---
+SQL Server Integration Service (SSIS)
+Example 6. Populating a Dimension Table
+C. Port data
+into this dim
+table
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 116
+
+--- Slide 117 ---
+SQL Server Integration Service (SSIS)
+Example 6. Populating a Dimension Table
+C. Port data
+into this dim
+table
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 117
+
+--- Slide 118 ---
+SQL Server Integration Service (SSIS)
+Example 6. Populating a Dimension Table
+C. Port data
+into this dim
+table
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 118
+
+--- Slide 119 ---
+SQL Server Integration Service (SSIS)
+Example 6. Populating a Dimension Table
+C. Port data
+into this dim
+table
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 119
+
+--- Slide 120 ---
+Creating Fact Tables
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 120
+
+--- Slide 121 ---
+SQL Server Integration Service (SSIS)
+Example for Populating a Fact Table
+customer product Sales
+C# Cname P# Pname Price C# P# Order
+C1 john P1 Tide $10.00 C1 P1 $100.00
+OLTP Tables
+Heritage Ranch
+C2 jack P2 Pet Food $30.00 C2 P1 $50.00
+C3 sara C3 P2 $90.00
+C1 P2 $30.00
+dimCustomer dimProduct
+C-Key C# Cname P-Key P# Pname Pprice
+Dimensional Tables
+1C1 john 1P1 Tide $10.00
+(like Example 6)
+Heritage
+Ranch
+2C2 jack 2P2 Pet Food $30.00
+3C3 sara
+(1) fact_Sales (2) Fact_Total Sales
+Total_sales per
+Fact Tables (use of SQL Queries C-Key P-Key UnitPrice Order customer C-Key Total_sales
+1 1 $10.00 $100.00 $130.00 1 $130.00
+and Lookup, etc. -- see next two
+1 2 $30.00 $30.00 $130.00 2 $50.00
+slides)
+2 1 $10.00 $50.00 $50.00 3 $90.00
+2 2 $30.00 $0.00
+3 1 $10.00 $0.00
+3 2 $30.00 $90.00 $90.00
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 121
+
+--- Slide 122 ---
+SQL Server Integration Service (SSIS)
+Example for Populating a Fact Table
+Create the connections like
+this
+https://www.youtube.com/watch?v=duaR_PhLdmc
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 122
+
+--- Slide 123 ---
+SQL Server Integration Service (SSIS)
+Example 7. Populating a Fact Table
+Set up query
+properly in
+the SQL
+query box
+like this.
+You will need https://mindmajix.com/ssi
+Lookup, s/fact-table-loading
+Merge etc. https://www.sqlbi.com/blo
+also.
+g/marco/2005/04/01/po
+pulating-a-fact-table-with-
+ssis/
+https://stackoverfl
+ow.com/questions
+/50417717/ssis-
+loading-fact-table-
+ids-look-up-
+dimension-ids-and-
+measures-data-
+from-e
+3/25/2026 COPYRIGHTED BY ARUN SEN TAMU 123
