@@ -157,9 +157,9 @@ The data warehouse logical design follows Kimball's bottom-up methodology for bu
 
 **Step 1: Requirements Analysis.** We gathered 10 business questions from stakeholder analysis and research on the DFF dataset (Section 2). The professor selected 5 BQs (BQ2, BQ3, BQ4, BQ8, BQ9) spanning four product categories (Soft Drinks, Canned Soup, Toothpaste, Crackers).
 
-**Step 2: Build the Bus Matrix.** A matrix was created identifying the dimensions needed for each business process. FactWeeklySales supports all 5 BQs using five dimensions: DimTime, DimStore, DimProduct, DimCategory, and DimPromotion. FactCustomerTraffic provides supplementary traffic analysis using DimTime and DimStore.
+**Step 2: Build the Bus Matrix.** A matrix was created identifying the dimensions needed for each business process. FactWeeklySales supports all 5 BQs using five dimensions: DimTime, DimStore, DimProduct, DimCategory, and DimPromotion.
 
-**Step 3: Design Fact Tables.** The primary fact table, FactWeeklySales, has a grain of one row per UPC × Store × Week with both base facts (units_sold, gross_profit) and derived facts (revenue, profit_margin_pct).
+**Step 3: Design Fact Tables.** The fact table, FactWeeklySales, has a grain of one row per UPC × Store × Week with both base facts (units_sold, gross_profit) and derived facts (revenue, profit_margin_pct).
 
 **Step 4: Design Dimension Tables.** Each dimension uses surrogate keys (4-byte INT), retains natural keys as attributes for traceability, and is fully denormalized (no snowflaking — as emphasized in class, snowflaking slows browsing and causes problems with bitmapped indexes).
 
@@ -174,7 +174,6 @@ The data warehouse logical design follows Kimball's bottom-up methodology for bu
 | Data Mart (Business Process) | DimTime | DimStore | DimProduct | DimCategory | DimPromotion | BQs Supported |
 |:--|:-:|:-:|:-:|:-:|:-:|:--|
 | **FactWeeklySales** | ✓ | ✓ | ✓ | ✓ | ✓ | BQ2, BQ3, BQ4, BQ8, BQ9 |
-| **FactCustomerTraffic** | ✓ | ✓ | — | — | — | (supplementary) |
 
 ---
 
@@ -214,19 +213,7 @@ The professor selected 5 BQs from our list of 10 for implementation:
 
 **Grain:** One row per UPC × Store × Week | **Estimated rows:** ~34.6M (4 categories)
 
-#### FactCustomerTraffic (Secondary Fact Table)
 
-| Column | Data Type | Description | Source |
-|:--|:--|:--|:--|
-| traffic_fact_id (PK) | INT | Surrogate key | Generated |
-| store_key (FK) | INT | → DimStore | STORE from CCOUNT |
-| time_key (FK) | INT | → DimTime | WEEK from CCOUNT |
-| total_customers | DECIMAL(10,2) | Total count | CUSTCOUN |
-| grocery_count through spirits_count | DECIMAL(10,2) | Department counts | GROCERY, DAIRY, etc. |
-| mvp_club_count | DECIMAL(10,2) | MVP loyalty count | MVPCLUB |
-| total_coupon_redemptions | DECIMAL(10,2) | Sum of all coupon columns | Computed |
-
-**Grain:** One row per Store × Week | **Estimated rows:** ~327K
 
 #### DimProduct
 
@@ -367,10 +354,7 @@ The professor selected 5 BQs from our list of 10 for implementation:
 | DEMO.csv | INCOME | Copy | Relation | stg_Store | INCOME |
 | DEMO.csv | EDUC, POVERTY, HSIZEAVG, ETHNIC, DENSITY, AGE9, AGE60, WORKWOM | Copy | Relation | stg_Store | (same names) |
 | DEMO.csv | PRICLOW, PRICMED, PRICHIGH | Copy | Relation | stg_Store | PRICLOW, PRICMED, PRICHIGH |
-| CCOUNT.csv | STORE, DATE, WEEK | Copy | Relation | stg_CustomerTraffic | STORE, DATE_COL, WEEK |
-| CCOUNT.csv | GROCERY, DAIRY, FROZEN, MEAT, PRODUCE, DELI, BAKERY, PHARMACY, BEER, WINE, SPIRITS | Copy | Relation | stg_CustomerTraffic | (same names) |
-| CCOUNT.csv | CUSTCOUN, MVPCLUB | Copy | Relation | stg_CustomerTraffic | CUSTCOUN, MVPCLUB |
-| CCOUNT.csv | *COUP columns (11 total) | Copy | Relation | stg_CustomerTraffic | GROCCOUP through SPIRCOUP |
+
 
 ### 4.6 Mapping Table #2: Staging Tables → Data Mart Tables
 
@@ -404,11 +388,7 @@ The professor selected 5 BQs from our list of 10 for implementation:
 | (generated) | week_id 1–400 | Transform: DATEADD | Dimension | DimTime | week_start_date, month, quarter, year |
 | (hardcoded) | 28 category codes | Direct INSERT | Dimension | DimCategory | category_code, category_name, department |
 | (hardcoded) | 4 deal types | Direct INSERT | Dimension | DimPromotion | deal_code, deal_type, is_promoted |
-| stg_CustomerTraffic | STORE | Lookup → DimStore | Fact | FactCustomerTraffic | store_key |
-| stg_CustomerTraffic | WEEK | Lookup → DimTime | Fact | FactCustomerTraffic | time_key |
-| stg_CustomerTraffic | CUSTCOUN | Copy (CAST) | Fact | FactCustomerTraffic | total_customers |
-| stg_CustomerTraffic | Dept columns | Copy (CAST, replace '.') | Fact | FactCustomerTraffic | grocery_count, dairy_count, etc. |
-| stg_CustomerTraffic | *COUP columns | Transform: SUM of 11 columns | Fact | FactCustomerTraffic | total_coupon_redemptions |
+
 
 ### 4.7 Physical Design Plan
 
@@ -424,7 +404,7 @@ This section develops the complete ETL plan following the 10-step framework disc
 
 ### 5.1 Target Data in the Data Warehouse
 
-The data warehouse consists of 7 tables in two categories:
+The data warehouse consists of 6 tables:
 
 | Table | Type | Target Columns | Estimated Rows |
 |:--|:--|:--|:--|
@@ -434,7 +414,6 @@ The data warehouse consists of 7 tables in two categories:
 | DimStore | Dimension | store_key, store_id, store_name, city, zip_code, zone, is_urban, weekly_volume, avg_income, education_pct, poverty_pct, avg_household_size, ethnic_diversity, population_density, price_tier, age_under_9_pct, age_over_60_pct, working_women_pct | ~107 |
 | DimProduct | Dimension | product_key, upc, description, size, case_pack, commodity_code, item_number, category_key | ~3,112 |
 | FactWeeklySales | Fact | sales_fact_id, product_key, store_key, time_key, category_key, promotion_key, units_sold, unit_price, shelf_price, price_qty, revenue, gross_profit, profit_margin_pct | ~34.6M |
-| FactCustomerTraffic | Fact | traffic_fact_id, store_key, time_key, total_customers, grocery_count, dairy_count, frozen_count, meat_count, produce_count, deli_count, bakery_count, pharmacy_count, beer_count, spirits_count, mvp_club_count, total_coupon_redemptions | ~327K |
 
 ### 5.2 Data Sources
 
@@ -449,7 +428,6 @@ The data warehouse consists of 7 tables in two categories:
 | UPC – Toothpaste | UPCTPA.csv | DFF data/UPC/ | 608 | Product master |
 | UPC – Crackers | UPCCRA.csv | DFF data/UPC/ | 305 | Product master |
 | Demographics | DEMO.csv | DFF data/Demographics/ | 108 | Store attributes |
-| Customer Counts | CCOUNT.csv | DFF data/Ccount/ | 327K | Traffic & coupons |
 
 ### 5.3 Data Mappings
 
@@ -467,7 +445,7 @@ Two mapping tables have been prepared (see Sections 4.5 and 4.6):
 | **Extraction Technique** | Capture of Static Data — CSV files are static historical snapshots. No impact on source systems. |
 | **Extraction Frequency** | One-time initial load (complete historical dataset, no incremental updates). |
 | **Time Window** | Not applicable — batch load of complete files during off-peak hours. |
-| **Source Identification** | 4 Movement CSVs + 4 UPC CSVs + DEMO.csv + CCOUNT.csv = 10 source files. |
+| **Source Identification** | 4 Movement CSVs + 4 UPC CSVs + DEMO.csv = 9 source files. |
 | **Quality Filter** | Extract only rows where OK = 1 from Movement files (quality-validated observations). |
 | **Encoding** | All CSV files require Windows-1252 (CP1252) encoding, not UTF-8. |
 | **File Format** | Comma-delimited, no text qualifier, header row present in all files. |
@@ -485,21 +463,17 @@ Two mapping tables have been prepared (see Sections 4.5 and 4.6):
 | T6 | Remove '.' placeholder row from demographics | DEMO.STORE | stg_Store | Filter |
 | T7 | Replace NULL NAME/CITY with 'UNKNOWN' | DEMO.NAME, CITY | stg_Store.NAME, CITY | Default value |
 | T8 | Derive PRICE_TIER from binary flags | DEMO.PRICLOW/MED/HIGH | DimStore.price_tier | Conditional (CASE) |
-| T9 | Replace '.' with NULL in customer traffic columns | CCOUNT.* | stg_CustomerTraffic.* | Null handling |
-| T10 | Filter STORE > 0 in customer traffic | CCOUNT.STORE | (row selection) | Filter |
-| T11 | Filter negative WEEK values | CCOUNT.WEEK | (row selection) | Filter |
-| T12 | CAST VARCHAR to proper data types | stg_Store/stg_CustomerTraffic | DimStore/FactCustomerTraffic | Type conversion |
-| T13 | Compute unit_price = PRICE / QTY | Movement.PRICE, QTY | FactWeeklySales.unit_price | Derived value |
-| T14 | Compute revenue = MOVE × (PRICE / QTY) | Movement.MOVE, PRICE, QTY | FactWeeklySales.revenue | Derived value |
-| T15 | Compute profit_margin_pct = (PROFIT / revenue) × 100 | Movement.PROFIT, revenue | FactWeeklySales.profit_margin_pct | Derived value |
-| T16 | Lookup product_key from DimProduct | Movement.UPC | FactWeeklySales.product_key | Surrogate key lookup |
-| T17 | Lookup store_key from DimStore | Movement.STORE | FactWeeklySales.store_key | Surrogate key lookup |
-| T18 | Lookup time_key from DimTime | Movement.WEEK | FactWeeklySales.time_key | Surrogate key lookup |
-| T19 | Lookup category_key from DimCategory | CATEGORY_CODE | FactWeeklySales.category_key | Surrogate key lookup |
-| T20 | Lookup promotion_key from DimPromotion | Movement.SALE | FactWeeklySales.promotion_key | Surrogate key lookup |
-| T21 | Generate week_start_date from week_id | DATEADD formula | DimTime.week_start_date | Date calculation |
-| T22 | Derive month, quarter, year from date | week_start_date | DimTime.month/quarter/year | Date parts |
-| T23 | Sum coupon columns for total | 11 *COUP columns | FactCustomerTraffic.total_coupon_redemptions | Aggregation |
+| T9 | CAST VARCHAR to proper data types | stg_Store | DimStore | Type conversion |
+| T10 | Compute unit_price = PRICE / QTY | Movement.PRICE, QTY | FactWeeklySales.unit_price | Derived value |
+| T11 | Compute revenue = MOVE × (PRICE / QTY) | Movement.MOVE, PRICE, QTY | FactWeeklySales.revenue | Derived value |
+| T12 | Compute profit_margin_pct = (PROFIT / revenue) × 100 | Movement.PROFIT, revenue | FactWeeklySales.profit_margin_pct | Derived value |
+| T13 | Lookup product_key from DimProduct | Movement.UPC | FactWeeklySales.product_key | Surrogate key lookup |
+| T14 | Lookup store_key from DimStore | Movement.STORE | FactWeeklySales.store_key | Surrogate key lookup |
+| T15 | Lookup time_key from DimTime | Movement.WEEK | FactWeeklySales.time_key | Surrogate key lookup |
+| T16 | Lookup category_key from DimCategory | CATEGORY_CODE | FactWeeklySales.category_key | Surrogate key lookup |
+| T17 | Lookup promotion_key from DimPromotion | Movement.SALE | FactWeeklySales.promotion_key | Surrogate key lookup |
+| T18 | Generate week_start_date from week_id | DATEADD formula | DimTime.week_start_date | Date calculation |
+| T19 | Derive month, quarter, year from date | week_start_date | DimTime.month/quarter/year | Date parts |
 
 ### 5.6 Aggregate Table Plan
 
@@ -527,7 +501,6 @@ SQL Server 2016
 │   ├── dbo.stg_Product_TPA            (raw UPCTPA.csv data)
 │   ├── dbo.stg_Product_CRA            (raw UPCCRA.csv data)
 │   ├── dbo.stg_Store                  (raw DEMO.csv data)
-│   ├── dbo.stg_CustomerTraffic        (raw CCOUNT.csv data)
 │   └── dbo.tmp_Product_All   [TEMP]   (UNION of 4 UPC tables)
 │
 └── [team1_dw_area]                    ← Data Mart (Presentation Server)
@@ -536,8 +509,7 @@ SQL Server 2016
     ├── dbo.DimTime                    (~400 rows)
     ├── dbo.DimStore                   (~107 rows)
     ├── dbo.DimProduct                 (~3,112 rows)
-    ├── dbo.FactWeeklySales            (~34.6M rows)
-    └── dbo.FactCustomerTraffic        (~327K rows)
+    └── dbo.FactWeeklySales            (~34.6M rows)
 ```
 
 **Temporary tables to be removed after loading:**
@@ -550,11 +522,11 @@ SQL Server 2016
 
 The ETL is implemented through **three SSIS packages** executed sequentially:
 
-**Package 1: `01_Extract_to_Staging.dtsx`** — Extracts all 10 CSV source files into staging tables using Data Flow Tasks. Each task uses a Flat File Source (encoding 1252, comma-delimited) connected to an OLE DB Destination targeting the staging database.
+**Package 1: `01_Extract_to_Staging.dtsx`** — Extracts all 9 CSV source files into staging tables using Data Flow Tasks. Each task uses a Flat File Source (encoding 1252, comma-delimited) connected to an OLE DB Destination targeting the staging database.
 
 **Package 2: `02_Transform_Staging.dtsx`** — Executes transformations T1–T11 in the staging area using Execute SQL Tasks. This includes adding CATEGORY_CODE columns, replacing NULL values, filtering invalid rows, cleaning descriptions, and creating the tmp_Product_All UNION table.
 
-**Package 3: `03_Load_DataMart.dtsx`** — Creates and populates all dimension and fact tables in the data mart. Dimensions are loaded first (DimCategory → DimPromotion → DimTime → DimStore → DimProduct), then fact tables (FactWeeklySales → FactCustomerTraffic). Uses both Execute SQL Tasks (for hardcoded inserts and complex JOINs) and Data Flow Tasks (for staging-to-DW transfers). Completes with DROP TABLE for temporary tables.
+**Package 3: `03_Load_DataMart.dtsx`** — Creates and populates all dimension and fact tables in the data mart. Dimensions are loaded first (DimCategory → DimPromotion → DimTime → DimStore → DimProduct), then the fact table (FactWeeklySales). Uses both Execute SQL Tasks (for hardcoded inserts and complex JOINs) and Data Flow Tasks (for staging-to-DW transfers). Completes with DROP TABLE for temporary tables.
 
 ### 5.9 ETL for Dimension Tables
 
@@ -577,11 +549,9 @@ Dimensions are loaded **before** fact tables because fact table foreign keys ref
 - DimStore: JOIN on STORE to get store_key
 - DimTime: JOIN on WEEK to get time_key
 - DimCategory: JOIN on CATEGORY_CODE to get category_key
-- DimPromotion: LEFT JOIN on SALE to get promotion_key
+- DimPromotion: INNER JOIN on SALE to get promotion_key
 
 Three derived columns are computed during loading: unit_price (PRICE/QTY), revenue (MOVE × unit_price), and profit_margin_pct (PROFIT/revenue × 100), with NULL guards for division by zero.
-
-**FactCustomerTraffic (~327K rows):** Loaded via INSERT INTO...SELECT from stg_CustomerTraffic, joining to DimStore (on STORE) and DimTime (on WEEK). All department count columns are CAST from VARCHAR to DECIMAL. The total_coupon_redemptions column is computed as the SUM of all 11 coupon columns using ISNULL to handle NULLs.
 
 ---
 
@@ -614,9 +584,9 @@ All 5 dimension tables and 2 fact tables were created in `team1_dw_area`, with d
 
 ### 6.4 SSIS Package 1: Extract to Staging
 
-**Control Flow:** Package 1 contains 10 Data Flow Tasks, each extracting one CSV source file into a corresponding staging table.
+**Control Flow:** Package 1 contains 9 Data Flow Tasks, each extracting one CSV source file into a corresponding staging table.
 
-*[Screenshot 4: SSIS Control Flow — Package 1 showing all 10 Data Flow Tasks]*
+*[Screenshot 4: SSIS Control Flow — Package 1 showing all 9 Data Flow Tasks]*
 
 **Sample Data Flow Task (Soft Drinks Movement):** Flat File Source → OLE DB Destination
 
@@ -659,7 +629,6 @@ UNION ALL SELECT 'stg_Product_CSO',  COUNT(*) FROM stg_Product_CSO
 UNION ALL SELECT 'stg_Product_TPA',  COUNT(*) FROM stg_Product_TPA
 UNION ALL SELECT 'stg_Product_CRA',  COUNT(*) FROM stg_Product_CRA
 UNION ALL SELECT 'stg_Store',        COUNT(*) FROM stg_Store
-UNION ALL SELECT 'stg_CustomerTraffic', COUNT(*) FROM stg_CustomerTraffic
 ORDER BY TableName;
 ```
 
@@ -667,7 +636,7 @@ ORDER BY TableName;
 
 ### 6.5 SSIS Package 2: Transform Staging
 
-**Control Flow:** Package 2 contains Execute SQL Tasks for each transformation (T1–T11).
+**Control Flow:** Package 2 contains Execute SQL Tasks for each transformation (T1–T8).
 
 *[Screenshot 11: SSIS Control Flow — Package 2]*
 
@@ -697,11 +666,7 @@ FROM (
 ) AS all_products;
 ```
 
-**T9 — Replace '.' with NULL in CCOUNT:**
-```sql
-UPDATE dbo.stg_CustomerTraffic SET GROCERY = NULL WHERE GROCERY = '.';
--- (repeated for all 24 department/coupon columns)
-```
+
 
 *[Screenshot 12: SSIS Execute SQL Task — showing transformation SQL]*
 *[Screenshot 13: SSIS Package 2 execution — all green checkmarks]*
@@ -785,10 +750,6 @@ INNER JOIN dbo.DimPromotion dpr ON sm.SALE = dpr.deal_code;
 ```
 
 *[Screenshot 23: SSMS — SELECT TOP 10 * FROM FactWeeklySales + COUNT]*
-
-**FactCustomerTraffic (~327K rows):**
-
-*[Screenshot 24: SSMS — SELECT TOP 10 * FROM FactCustomerTraffic + COUNT]*
 
 *[Screenshot 17: SSIS Package 3 execution — all green checkmarks]*
 
@@ -919,7 +880,6 @@ ORDER BY week_id, rnk;
 | DimStore | ~107 | *[fill after execution]* | ✅ |
 | DimProduct | ~3,112 | *[fill after execution]* | ✅ |
 | FactWeeklySales | ~34.6M | *[fill after execution]* | ✅ |
-| FactCustomerTraffic | ~327K | *[fill after execution]* | ✅ |
 
 ---
 
@@ -971,7 +931,7 @@ All SQL scripts used in this project are available in the `report_3/sql/` direct
 | 1 | SSMS Object Explorer — both databases visible |
 | 2 | SSMS — staging tables list |
 | 3 | SSMS — DW tables list |
-| 4 | SSIS Package 1 Control Flow — 10 Data Flow Tasks |
+| 4 | SSIS Package 1 Control Flow — 9 Data Flow Tasks |
 | 5 | SSIS Package 1 — sample Data Flow (Flat File Source → OLE DB Dest) |
 | 6 | Flat File Connection Manager — encoding/delimiter settings |
 | 7 | SSIS Package 1 execution — all green checkmarks |
@@ -991,7 +951,6 @@ All SQL scripts used in this project are available in the `report_3/sql/` direct
 | 21 | SSMS — DimStore TOP 10 |
 | 22 | SSMS — DimProduct TOP 10 |
 | 23 | SSMS — FactWeeklySales TOP 10 + COUNT |
-| 24 | SSMS — FactCustomerTraffic TOP 10 + COUNT |
-| 25 | SSMS Object Explorer — temp tables removed |
-| 26 | SSMS — BQ2 verification query results |
+| 24 | SSMS Object Explorer — temp tables removed |
+| 25 | SSMS — BQ2 verification query results |
 
