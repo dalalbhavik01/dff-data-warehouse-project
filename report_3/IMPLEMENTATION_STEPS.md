@@ -49,8 +49,19 @@
 
 ### Prerequisites
 - SQL Server 2016 instance (e.g., `infodata16.mbs.tamu.edu`)
-- SQL Server Data Tools (SSDT) or Visual Studio with SSIS extension
+- SQL Server Data Tools (SSDT) or Visual Studio 2022 with SSIS extension
 - CSV data files accessible from the server
+
+**⚠️ CRITICAL: Connecting From Home**
+If you are doing this project from home instead of the Mays lab, you MUST do the following to connect to the database and use SSIS:
+1. Turn on the **Cisco Secure Client VPN** (`connect.tamu.edu`).
+2. Do not open Visual Studio or SSMS normally. You must launch them via Command Prompt so they authenticate with your NetID on the TAMU domain.
+3. Open the **Run** app (Win + R) or **Command Prompt** and paste exactly:
+   ```cmd
+   C:\Windows\System32\runas.exe /netonly /user:auth\YOUR_NETID "C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\devenv.exe"
+   ```
+   *(Make sure to change `YOUR_NETID` to your actual NetID).*
+4. A dark command prompt screen will pop up asking for your password. Type your NetID password and hit Enter. Visual Studio will now open securely connected to the TAMU domain!
 
 ### Step 1: Create Databases in SSMS
 
