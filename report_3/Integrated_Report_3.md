@@ -562,7 +562,7 @@ Dimensions are loaded **before** fact tables because fact table foreign keys ref
 
 **DimCategory (28 rows):** Loaded via Execute SQL Task with hardcoded INSERT statements. All 28 product categories and their department groupings are inserted directly. No staging table needed.
 
-**DimPromotion (4 rows):** Loaded via Execute SQL Task with hardcoded INSERT statements. Maps the four possible SALE values (NULL, B, C, S) to descriptive labels and an is_promoted flag.
+**DimPromotion (4 rows):** Loaded via Execute SQL Task with hardcoded INSERT statements. Maps the four possible SALE values (N, B, C, S) to descriptive labels and an is_promoted flag.
 
 **DimTime (~400 rows):** Generated via Execute SQL Task using a recursive CTE. Week 1 corresponds to September 14, 1989 (per the DFF codebook). Each subsequent week_id adds 7 days via DATEADD. Month, quarter, year, and month_name are derived using DATEPART and DATENAME functions.
 
@@ -730,7 +730,7 @@ INSERT INTO dbo.DimCategory (category_code, category_name, department) VALUES
 **DimPromotion (4 rows):**
 ```sql
 INSERT INTO dbo.DimPromotion (deal_code, deal_type, is_promoted) VALUES
-(NULL, 'No Promotion', 0), ('B', 'Bonus Buy', 1),
+('N', 'No Promotion', 0), ('B', 'Bonus Buy', 1),
 ('C', 'Coupon', 1), ('S', 'Sale/Discount', 1);
 ```
 
@@ -781,8 +781,7 @@ INNER JOIN dbo.DimProduct dp   ON sm.UPC = dp.upc
 INNER JOIN dbo.DimStore ds     ON sm.STORE = ds.store_id
 INNER JOIN dbo.DimTime dt      ON sm.WEEK = dt.week_id
 INNER JOIN dbo.DimCategory dc  ON sm.CATEGORY_CODE = dc.category_code
-LEFT JOIN dbo.DimPromotion dpr ON (sm.SALE = dpr.deal_code) 
-                                OR (sm.SALE = 'N' AND dpr.deal_code IS NULL);
+INNER JOIN dbo.DimPromotion dpr ON sm.SALE = dpr.deal_code;
 ```
 
 *[Screenshot 23: SSMS — SELECT TOP 10 * FROM FactWeeklySales + COUNT]*
