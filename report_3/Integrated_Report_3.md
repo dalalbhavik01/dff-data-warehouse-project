@@ -526,7 +526,7 @@ The ETL is implemented through **three SSIS packages** executed sequentially:
 
 **Package 1: `01_Extract_to_Staging.dtsx`** — Extracts all 9 CSV source files into staging tables using Data Flow Tasks. Each task uses a Flat File Source (encoding 1252, comma-delimited) connected to an OLE DB Destination targeting the staging database.
 
-**Package 2: `02_Transform_Staging.dtsx`** — Executes transformations T1–T11 in the staging area using Execute SQL Tasks. This includes adding CATEGORY_CODE columns, replacing NULL values, filtering invalid rows, cleaning descriptions, and creating the tmp_Product_All UNION table.
+**Package 2: `02_Transform_Staging.dtsx`** — Executes transformations T1, T2, and T5–T7 in the staging area using Execute SQL Tasks. This includes adding CATEGORY_CODE columns, replacing NULL values, cleaning descriptions, and creating the tmp_Product_All UNION table.
 
 **Package 3: `03_Load_DataMart.dtsx`** — Creates and populates all dimension and fact tables in the data mart. Dimensions are loaded first (DimCategory → DimPromotion → DimTime → DimStore → DimProduct), then the fact table (FactWeeklySales). Uses both Execute SQL Tasks (for hardcoded inserts and complex JOINs) and Data Flow Tasks (for staging-to-DW transfers). Completes with DROP TABLE for temporary tables.
 
@@ -638,7 +638,7 @@ ORDER BY TableName;
 
 ### 6.5 SSIS Package 2: Transform Staging
 
-**Control Flow:** Package 2 contains Execute SQL Tasks for each transformation (T1–T8).
+**Control Flow:** Package 2 contains Execute SQL Tasks for staging-area transformations (T1, T2, T5–T7).
 
 *[Screenshot 11: SSIS Control Flow — Package 2]*
 
@@ -678,7 +678,13 @@ FROM (
 
 **Control Flow:** Package 3 loads dimensions first, then the fact table, then drops temporary tables.
 
-*[Screenshot 15: SSIS Control Flow — Package 3]*
+*[*Screenshot 15: SSIS Control Flow — Package 3*]*
+
+**Sample Data Flow Task (Store Dimension):**
+*[*Screenshot 16: SSIS Package 3 — DimStore Data Flow*]*
+
+**Execution Result:**
+*[*Screenshot 17: SSIS Package 3 execution — all green checkmarks*]*
 
 #### Dimension Loading Results
 
@@ -753,7 +759,7 @@ INNER JOIN dbo.DimPromotion dpr ON sm.SALE = dpr.deal_code;
 
 *[Screenshot 23: SSMS — SELECT TOP 10 * FROM FactWeeklySales + COUNT]*
 
-*[Screenshot 17: SSIS Package 3 execution — all green checkmarks]*
+
 
 ### 6.7 Temporary Table Cleanup
 
@@ -763,7 +769,7 @@ After all dimension and fact tables were loaded, temporary tables were dropped:
 DROP TABLE [team1_staging_area].dbo.tmp_Product_All;
 ```
 
-*[Screenshot 25: SSMS Object Explorer — tmp_Product_All no longer visible]*
+*[*Screenshot 24: SSMS Object Explorer — tmp_Product_All no longer visible*]*
 
 ### 6.8 Granularity Discussion
 
@@ -791,7 +797,7 @@ GROUP BY dt.week_id, dt.week_start_date
 ORDER BY dt.week_id;
 ```
 
-*[Screenshot 26: SSMS — BQ2 query results]*
+*[*Screenshot 25: SSMS — BQ2 query results*]*
 
 **BQ3 — Promotion vs Non-Promotion:**
 ```sql
@@ -805,6 +811,8 @@ WHERE dc.category_code = 'SDR'
 GROUP BY dp.deal_type, dp.is_promoted
 ORDER BY avg_units DESC;
 ```
+
+*[*Screenshot 26: SSMS — BQ3 query results*]*
 
 **BQ4 — Promotion Lift by Type (Canned Soup):**
 ```sql
@@ -826,6 +834,8 @@ WHERE dc.category_code = 'CSO' AND dp.is_promoted = 1
 GROUP BY dp.deal_type
 ORDER BY lift DESC;
 ```
+
+*[*Screenshot 27: SSMS — BQ4 query results*]*
 
 **BQ8 — Store Quartile Tiers (Toothpaste):**
 ```sql
@@ -852,6 +862,8 @@ GROUP BY CASE WHEN q=1 THEN 'Bottom 25%' WHEN q IN (2,3) THEN 'Middle 50%'
 ORDER BY avg_rev DESC;
 ```
 
+*[*Screenshot 28: SSMS — BQ8 query results*]*
+
 **BQ9 — Top 10 Weekly Cracker Products with WoW Change:**
 ```sql
 WITH weekly AS (
@@ -871,6 +883,8 @@ SELECT week_id, upc, description, wk_units, rnk,
 FROM weekly WHERE rnk <= 10
 ORDER BY week_id, rnk;
 ```
+
+*[*Screenshot 29: SSMS — BQ9 query results*]*
 
 ### 6.10 Final Data Mart Summary
 
@@ -909,18 +923,1093 @@ ORDER BY week_id, rnk;
 
 ### Appendix A: Complete SQL Scripts
 
-All SQL scripts used in this project are available in the `report_3/sql/` directory:
+The complete SQL logic for the implementation is provided below.
 
-| Script | Purpose | Lines |
-|:--|:--|:--|
-| `01_create_databases.sql` | CREATE DATABASE statements | 35 |
-| `02_create_staging_tables.sql` | All staging table definitions | 159 |
-| `03_create_dw_tables.sql` | All dimension + fact table definitions | 158 |
-| `04_transform_staging.sql` | Data cleaning & transformation | 164 |
-| `05_load_dimensions.sql` | Dimension table population | 191 |
-| `06_load_facts.sql` | Fact table population | 114 |
-| `07_drop_temp_tables.sql` | Temporary table cleanup | 52 |
-| `08_verify_bq_queries.sql` | BQ verification queries | 182 |
+#### 01_create_databases.sql
+```sql
+-- ============================================================
+-- Script 01: Create Databases
+-- DFF Data Warehouse Project — Report 3 (ISTM 637, Spring 2026)
+-- Run this in SSMS connected to SQL Server 2016
+-- ============================================================
+
+-- Step 1: Create the Staging Area database
+-- This database holds raw imported CSV data and temporary 
+-- transformation tables. It is purged after ETL is complete.
+IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'team1_staging_area')
+BEGIN
+    CREATE DATABASE [team1_staging_area];
+    PRINT 'Database [team1_staging_area] created successfully.';
+END
+ELSE
+    PRINT 'Database [team1_staging_area] already exists.';
+GO
+
+-- Step 2: Create the Data Mart / Presentation Server database
+-- This database holds the final star schema (dimension + fact tables)
+-- that end users query for business intelligence.
+IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'team1_dw_area')
+BEGIN
+    CREATE DATABASE [team1_dw_area];
+    PRINT 'Database [team1_dw_area] created successfully.';
+END
+ELSE
+    PRINT 'Database [team1_dw_area] already exists.';
+GO
+
+-- Verification: List both databases
+SELECT name, create_date 
+FROM sys.databases 
+WHERE name IN ('team1_staging_area', 'team1_dw_area');
+GO
+```
+
+#### 02_create_staging_tables.sql
+```sql
+-- ============================================================
+-- Script 02: Create Staging Tables
+-- DFF Data Warehouse Project — Report 3
+-- Run in SSMS after Script 01. These tables receive raw CSV data.
+-- ============================================================
+USE [team1_staging_area];
+GO
+
+-- -------------------------------------------------------
+-- Movement Staging Tables (one per category)
+-- Source: Movement CSV files (comma-delimited, encoding 1252)
+-- Columns match the raw CSV structure exactly
+-- -------------------------------------------------------
+
+-- Soft Drinks (SDR) — 17.7 million rows from wsdr.csv
+CREATE TABLE dbo.stg_Movement_SDR (
+    UPC           BIGINT,
+    STORE         INT,
+    WEEK          INT,
+    MOVE          INT,
+    QTY           INT,
+    PRICE         FLOAT,
+    SALE          VARCHAR(5),
+    PROFIT        FLOAT,
+    OK            INT
+);
+GO
+
+-- Canned Soup (CSO) — 7.0 million rows from WCSO-Done.csv
+CREATE TABLE dbo.stg_Movement_CSO (
+    UPC           BIGINT,
+    STORE         INT,
+    WEEK          INT,
+    MOVE          INT,
+    QTY           INT,
+    PRICE         FLOAT,
+    SALE          VARCHAR(5),
+    PROFIT        FLOAT,
+    OK            INT
+);
+GO
+
+-- Toothpaste (TPA) — 6.3 million rows from WTPA_done.csv
+CREATE TABLE dbo.stg_Movement_TPA (
+    UPC           BIGINT,
+    STORE         INT,
+    WEEK          INT,
+    MOVE          INT,
+    QTY           INT,
+    PRICE         FLOAT,
+    SALE          VARCHAR(5),
+    PROFIT        FLOAT,
+    OK            INT
+);
+GO
+
+-- Crackers (CRA) — 3.6 million rows from Done-WCRA.csv
+CREATE TABLE dbo.stg_Movement_CRA (
+    UPC           BIGINT,
+    STORE         INT,
+    WEEK          INT,
+    MOVE          INT,
+    QTY           INT,
+    PRICE         FLOAT,
+    SALE          VARCHAR(5),
+    PROFIT        FLOAT,
+    OK            INT
+);
+GO
+
+-- -------------------------------------------------------
+-- Product (UPC) Staging Tables (one per category)
+-- Source: UPC CSV files (encoding 1252 / latin-1)
+-- -------------------------------------------------------
+
+-- Soft Drinks UPC — 1,746 rows from UPCSDR.csv
+CREATE TABLE dbo.stg_Product_SDR (
+    COM_CODE      INT,
+    UPC           BIGINT,
+    DESCRIP       VARCHAR(100),
+    SIZE          VARCHAR(30),
+    CASE_PACK     INT,
+    NITEM         BIGINT
+);
+GO
+
+-- Canned Soup UPC — 453 rows from UPCCSO.csv
+CREATE TABLE dbo.stg_Product_CSO (
+    COM_CODE      INT,
+    UPC           BIGINT,
+    DESCRIP       VARCHAR(100),
+    SIZE          VARCHAR(30),
+    CASE_PACK     INT,
+    NITEM         BIGINT
+);
+GO
+
+-- Toothpaste UPC — 608 rows from UPCTPA.csv
+CREATE TABLE dbo.stg_Product_TPA (
+    COM_CODE      INT,
+    UPC           BIGINT,
+    DESCRIP       VARCHAR(100),
+    SIZE          VARCHAR(30),
+    CASE_PACK     INT,
+    NITEM         BIGINT
+);
+GO
+
+-- Crackers UPC — 305 rows from UPCCRA.csv
+CREATE TABLE dbo.stg_Product_CRA (
+    COM_CODE      INT,
+    UPC           BIGINT,
+    DESCRIP       VARCHAR(100),
+    SIZE          VARCHAR(30),
+    CASE_PACK     INT,
+    NITEM         BIGINT
+);
+GO
+
+-- -------------------------------------------------------
+-- Store Demographics Staging Table
+-- Source: Demographics/DEMO.csv (108 rows, 510 columns)
+-- We only stage the columns needed for DimStore
+-- -------------------------------------------------------
+CREATE TABLE dbo.stg_Store (
+    STORE         VARCHAR(10),
+    NAME          VARCHAR(60),
+    CITY          VARCHAR(50),
+    ZIP           VARCHAR(10),
+    ZONE          VARCHAR(10),
+    URBAN         VARCHAR(10),
+    WEEKVOL       VARCHAR(20),
+    INCOME        VARCHAR(20),
+    EDUC          VARCHAR(20),
+    POVERTY       VARCHAR(20),
+    HSIZEAVG      VARCHAR(20),
+    ETHNIC        VARCHAR(20),
+    DENSITY       VARCHAR(20),
+    AGE9          VARCHAR(20),
+    AGE60         VARCHAR(20),
+    WORKWOM       VARCHAR(20),
+    PRICLOW       VARCHAR(10),
+    PRICMED       VARCHAR(10),
+    PRICHIGH      VARCHAR(10)
+);
+GO
+
+
+-- -------------------------------------------------------
+-- Verification: List all staging tables
+-- -------------------------------------------------------
+SELECT TABLE_NAME, TABLE_TYPE
+FROM INFORMATION_SCHEMA.TABLES
+WHERE TABLE_SCHEMA = 'dbo'
+ORDER BY TABLE_NAME;
+GO
+
+PRINT '=== All staging tables created successfully ===';
+GO
+```
+
+#### 03_create_dw_tables.sql
+```sql
+-- ============================================================
+-- Script 03: Create Data Warehouse (Data Mart) Tables
+-- DFF Data Warehouse Project — Report 3
+-- Run in SSMS after Script 02. Creates the star schema tables.
+-- IMPORTANT: Create DIMENSION tables first, then FACT tables
+--            (fact tables have FK references to dimensions).
+-- ============================================================
+USE [team1_dw_area];
+GO
+
+-- ===============================
+-- DIMENSION TABLES
+-- ===============================
+
+-- -------------------------------------------------------
+-- DimCategory — 28 product categories
+-- Grain: One row per product category
+-- Cardinality: 28 rows (static, hardcoded)
+-- -------------------------------------------------------
+CREATE TABLE dbo.DimCategory (
+    category_key    INT IDENTITY(1,1) NOT NULL,
+    category_code   CHAR(3)           NOT NULL,
+    category_name   VARCHAR(30)       NOT NULL,
+    department      VARCHAR(20)       NOT NULL,
+    CONSTRAINT PK_DimCategory PRIMARY KEY CLUSTERED (category_key),
+    CONSTRAINT UQ_DimCategory_code UNIQUE (category_code)
+);
+GO
+
+-- -------------------------------------------------------
+-- DimPromotion — 4 promotion types
+-- Grain: One row per deal type
+-- Cardinality: 4 rows (static, hardcoded)
+-- -------------------------------------------------------
+CREATE TABLE dbo.DimPromotion (
+    promotion_key   INT IDENTITY(1,1) NOT NULL,
+    deal_code       CHAR(1)           NOT NULL,
+    deal_type       VARCHAR(20)       NOT NULL,
+    is_promoted     BIT               NOT NULL,
+    CONSTRAINT PK_DimPromotion PRIMARY KEY CLUSTERED (promotion_key)
+);
+GO
+
+-- -------------------------------------------------------
+-- DimTime — ~400 weeks (DFF proprietary week IDs)
+-- Grain: One row per unique week
+-- Week 1 = September 14, 1989 (per DFF codebook)
+-- Cardinality: ~400 rows (generated via CTE)
+-- -------------------------------------------------------
+CREATE TABLE dbo.DimTime (
+    time_key          INT IDENTITY(1,1) NOT NULL,
+    week_id           INT               NOT NULL,
+    week_start_date   DATE              NOT NULL,
+    week_end_date     DATE              NOT NULL,
+    [month]           INT               NOT NULL,
+    month_name        VARCHAR(15)       NOT NULL,
+    [quarter]         INT               NOT NULL,
+    [year]            INT               NOT NULL,
+    fiscal_year       INT               NOT NULL,
+    is_holiday_week   BIT               NOT NULL DEFAULT 0,
+    CONSTRAINT PK_DimTime PRIMARY KEY CLUSTERED (time_key),
+    CONSTRAINT UQ_DimTime_weekid UNIQUE (week_id)
+);
+GO
+
+-- -------------------------------------------------------
+-- DimStore — ~107 stores
+-- Grain: One row per physical store location
+-- Source: Cleaned from DEMO.csv staging table
+-- Cardinality: ~107 rows
+-- -------------------------------------------------------
+CREATE TABLE dbo.DimStore (
+    store_key            INT IDENTITY(1,1) NOT NULL,
+    store_id             INT               NOT NULL,
+    store_name           VARCHAR(50)       NULL,
+    city                 VARCHAR(40)       NULL,
+    zip_code             VARCHAR(10)       NULL,
+    zone                 INT               NULL,
+    is_urban             BIT               NULL,
+    weekly_volume        INT               NULL,
+    avg_income           DECIMAL(10,2)     NULL,
+    education_pct        DECIMAL(5,2)      NULL,
+    poverty_pct          DECIMAL(5,2)      NULL,
+    avg_household_size   DECIMAL(4,2)      NULL,
+    ethnic_diversity     DECIMAL(5,2)      NULL,
+    population_density   DECIMAL(10,2)     NULL,
+    price_tier           VARCHAR(10)       NULL,
+    age_under_9_pct      DECIMAL(5,2)      NULL,
+    age_over_60_pct      DECIMAL(5,2)      NULL,
+    working_women_pct    DECIMAL(5,2)      NULL,
+    CONSTRAINT PK_DimStore PRIMARY KEY CLUSTERED (store_key),
+    CONSTRAINT UQ_DimStore_storeid UNIQUE (store_id)
+);
+GO
+
+-- -------------------------------------------------------
+-- DimProduct — ~3,112 UPCs (for 4 selected categories)
+-- Grain: One row per unique UPC
+-- Source: Cleaned from UPC staging tables
+-- Cardinality: SDR(1746) + CSO(453) + TPA(608) + CRA(305) = 3,112
+-- -------------------------------------------------------
+CREATE TABLE dbo.DimProduct (
+    product_key     INT IDENTITY(1,1) NOT NULL,
+    upc             BIGINT            NOT NULL,
+    description     VARCHAR(100)      NULL,
+    size            VARCHAR(30)       NULL,
+    case_pack       INT               NULL,
+    commodity_code  INT               NULL,
+    item_number     BIGINT            NULL,
+    CONSTRAINT PK_DimProduct PRIMARY KEY CLUSTERED (product_key)
+);
+GO
+
+-- ===============================
+-- FACT TABLES
+-- ===============================
+
+-- -------------------------------------------------------
+-- FactWeeklySales — Central fact table
+-- Grain: One row per UPC × Store × Week
+-- Source: Movement staging tables (filtered OK=1, PRICE>0)
+-- Estimated: ~34.6M rows for 4 categories
+-- -------------------------------------------------------
+CREATE TABLE dbo.FactWeeklySales (
+    sales_fact_id     INT IDENTITY(1,1)  NOT NULL,
+    product_key       INT                NOT NULL,
+    store_key         INT                NOT NULL,
+    time_key          INT                NOT NULL,
+    category_key      INT                NOT NULL,
+    promotion_key     INT                NOT NULL,
+    units_sold        INT                NULL,
+    unit_price        DECIMAL(8,2)       NULL,
+    shelf_price       DECIMAL(8,2)       NULL,
+    price_qty         INT                NULL,
+    revenue           DECIMAL(12,2)      NULL,
+    gross_profit      DECIMAL(10,2)      NULL,
+    profit_margin_pct DECIMAL(5,2)       NULL,
+    CONSTRAINT PK_FactWeeklySales PRIMARY KEY CLUSTERED (sales_fact_id),
+    CONSTRAINT FK_Fact_Product   FOREIGN KEY (product_key)   REFERENCES dbo.DimProduct(product_key),
+    CONSTRAINT FK_Fact_Store     FOREIGN KEY (store_key)     REFERENCES dbo.DimStore(store_key),
+    CONSTRAINT FK_Fact_Time      FOREIGN KEY (time_key)      REFERENCES dbo.DimTime(time_key),
+    CONSTRAINT FK_Fact_Category  FOREIGN KEY (category_key)  REFERENCES dbo.DimCategory(category_key),
+    CONSTRAINT FK_Fact_Promotion FOREIGN KEY (promotion_key) REFERENCES dbo.DimPromotion(promotion_key)
+);
+GO
+
+
+-- -------------------------------------------------------
+-- Verification: List all DW tables
+-- -------------------------------------------------------
+SELECT TABLE_NAME, TABLE_TYPE
+FROM INFORMATION_SCHEMA.TABLES
+WHERE TABLE_SCHEMA = 'dbo'
+ORDER BY TABLE_NAME;
+GO
+
+PRINT '=== All data warehouse tables created successfully ===';
+GO
+```
+
+#### 04_transform_staging.sql
+```sql
+-- ============================================================
+-- Script 04: Transform and Clean Staging Data
+-- DFF Data Warehouse Project — Report 3
+-- Run in SSMS AFTER Package 1 (Extract) has loaded CSV data
+-- into staging tables. These transformations prepare the data
+-- for loading into the data mart.
+-- ============================================================
+USE [team1_staging_area];
+GO
+
+-- ===============================
+-- MOVEMENT TABLE TRANSFORMATIONS
+-- ===============================
+
+-- T1: Add CATEGORY_CODE column to each movement staging table
+-- This column does not exist in the CSV files; it is derived 
+-- from the filename (e.g., wsdr.csv → 'SDR')
+
+ALTER TABLE dbo.stg_Movement_SDR ADD CATEGORY_CODE CHAR(3);
+GO
+UPDATE dbo.stg_Movement_SDR SET CATEGORY_CODE = 'SDR';
+GO
+
+ALTER TABLE dbo.stg_Movement_CSO ADD CATEGORY_CODE CHAR(3);
+GO
+UPDATE dbo.stg_Movement_CSO SET CATEGORY_CODE = 'CSO';
+GO
+
+ALTER TABLE dbo.stg_Movement_TPA ADD CATEGORY_CODE CHAR(3);
+GO
+UPDATE dbo.stg_Movement_TPA SET CATEGORY_CODE = 'TPA';
+GO
+
+ALTER TABLE dbo.stg_Movement_CRA ADD CATEGORY_CODE CHAR(3);
+GO
+UPDATE dbo.stg_Movement_CRA SET CATEGORY_CODE = 'CRA';
+GO
+
+PRINT 'T1 Complete: CATEGORY_CODE added to all movement tables.';
+GO
+
+-- T2: Replace NULL/blank SALE with 'N' (No Promotion)
+-- The SALE column is NULL for ~90% of rows; we normalize to 'N'
+-- so that promotion lookup joins work correctly.
+
+UPDATE dbo.stg_Movement_SDR SET SALE = 'N' WHERE SALE IS NULL OR LTRIM(RTRIM(SALE)) = '';
+UPDATE dbo.stg_Movement_CSO SET SALE = 'N' WHERE SALE IS NULL OR LTRIM(RTRIM(SALE)) = '';
+UPDATE dbo.stg_Movement_TPA SET SALE = 'N' WHERE SALE IS NULL OR LTRIM(RTRIM(SALE)) = '';
+UPDATE dbo.stg_Movement_CRA SET SALE = 'N' WHERE SALE IS NULL OR LTRIM(RTRIM(SALE)) = '';
+GO
+
+PRINT 'T2 Complete: NULL SALE values replaced with N.';
+GO
+
+-- Verification: Check SALE distribution after cleaning
+SELECT 'SDR' AS Category, SALE, COUNT(*) AS cnt FROM dbo.stg_Movement_SDR GROUP BY SALE
+UNION ALL
+SELECT 'CSO', SALE, COUNT(*) FROM dbo.stg_Movement_CSO GROUP BY SALE
+UNION ALL
+SELECT 'TPA', SALE, COUNT(*) FROM dbo.stg_Movement_TPA GROUP BY SALE
+UNION ALL
+SELECT 'CRA', SALE, COUNT(*) FROM dbo.stg_Movement_CRA GROUP BY SALE
+ORDER BY 1, 2;
+GO
+
+-- ===============================
+-- PRODUCT (UPC) TABLE TRANSFORMATIONS
+-- ===============================
+
+-- T3: Add CATEGORY_CODE column to each UPC staging table
+
+ALTER TABLE dbo.stg_Product_SDR ADD CATEGORY_CODE CHAR(3);
+GO
+UPDATE dbo.stg_Product_SDR SET CATEGORY_CODE = 'SDR';
+GO
+
+ALTER TABLE dbo.stg_Product_CSO ADD CATEGORY_CODE CHAR(3);
+GO
+UPDATE dbo.stg_Product_CSO SET CATEGORY_CODE = 'CSO';
+GO
+
+ALTER TABLE dbo.stg_Product_TPA ADD CATEGORY_CODE CHAR(3);
+GO
+UPDATE dbo.stg_Product_TPA SET CATEGORY_CODE = 'TPA';
+GO
+
+ALTER TABLE dbo.stg_Product_CRA ADD CATEGORY_CODE CHAR(3);
+GO
+UPDATE dbo.stg_Product_CRA SET CATEGORY_CODE = 'CRA';
+GO
+
+PRINT 'T3 Complete: CATEGORY_CODE added to all product tables.';
+GO
+
+-- T4: Clean product descriptions — strip leading # and ~ characters
+UPDATE dbo.stg_Product_SDR SET DESCRIP = LTRIM(REPLACE(REPLACE(DESCRIP, '#', ''), '~', ''));
+UPDATE dbo.stg_Product_CSO SET DESCRIP = LTRIM(REPLACE(REPLACE(DESCRIP, '#', ''), '~', ''));
+UPDATE dbo.stg_Product_TPA SET DESCRIP = LTRIM(REPLACE(REPLACE(DESCRIP, '#', ''), '~', ''));
+UPDATE dbo.stg_Product_CRA SET DESCRIP = LTRIM(REPLACE(REPLACE(DESCRIP, '#', ''), '~', ''));
+GO
+
+PRINT 'T4 Complete: Product descriptions cleaned.';
+GO
+
+-- T5: Create unified tmp_Product_All table (UNION of 4 category tables)
+-- This temporary table is used to load DimProduct
+IF OBJECT_ID('dbo.tmp_Product_All', 'U') IS NOT NULL
+    DROP TABLE dbo.tmp_Product_All;
+GO
+
+SELECT COM_CODE, UPC, DESCRIP, SIZE, CASE_PACK, NITEM, CATEGORY_CODE
+INTO dbo.tmp_Product_All
+FROM (
+    SELECT COM_CODE, UPC, DESCRIP, SIZE, CASE_PACK, NITEM, CATEGORY_CODE FROM dbo.stg_Product_SDR
+    UNION ALL
+    SELECT COM_CODE, UPC, DESCRIP, SIZE, CASE_PACK, NITEM, CATEGORY_CODE FROM dbo.stg_Product_CSO
+    UNION ALL
+    SELECT COM_CODE, UPC, DESCRIP, SIZE, CASE_PACK, NITEM, CATEGORY_CODE FROM dbo.stg_Product_TPA
+    UNION ALL
+    SELECT COM_CODE, UPC, DESCRIP, SIZE, CASE_PACK, NITEM, CATEGORY_CODE FROM dbo.stg_Product_CRA
+) AS all_products;
+GO
+
+PRINT 'T5 Complete: tmp_Product_All created.';
+SELECT 'tmp_Product_All' AS TableName, COUNT(*) AS RowCount FROM dbo.tmp_Product_All;
+GO
+
+-- ===============================
+-- STORE (DEMOGRAPHICS) TRANSFORMATIONS
+-- ===============================
+
+-- T6: Remove the '.' placeholder row (first row of DEMO.csv)
+-- The first row in DEMO.csv has STORE = '.' for all fields
+DELETE FROM dbo.stg_Store WHERE STORE = '.' OR ISNUMERIC(STORE) = 0;
+GO
+
+-- T7: Replace NULL/blank NAME and CITY with 'UNKNOWN'
+UPDATE dbo.stg_Store SET NAME = 'UNKNOWN' WHERE NAME IS NULL OR LTRIM(RTRIM(NAME)) = '';
+UPDATE dbo.stg_Store SET CITY = 'UNKNOWN' WHERE CITY IS NULL OR LTRIM(RTRIM(CITY)) = '';
+GO
+
+PRINT 'T6-T7 Complete: Store data cleaned.';
+SELECT COUNT(*) AS StoreCount FROM dbo.stg_Store;
+GO
+
+-- ===============================
+-- FINAL VERIFICATION
+-- ===============================
+PRINT '========================================';
+PRINT '  STAGING TRANSFORMATION COMPLETE';
+PRINT '========================================';
+
+SELECT 'stg_Movement_SDR' AS TableName, COUNT(*) AS RowCount FROM dbo.stg_Movement_SDR
+UNION ALL SELECT 'stg_Movement_CSO', COUNT(*) FROM dbo.stg_Movement_CSO
+UNION ALL SELECT 'stg_Movement_TPA', COUNT(*) FROM dbo.stg_Movement_TPA
+UNION ALL SELECT 'stg_Movement_CRA', COUNT(*) FROM dbo.stg_Movement_CRA
+UNION ALL SELECT 'stg_Product_SDR',  COUNT(*) FROM dbo.stg_Product_SDR
+UNION ALL SELECT 'stg_Product_CSO',  COUNT(*) FROM dbo.stg_Product_CSO
+UNION ALL SELECT 'stg_Product_TPA',  COUNT(*) FROM dbo.stg_Product_TPA
+UNION ALL SELECT 'stg_Product_CRA',  COUNT(*) FROM dbo.stg_Product_CRA
+UNION ALL SELECT 'stg_Store',        COUNT(*) FROM dbo.stg_Store
+UNION ALL SELECT 'tmp_Product_All',  COUNT(*) FROM dbo.tmp_Product_All
+ORDER BY TableName;
+GO
+```
+
+#### 05_load_dimensions.sql
+```sql
+-- ============================================================
+-- Script 05: Load Dimension Tables
+-- DFF Data Warehouse Project — Report 3
+-- Run AFTER Script 04 (Transform). Loads dimensions BEFORE facts.
+-- Order: DimCategory → DimPromotion → DimTime → DimStore → DimProduct
+-- ============================================================
+USE [team1_dw_area];
+GO
+
+-- ===============================
+-- 1. DimCategory (28 rows — hardcoded)
+-- ===============================
+-- These are the 28 product categories from the DFF dataset.
+-- Category codes are derived from the 3-letter filename abbreviations.
+-- Department groupings are based on standard grocery store organization.
+
+INSERT INTO dbo.DimCategory (category_code, category_name, department) VALUES
+('ANA', 'Analgesics',          'Health & Beauty'),
+('BAT', 'Bath Soap',           'Health & Beauty'),
+('BER', 'Beer',                'Beverages'),
+('BJC', 'Bottled Juices',      'Beverages'),
+('CER', 'Cereals',             'Grocery'),
+('CHE', 'Cheeses',             'Dairy'),
+('CIG', 'Cigarettes',          'Tobacco'),
+('COO', 'Cookies',             'Snacks'),
+('CRA', 'Crackers',            'Snacks'),
+('CSO', 'Canned Soup',         'Grocery'),
+('DID', 'Dish Detergent',      'Household'),
+('FEC', 'Front End Candies',   'Snacks'),
+('FRD', 'Frozen Dinners',      'Frozen'),
+('FRE', 'Frozen Entrees',      'Frozen'),
+('FRJ', 'Frozen Juices',       'Beverages'),
+('FSF', 'Fabric Softeners',    'Household'),
+('GRO', 'Grooming Products',   'Health & Beauty'),
+('LND', 'Laundry Detergents',  'Household'),
+('OAT', 'Oatmeal',             'Grocery'),
+('PTW', 'Paper Towels',        'Household'),
+('SDR', 'Soft Drinks',         'Beverages'),
+('SHA', 'Shampoos',            'Health & Beauty'),
+('SNA', 'Snack Crackers',      'Snacks'),
+('SOA', 'Soaps',               'Health & Beauty'),
+('TBR', 'Toothbrushes',        'Health & Beauty'),
+('TNA', 'Canned Tuna',         'Grocery'),
+('TPA', 'Toothpaste',          'Health & Beauty'),
+('TTI', 'Toilet Tissue',       'Household');
+GO
+
+PRINT '1/5 DimCategory loaded:';
+SELECT COUNT(*) AS RowCount FROM dbo.DimCategory;
+SELECT * FROM dbo.DimCategory ORDER BY category_key;
+GO
+
+-- ===============================
+-- 2. DimPromotion (4 rows — hardcoded)
+-- ===============================
+-- Maps the SALE column values from Movement files to descriptive labels.
+-- NULL/blank/'N' → 'No Promotion', B → 'Bonus Buy', C → 'Coupon', S → 'Sale/Discount'
+-- deal_code for 'No Promotion' is stored as 'N' (transformed from NULL/blank during staging).
+
+INSERT INTO dbo.DimPromotion (deal_code, deal_type, is_promoted) VALUES
+('N',  'No Promotion', 0),
+('B',  'Bonus Buy',    1),
+('C',  'Coupon',       1),
+('S',  'Sale/Discount', 1);
+GO
+
+PRINT '2/5 DimPromotion loaded:';
+SELECT * FROM dbo.DimPromotion;
+GO
+
+-- ===============================
+-- 3. DimTime (~400 rows — generated via CTE)
+-- ===============================
+-- DFF uses proprietary week IDs (WEEK column in Movement files).
+-- Week 1 corresponds to September 14, 1989 per the DFF codebook.
+-- Each subsequent week_id increments by 7 days.
+-- We generate week_id 1 through 400 to cover the full dataset period.
+
+;WITH WeekCTE AS (
+    SELECT 1 AS week_id
+    UNION ALL
+    SELECT week_id + 1 FROM WeekCTE WHERE week_id < 400
+)
+INSERT INTO dbo.DimTime 
+    (week_id, week_start_date, week_end_date, [month], month_name, 
+     [quarter], [year], fiscal_year, is_holiday_week)
+SELECT 
+    week_id,
+    DATEADD(WEEK, week_id - 1, '1989-09-14')     AS week_start_date,
+    DATEADD(DAY, 6, DATEADD(WEEK, week_id - 1, '1989-09-14')) AS week_end_date,
+    MONTH(DATEADD(WEEK, week_id - 1, '1989-09-14'))           AS [month],
+    DATENAME(MONTH, DATEADD(WEEK, week_id - 1, '1989-09-14')) AS month_name,
+    DATEPART(QUARTER, DATEADD(WEEK, week_id - 1, '1989-09-14')) AS [quarter],
+    YEAR(DATEADD(WEEK, week_id - 1, '1989-09-14'))            AS [year],
+    YEAR(DATEADD(WEEK, week_id - 1, '1989-09-14'))            AS fiscal_year,
+    -- Mark common US holiday weeks (Thanksgiving week ~47-48, Christmas ~52, July 4th ~27)
+    CASE 
+        WHEN DATEPART(WEEK, DATEADD(WEEK, week_id - 1, '1989-09-14')) IN (47, 48, 52, 1, 27)
+        THEN 1 ELSE 0 
+    END AS is_holiday_week
+FROM WeekCTE
+OPTION (MAXRECURSION 400);
+GO
+
+PRINT '3/5 DimTime loaded:';
+SELECT COUNT(*) AS RowCount FROM dbo.DimTime;
+SELECT TOP 10 * FROM dbo.DimTime ORDER BY time_key;
+GO
+
+-- ===============================
+-- 4. DimStore (~107 rows — from staging)
+-- ===============================
+-- Loaded from cleaned stg_Store in the staging database.
+-- Transformations applied during INSERT:
+--   - CAST string columns to proper data types
+--   - Derive price_tier from binary flags (PRICLOW/PRICMED/PRICHIGH)
+--   - Replace NULL NAME/CITY with 'UNKNOWN' (already done in Script 04)
+
+INSERT INTO dbo.DimStore 
+    (store_id, store_name, city, zip_code, zone, is_urban, weekly_volume,
+     avg_income, education_pct, poverty_pct, avg_household_size,
+     ethnic_diversity, population_density, price_tier,
+     age_under_9_pct, age_over_60_pct, working_women_pct)
+SELECT 
+    CAST(s.STORE AS INT)                          AS store_id,
+    s.NAME                                        AS store_name,
+    s.CITY                                        AS city,
+    s.ZIP                                         AS zip_code,
+    CAST(s.ZONE AS INT)                           AS zone,
+    CAST(s.URBAN AS BIT)                          AS is_urban,
+    CAST(s.WEEKVOL AS INT)                        AS weekly_volume,
+    CAST(s.INCOME AS DECIMAL(10,2))               AS avg_income,
+    CAST(s.EDUC AS DECIMAL(5,2))                  AS education_pct,
+    CAST(s.POVERTY AS DECIMAL(5,2))               AS poverty_pct,
+    CAST(s.HSIZEAVG AS DECIMAL(4,2))              AS avg_household_size,
+    CAST(s.ETHNIC AS DECIMAL(5,2))                AS ethnic_diversity,
+    CAST(s.DENSITY AS DECIMAL(10,2))              AS population_density,
+    CASE 
+        WHEN s.PRICLOW = '1'  THEN 'Low'
+        WHEN s.PRICMED = '1'  THEN 'Medium'
+        WHEN s.PRICHIGH = '1' THEN 'High'
+        ELSE 'Unknown'
+    END                                           AS price_tier,
+    CAST(s.AGE9 AS DECIMAL(5,2))                  AS age_under_9_pct,
+    CAST(s.AGE60 AS DECIMAL(5,2))                 AS age_over_60_pct,
+    CAST(s.WORKWOM AS DECIMAL(5,2))               AS working_women_pct
+FROM [team1_staging_area].dbo.stg_Store s
+WHERE ISNUMERIC(s.STORE) = 1;
+GO
+
+PRINT '4/5 DimStore loaded:';
+SELECT COUNT(*) AS RowCount FROM dbo.DimStore;
+SELECT TOP 10 * FROM dbo.DimStore ORDER BY store_key;
+GO
+
+-- ===============================
+-- 5. DimProduct (~3,112 rows — from staging)
+-- ===============================
+-- Loaded from tmp_Product_All in staging (UNION of 4 category tables).
+
+INSERT INTO dbo.DimProduct 
+    (upc, description, size, case_pack, commodity_code, item_number)
+SELECT 
+    p.UPC,
+    p.DESCRIP                                     AS description,
+    p.SIZE                                        AS size,
+    p.CASE_PACK                                   AS case_pack,
+    p.COM_CODE                                    AS commodity_code,
+    p.NITEM                                       AS item_number
+FROM [team1_staging_area].dbo.tmp_Product_All p;
+GO
+
+PRINT '5/5 DimProduct loaded:';
+SELECT COUNT(*) AS RowCount FROM dbo.DimProduct;
+SELECT TOP 10 * FROM dbo.DimProduct ORDER BY product_key;
+GO
+
+-- ===============================
+-- DIMENSION LOAD VERIFICATION
+-- ===============================
+PRINT '========================================';
+PRINT '  ALL DIMENSION TABLES LOADED';
+PRINT '========================================';
+
+SELECT 'DimCategory'  AS TableName, COUNT(*) AS RowCount FROM dbo.DimCategory
+UNION ALL SELECT 'DimPromotion', COUNT(*) FROM dbo.DimPromotion
+UNION ALL SELECT 'DimTime',      COUNT(*) FROM dbo.DimTime
+UNION ALL SELECT 'DimStore',     COUNT(*) FROM dbo.DimStore
+UNION ALL SELECT 'DimProduct',   COUNT(*) FROM dbo.DimProduct
+ORDER BY TableName;
+GO
+```
+
+#### 06_load_facts.sql
+```sql
+-- ============================================================
+-- Script 06: Load Fact Tables
+-- DFF Data Warehouse Project — Report 3
+-- Run AFTER Script 05 (Load Dimensions).
+-- Dimensions must be populated first because fact tables
+-- reference dimension surrogate keys via foreign keys.
+-- ============================================================
+USE [team1_dw_area];
+GO
+
+-- ===============================
+-- 1. FactWeeklySales
+-- ===============================
+-- Grain: One row per UPC × Store × Week
+-- Sources: 4 movement staging tables (SDR, CSO, TPA, CRA)
+-- Filters: OK = 1 (valid data), PRICE > 0 (avoid zero-price rows)
+-- Derived columns:
+--   unit_price        = PRICE / QTY
+--   revenue           = MOVE × (PRICE / QTY)
+--   profit_margin_pct = (PROFIT / revenue) × 100
+
+PRINT 'Loading FactWeeklySales... (this may take several minutes for ~34M rows)';
+GO
+
+INSERT INTO dbo.FactWeeklySales
+    (product_key, store_key, time_key, category_key, promotion_key,
+     units_sold, unit_price, shelf_price, price_qty, revenue, 
+     gross_profit, profit_margin_pct)
+SELECT 
+    dp.product_key,
+    ds.store_key,
+    dt.time_key,
+    dc.category_key,
+    dpr.promotion_key,
+    sm.MOVE                                                    AS units_sold,
+    CASE WHEN sm.QTY > 0 
+         THEN CAST(sm.PRICE / sm.QTY AS DECIMAL(8,2)) 
+         ELSE NULL 
+    END                                                        AS unit_price,
+    CAST(sm.PRICE AS DECIMAL(8,2))                             AS shelf_price,
+    sm.QTY                                                     AS price_qty,
+    CASE WHEN sm.QTY > 0 
+         THEN CAST(sm.MOVE * (sm.PRICE / sm.QTY) AS DECIMAL(12,2)) 
+         ELSE 0 
+    END                                                        AS revenue,
+    CAST(sm.PROFIT AS DECIMAL(10,2))                           AS gross_profit,
+    CASE WHEN sm.MOVE > 0 AND sm.QTY > 0 AND sm.PRICE > 0
+         THEN CAST(
+              (sm.PROFIT / (sm.MOVE * (sm.PRICE / sm.QTY))) * 100 
+              AS DECIMAL(5,2))
+         ELSE NULL 
+    END                                                        AS profit_margin_pct
+FROM (
+    -- UNION ALL of the 4 category movement staging tables
+    SELECT UPC, STORE, WEEK, MOVE, QTY, PRICE, SALE, PROFIT, OK, CATEGORY_CODE 
+    FROM [team1_staging_area].dbo.stg_Movement_SDR 
+    WHERE OK = 1 AND PRICE > 0
+    UNION ALL
+    SELECT UPC, STORE, WEEK, MOVE, QTY, PRICE, SALE, PROFIT, OK, CATEGORY_CODE 
+    FROM [team1_staging_area].dbo.stg_Movement_CSO 
+    WHERE OK = 1 AND PRICE > 0
+    UNION ALL
+    SELECT UPC, STORE, WEEK, MOVE, QTY, PRICE, SALE, PROFIT, OK, CATEGORY_CODE 
+    FROM [team1_staging_area].dbo.stg_Movement_TPA 
+    WHERE OK = 1 AND PRICE > 0
+    UNION ALL
+    SELECT UPC, STORE, WEEK, MOVE, QTY, PRICE, SALE, PROFIT, OK, CATEGORY_CODE 
+    FROM [team1_staging_area].dbo.stg_Movement_CRA 
+    WHERE OK = 1 AND PRICE > 0
+) sm
+-- Join to dimension tables to get surrogate keys
+INNER JOIN dbo.DimProduct dp 
+    ON sm.UPC = dp.upc
+INNER JOIN dbo.DimStore ds 
+    ON sm.STORE = ds.store_id
+INNER JOIN dbo.DimTime dt 
+    ON sm.WEEK = dt.week_id
+INNER JOIN dbo.DimCategory dc 
+    ON sm.CATEGORY_CODE = dc.category_code
+INNER JOIN dbo.DimPromotion dpr 
+    ON sm.SALE = dpr.deal_code;
+GO
+
+PRINT 'FactWeeklySales loaded:';
+SELECT COUNT(*) AS RowCount FROM dbo.FactWeeklySales;
+SELECT TOP 10 * FROM dbo.FactWeeklySales ORDER BY sales_fact_id;
+GO
+
+-- Row count by category (verification)
+SELECT dc.category_name, COUNT(*) AS FactRows
+FROM dbo.FactWeeklySales f
+JOIN dbo.DimCategory dc ON f.category_key = dc.category_key
+GROUP BY dc.category_name
+ORDER BY FactRows DESC;
+GO
+
+-- ===============================
+-- FACT TABLE VERIFICATION
+-- ===============================
+PRINT '========================================';
+PRINT '  FACT TABLE LOADED';
+PRINT '========================================';
+
+SELECT 'FactWeeklySales' AS TableName, COUNT(*) AS RowCount FROM dbo.FactWeeklySales;
+GO
+
+-- Quick data quality check: any NULL keys?
+SELECT 'NULL product_key'   AS Issue, COUNT(*) AS Cnt FROM dbo.FactWeeklySales WHERE product_key IS NULL
+UNION ALL SELECT 'NULL store_key',   COUNT(*) FROM dbo.FactWeeklySales WHERE store_key IS NULL
+UNION ALL SELECT 'NULL time_key',    COUNT(*) FROM dbo.FactWeeklySales WHERE time_key IS NULL
+UNION ALL SELECT 'NULL category_key', COUNT(*) FROM dbo.FactWeeklySales WHERE category_key IS NULL
+UNION ALL SELECT 'NULL promotion_key', COUNT(*) FROM dbo.FactWeeklySales WHERE promotion_key IS NULL;
+GO
+```
+
+#### 07_drop_temp_tables.sql
+```sql
+-- ============================================================
+-- Script 07: Drop Temporary Tables from Staging Area
+-- DFF Data Warehouse Project — Report 3
+-- Run AFTER all dimension and fact tables have been loaded.
+-- The assignment requires: "Once loading of each table is done,
+-- remove all temp tables from the staging area."
+-- ============================================================
+USE [team1_staging_area];
+GO
+
+-- ===============================
+-- LIST OF TEMPORARY TABLES
+-- ===============================
+-- The following temporary tables were created in the staging area
+-- during the transformation phase (Script 04) and are no longer
+-- needed after the data mart has been populated:
+--
+--   1. tmp_Product_All  — UNION of 4 UPC category staging tables
+--                          Used to load DimProduct
+--
+-- Note: The original staging tables (stg_Movement_*, stg_Product_*,
+-- stg_Store) are also temporary but may be
+-- retained for audit/verification purposes until the project is
+-- fully validated.
+
+PRINT 'Dropping temporary tables from staging area...';
+GO
+
+-- Drop tmp_Product_All
+IF OBJECT_ID('dbo.tmp_Product_All', 'U') IS NOT NULL
+BEGIN
+    DROP TABLE dbo.tmp_Product_All;
+    PRINT 'DROPPED: tmp_Product_All';
+END
+GO
+
+-- ===============================
+-- VERIFICATION
+-- ===============================
+-- Show remaining tables in staging area
+SELECT TABLE_NAME
+FROM INFORMATION_SCHEMA.TABLES
+WHERE TABLE_SCHEMA = 'dbo' AND TABLE_TYPE = 'BASE TABLE'
+ORDER BY TABLE_NAME;
+GO
+
+PRINT '========================================';
+PRINT '  TEMPORARY TABLES REMOVED';
+PRINT '  Remaining tables are base staging tables';
+PRINT '  retained for audit/verification.';
+PRINT '========================================';
+GO
+```
+
+#### 08_verify_bq_queries.sql
+```sql
+-- ============================================================
+-- Script 08: Verify Business Questions Against Loaded DW
+-- DFF Data Warehouse Project — Report 3
+-- Run AFTER all tables are loaded to validate the ETL.
+-- Each query corresponds to one of the 5 selected BQs.
+-- ============================================================
+USE [team1_dw_area];
+GO
+
+-- ===============================
+-- BQ2: Total weekly unit sales of Soft Drinks across all stores
+-- Difficulty: Easy | OLAP Operation: Roll-up
+-- ===============================
+PRINT '=== BQ2: Weekly Soft Drink Unit Sales ===';
+
+SELECT 
+    dt.[year],
+    dt.[month],
+    dt.week_id,
+    dt.week_start_date,
+    SUM(f.units_sold)          AS total_units_sold,
+    SUM(f.revenue)             AS total_revenue,
+    COUNT(DISTINCT f.store_key) AS num_stores
+FROM dbo.FactWeeklySales f
+INNER JOIN dbo.DimTime dt      ON f.time_key     = dt.time_key
+INNER JOIN dbo.DimCategory dc  ON f.category_key  = dc.category_key
+WHERE dc.category_code = 'SDR'
+GROUP BY dt.[year], dt.[month], dt.week_id, dt.week_start_date
+ORDER BY dt.week_id;
+GO
+
+-- ===============================
+-- BQ3: Promotion vs Non-Promotion weeks — sales comparison
+-- Difficulty: Easy | OLAP Operation: Dice (Slice by promotion status)
+-- ===============================
+PRINT '=== BQ3: Promoted vs Non-Promoted Sales Volume ===';
+
+SELECT 
+    dp.deal_type                AS promotion_status,
+    dp.is_promoted,
+    COUNT(*)                    AS num_records,
+    SUM(f.units_sold)           AS total_units_sold,
+    AVG(CAST(f.units_sold AS FLOAT)) AS avg_units_per_record,
+    SUM(f.revenue)              AS total_revenue
+FROM dbo.FactWeeklySales f
+INNER JOIN dbo.DimPromotion dp ON f.promotion_key = dp.promotion_key
+INNER JOIN dbo.DimCategory dc  ON f.category_key  = dc.category_key
+WHERE dc.category_code = 'SDR'
+GROUP BY dp.deal_type, dp.is_promoted
+ORDER BY avg_units_per_record DESC;
+GO
+
+-- ===============================
+-- BQ4: Which promotion type has highest incremental sales lift in Canned Soup?
+-- Difficulty: Medium | OLAP Operation: Dice (filter by category + promo type)
+-- ===============================
+PRINT '=== BQ4: Promotion Lift by Deal Type — Canned Soup ===';
+
+-- First get the baseline (no promotion average)
+DECLARE @baseline_avg FLOAT;
+SELECT @baseline_avg = AVG(CAST(f.units_sold AS FLOAT))
+FROM dbo.FactWeeklySales f
+INNER JOIN dbo.DimPromotion dp ON f.promotion_key = dp.promotion_key
+INNER JOIN dbo.DimCategory dc  ON f.category_key  = dc.category_key
+WHERE dc.category_code = 'CSO' AND dp.is_promoted = 0;
+
+SELECT 
+    dp.deal_type,
+    COUNT(*)                                AS num_promoted_records,
+    AVG(CAST(f.units_sold AS FLOAT))        AS avg_units_promoted,
+    @baseline_avg                            AS avg_units_baseline,
+    AVG(CAST(f.units_sold AS FLOAT)) - @baseline_avg AS incremental_lift,
+    CASE WHEN @baseline_avg > 0 
+         THEN CAST(AVG(CAST(f.units_sold AS FLOAT)) / @baseline_avg AS DECIMAL(5,2))
+         ELSE NULL 
+    END                                      AS lift_multiplier
+FROM dbo.FactWeeklySales f
+INNER JOIN dbo.DimPromotion dp ON f.promotion_key = dp.promotion_key
+INNER JOIN dbo.DimCategory dc  ON f.category_key  = dc.category_key
+WHERE dc.category_code = 'CSO' AND dp.is_promoted = 1
+GROUP BY dp.deal_type
+ORDER BY incremental_lift DESC;
+GO
+
+-- ===============================
+-- BQ8: Store quartile tiers by Toothpaste revenue + demographics
+-- Difficulty: Hard | OLAP Operation: NTILE + Drill-down
+-- ===============================
+PRINT '=== BQ8: Store Revenue Quartiles — Toothpaste ===';
+
+WITH store_revenue AS (
+    SELECT 
+        f.store_key,
+        SUM(f.revenue) AS total_revenue
+    FROM dbo.FactWeeklySales f
+    INNER JOIN dbo.DimCategory dc ON f.category_key = dc.category_key
+    WHERE dc.category_code = 'TPA'
+    GROUP BY f.store_key
+),
+store_quartiles AS (
+    SELECT 
+        sr.store_key,
+        sr.total_revenue,
+        NTILE(4) OVER (ORDER BY sr.total_revenue) AS revenue_quartile
+    FROM store_revenue sr
+)
+SELECT 
+    CASE 
+        WHEN sq.revenue_quartile = 1 THEN 'Bottom 25%'
+        WHEN sq.revenue_quartile IN (2, 3) THEN 'Middle 50%'
+        WHEN sq.revenue_quartile = 4 THEN 'Top 25%'
+    END                                          AS tier,
+    COUNT(*)                                     AS store_count,
+    CAST(AVG(sq.total_revenue) AS DECIMAL(12,2)) AS avg_revenue,
+    CAST(AVG(ds.avg_income) AS DECIMAL(10,2))    AS avg_income,
+    CAST(AVG(ds.population_density) AS DECIMAL(10,2)) AS avg_pop_density,
+    SUM(ds.is_urban)                             AS urban_store_count,
+    CAST(AVG(ds.education_pct) AS DECIMAL(5,2))  AS avg_education_pct,
+    CAST(AVG(ds.poverty_pct) AS DECIMAL(5,2))    AS avg_poverty_pct
+FROM store_quartiles sq
+INNER JOIN dbo.DimStore ds ON sq.store_key = ds.store_key
+GROUP BY 
+    CASE 
+        WHEN sq.revenue_quartile = 1 THEN 'Bottom 25%'
+        WHEN sq.revenue_quartile IN (2, 3) THEN 'Middle 50%'
+        WHEN sq.revenue_quartile = 4 THEN 'Top 25%'
+    END
+ORDER BY avg_revenue DESC;
+GO
+
+-- ===============================
+-- BQ9: Weekly top 10 Cracker products by unit sales with WoW change
+-- Difficulty: Hard | OLAP Operation: RANK + LAG
+-- ===============================
+PRINT '=== BQ9: Weekly Top 10 Cracker Products with WoW Change ===';
+
+WITH weekly_product AS (
+    SELECT 
+        dp.upc,
+        dp.description,
+        dt.week_id,
+        dt.week_start_date,
+        SUM(f.units_sold)                                        AS weekly_units,
+        RANK() OVER (PARTITION BY dt.week_id 
+                     ORDER BY SUM(f.units_sold) DESC)            AS week_rank
+    FROM dbo.FactWeeklySales f
+    INNER JOIN dbo.DimProduct dp  ON f.product_key = dp.product_key
+    INNER JOIN dbo.DimTime dt     ON f.time_key    = dt.time_key
+    INNER JOIN dbo.DimCategory dc ON f.category_key = dc.category_key
+    WHERE dc.category_code = 'CRA'
+    GROUP BY dp.upc, dp.description, dt.week_id, dt.week_start_date
+)
+SELECT 
+    week_id,
+    week_start_date,
+    upc,
+    description,
+    weekly_units,
+    week_rank,
+    LAG(weekly_units) OVER (PARTITION BY upc ORDER BY week_id) AS prev_week_units,
+    weekly_units - LAG(weekly_units) OVER (PARTITION BY upc ORDER BY week_id) AS wow_change
+FROM weekly_product
+WHERE week_rank <= 10
+ORDER BY week_id, week_rank;
+GO
+
+-- ===============================
+-- OVERALL VALIDATION SUMMARY
+-- ===============================
+PRINT '========================================';
+PRINT '  BUSINESS QUESTION VERIFICATION COMPLETE';
+PRINT '========================================';
+
+-- Final row count summary
+SELECT 'DimCategory'          AS TableName, COUNT(*) AS RowCount FROM dbo.DimCategory
+UNION ALL SELECT 'DimPromotion',       COUNT(*) FROM dbo.DimPromotion
+UNION ALL SELECT 'DimTime',            COUNT(*) FROM dbo.DimTime
+UNION ALL SELECT 'DimStore',           COUNT(*) FROM dbo.DimStore
+UNION ALL SELECT 'DimProduct',         COUNT(*) FROM dbo.DimProduct
+UNION ALL SELECT 'FactWeeklySales',    COUNT(*) FROM dbo.FactWeeklySales
+ORDER BY TableName;
+GO
+```
 
 ### Appendix B: Mapping Tables (Excel)
 
@@ -955,4 +2044,8 @@ All SQL scripts used in this project are available in the `report_3/sql/` direct
 | 23 | SSMS — FactWeeklySales TOP 10 + COUNT |
 | 24 | SSMS Object Explorer — temp tables removed |
 | 25 | SSMS — BQ2 verification query results |
+| 26 | SSMS — BQ3 verification query results |
+| 27 | SSMS — BQ4 verification query results |
+| 28 | SSMS — BQ8 verification query results |
+| 29 | SSMS — BQ9 verification query results |
 
