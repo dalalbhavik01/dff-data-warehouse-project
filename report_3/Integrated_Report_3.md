@@ -383,7 +383,8 @@ The professor selected 5 BQs from our list of 10 for implementation:
 | stg_Store | STORE | Copy (CAST to INT) | Dimension | DimStore | store_id |
 | stg_Store | NAME | Transform: ISNULL → 'UNKNOWN' | Dimension | DimStore | store_name |
 | stg_Store | CITY | Transform: ISNULL → 'UNKNOWN' | Dimension | DimStore | city |
-| stg_Store | ZIP, ZONE, URBAN, WEEKVOL | Copy (CAST to INT) | Dimension | DimStore | zip_code, zone, is_urban, weekly_volume |
+| stg_Store | ZIP, ZONE, WEEKVOL | Copy (CAST to INT) | Dimension | DimStore | zip_code, zone, weekly_volume |
+| stg_Store | URBAN | Copy (CAST to BIT) | Dimension | DimStore | is_urban |
 | stg_Store | INCOME, EDUC, POVERTY, etc. | Copy (CAST to DECIMAL) | Dimension | DimStore | avg_income, education_pct, poverty_pct, etc. |
 | stg_Store | PRICLOW, PRICMED, PRICHIGH | Transform: CASE WHEN | Dimension | DimStore | price_tier |
 | (generated) | week_id 1–400 | Transform: DATEADD | Dimension | DimTime | week_start_date, month, quarter, year |
