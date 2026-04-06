@@ -161,7 +161,7 @@ The data warehouse logical design follows Kimball's bottom-up methodology for bu
 
 **Step 3: Design Fact Tables.** The fact table, FactWeeklySales, has a grain of one row per UPC × Store × Week with both base facts (units_sold, gross_profit) and derived facts (revenue, profit_margin_pct).
 
-**Step 4: Design Dimension Tables.** Each dimension uses surrogate keys (4-byte INT), retains natural keys as attributes for traceability, and is fully denormalized (no snowflaking — as emphasized in class, snowflaking slows browsing and causes problems with bitmapped indexes).
+**Step 4: Design Dimension Tables.** Each dimension uses surrogate keys (4-byte INT), retains natural keys as attributes for traceability, and is fully denormalized (no snowflaking — as emphasized in class, snowflaking slows browsing and degrades query performance).
 
 **Step 5: Feedback for the Design.** The schema was validated against all 10 BQs; all are answerable. The 5 selected BQs were specifically verified to be fully supported (Section 4.3).
 
@@ -228,7 +228,6 @@ The professor selected 5 BQs from our list of 10 for implementation:
 | case_pack | INT | Case pack quantity | CASE |
 | commodity_code | INT | Manufacturer code | COM_CODE |
 | item_number | BIGINT | Internal DFF item number | NITEM |
-| category_key (FK) | INT | → DimCategory | Derived from filename |
 
 **Grain:** One row per UPC | **Cardinality:** ~3,112 rows (4 categories)
 
@@ -242,7 +241,7 @@ The professor selected 5 BQs from our list of 10 for implementation:
 | city | VARCHAR(40) | City | CITY |
 | zip_code | VARCHAR(10) | ZIP code | ZIP |
 | zone | INT | Pricing zone | ZONE |
-| is_urban | INT | Urban flag (0/1) | URBAN |
+| is_urban | BIT | Urban flag (0/1) | URBAN |
 | weekly_volume | INT | Avg weekly volume | WEEKVOL |
 | avg_income | DECIMAL(10,2) | Avg area income (log) | INCOME |
 | education_pct | DECIMAL(5,2) | % higher education | EDUC |
@@ -380,7 +379,7 @@ The professor selected 5 BQs from our list of 10 for implementation:
 | stg_Product_* | SIZE | Copy | Dimension | DimProduct | size |
 | stg_Product_* | CASE_PACK | Copy | Dimension | DimProduct | case_pack |
 | stg_Product_* | NITEM | Copy | Dimension | DimProduct | item_number |
-| stg_Product_* | CATEGORY_CODE | Lookup → DimCategory | Dimension | DimProduct | category_key |
+
 | stg_Store | STORE | Copy (CAST to INT) | Dimension | DimStore | store_id |
 | stg_Store | NAME | Transform: ISNULL → 'UNKNOWN' | Dimension | DimStore | store_name |
 | stg_Store | CITY | Transform: ISNULL → 'UNKNOWN' | Dimension | DimStore | city |
@@ -394,9 +393,9 @@ The professor selected 5 BQs from our list of 10 for implementation:
 
 ### 4.7 Physical Design Plan
 
-The physical design transforms the logical star schemas into a deployable structure on SQL Server 2016. For the **data aggregate plan**, three summary tables are planned: agg_Weekly_Category_Sales (pre-aggregates units_sold and revenue by week and category to accelerate BQ2), agg_Store_Category_Revenue (aggregates total revenue by store and category for BQ8 quartile analysis), and agg_Weekly_Product_Sales (aggregates units_sold by week and product within a category for BQ9 ranking). These aggregate fact tables echo the original FactWeeklySales structure at reduced grain, following Kimball's guidance. For **indexing**, the FactWeeklySales table uses a clustered B-Tree index on the composite key (time_key, store_key, product_key) with non-clustered indexes on promotion_key and category_key for BQ-specific filtering. Dimension tables use unique B-Tree indexes on surrogate primary keys and bitmapped indexes on low-cardinality filter columns (deal_code, is_promoted, price_tier, is_urban, department). During bulk ETL loads, indexes are dropped before loading and recreated afterward to avoid performance degradation.
+The physical design transforms the logical star schema into a deployable structure on SQL Server 2016. For the **data aggregate plan**, three summary tables are planned: agg_Weekly_Category_Sales (pre-aggregates units_sold and revenue by week and category to accelerate BQ2), agg_Store_Category_Revenue (aggregates total revenue by store and category for BQ8 quartile analysis), and agg_Weekly_Product_Sales (aggregates units_sold by week and product within a category for BQ9 ranking). These aggregate fact tables echo the original FactWeeklySales structure at reduced grain, following Kimball's guidance. For **indexing**, the FactWeeklySales table uses a clustered index on sales_fact_id (primary key) with nonclustered indexes on (time_key, store_key, product_key) for composite lookups and single-column nonclustered indexes on promotion_key and category_key for BQ-specific filtering. Dimension tables use unique nonclustered indexes on surrogate primary keys and additional nonclustered indexes on frequently filtered columns (deal_code, is_promoted, price_tier, is_urban, department). During bulk ETL loads, indexes are dropped before loading and recreated afterward to avoid performance degradation.
 
-For **data standardization**, all naming follows consistent conventions: dimension tables prefixed with "Dim", fact tables with "Fact", staging tables with "stg_", and aggregate tables with "agg_". Column names use snake_case throughout. All surrogate keys are 4-byte INT, monetary values use DECIMAL, and boolean flags use BIT. For **storage**, the large FactWeeklySales table (~34.6M rows, ~4-5 GB) will be horizontally partitioned by time_key (yearly partitions). Total estimated storage is 8-10 GB including indexes. The independent data mart architecture ensures new categories or business processes can be added as new data marts without modifying existing tables.
+For **data standardization**, all naming follows consistent conventions: dimension tables prefixed with "Dim", fact tables with "Fact", staging tables with "stg_", and aggregate tables with "agg_". Column names use snake_case throughout. All surrogate keys are 4-byte INT, monetary values use DECIMAL, and boolean flags use BIT. For **storage**, the large FactWeeklySales table (~34.6M rows, ~4-5 GB) will be horizontally partitioned by time_key (yearly partitions). Total estimated storage is 8-10 GB including indexes. The data mart architecture ensures new categories or business processes can be added without modifying existing tables.
 
 ---
 
@@ -414,7 +413,7 @@ The data warehouse consists of 6 tables:
 | DimPromotion | Dimension | promotion_key, deal_code, deal_type, is_promoted | 4 |
 | DimTime | Dimension | time_key, week_id, week_start_date, week_end_date, month, month_name, quarter, year, fiscal_year, is_holiday_week | ~400 |
 | DimStore | Dimension | store_key, store_id, store_name, city, zip_code, zone, is_urban, weekly_volume, avg_income, education_pct, poverty_pct, avg_household_size, ethnic_diversity, population_density, price_tier, age_under_9_pct, age_over_60_pct, working_women_pct | ~107 |
-| DimProduct | Dimension | product_key, upc, description, size, case_pack, commodity_code, item_number, category_key | ~3,112 |
+| DimProduct | Dimension | product_key, upc, description, size, case_pack, commodity_code, item_number | ~3,112 |
 | FactWeeklySales | Fact | sales_fact_id, product_key, store_key, time_key, category_key, promotion_key, units_sold, unit_price, shelf_price, price_qty, revenue, gross_profit, profit_margin_pct | ~34.6M |
 
 ### 5.2 Data Sources
@@ -542,7 +541,7 @@ Dimensions are loaded **before** fact tables because fact table foreign keys ref
 
 **DimStore (~107 rows):** Loaded from stg_Store using an INSERT INTO...SELECT statement. Transformations applied during loading: CAST string columns to proper types, derive price_tier using CASE WHEN on the three binary pricing flags (PRICLOW/PRICMED/PRICHIGH), and filter out invalid rows (STORE = '.').
 
-**DimProduct (~3,112 rows):** Loaded from tmp_Product_All (UNION of 4 UPC staging tables) using INSERT INTO...SELECT with a JOIN to DimCategory to resolve category_key from CATEGORY_CODE. Product descriptions are cleaned during the staging transformation phase (strip # and ~ characters).
+**DimProduct (~3,112 rows):** Loaded from tmp_Product_All (UNION of 4 UPC staging tables) using INSERT INTO...SELECT. Product descriptions are cleaned during the staging transformation phase (strip # and ~ characters).
 
 ### 5.10 ETL for Fact Tables
 
@@ -574,13 +573,13 @@ CREATE DATABASE [team1_dw_area];
 
 ### 6.2 Staging Table Creation
 
-All 10 staging tables and 1 temporary table were created in `team1_staging_area`. The complete SQL statements are in Appendix A (`02_create_staging_tables.sql`).
+All 9 staging tables and 1 temporary table were created in `team1_staging_area`. The complete SQL statements are in Appendix A (`02_create_staging_tables.sql`).
 
 *[Screenshot 2: SSMS Object Explorer — staging tables listed]*
 
 ### 6.3 Data Mart Table Creation
 
-All 5 dimension tables and 2 fact tables were created in `team1_dw_area`, with dimensions created first to enable foreign key constraints. The complete SQL is in Appendix A (`03_create_dw_tables.sql`).
+All 5 dimension tables and 1 fact table were created in `team1_dw_area`, with dimensions created first to enable foreign key constraints. The complete SQL is in Appendix A (`03_create_dw_tables.sql`).
 
 *[Screenshot 3: SSMS Object Explorer — DW tables listed]*
 
@@ -844,7 +843,7 @@ quartiles AS (
 SELECT CASE WHEN q=1 THEN 'Bottom 25%' WHEN q IN (2,3) THEN 'Middle 50%'
             ELSE 'Top 25%' END AS tier,
        COUNT(*) AS stores, AVG(total_rev) AS avg_rev,
-       AVG(ds.avg_income) AS avg_income, SUM(ds.is_urban) AS urban_cnt
+       AVG(ds.avg_income) AS avg_income, SUM(CAST(ds.is_urban AS INT)) AS urban_cnt
 FROM quartiles qt
 JOIN DimStore ds ON qt.store_key = ds.store_key
 GROUP BY CASE WHEN q=1 THEN 'Bottom 25%' WHEN q IN (2,3) THEN 'Middle 50%'
@@ -915,9 +914,9 @@ All SQL scripts used in this project are available in the `report_3/sql/` direct
 |:--|:--|:--|
 | `01_create_databases.sql` | CREATE DATABASE statements | 35 |
 | `02_create_staging_tables.sql` | All staging table definitions | 159 |
-| `03_create_dw_tables.sql` | All dimension + fact table definitions | 161 |
+| `03_create_dw_tables.sql` | All dimension + fact table definitions | 158 |
 | `04_transform_staging.sql` | Data cleaning & transformation | 164 |
-| `05_load_dimensions.sql` | Dimension table population | 194 |
+| `05_load_dimensions.sql` | Dimension table population | 191 |
 | `06_load_facts.sql` | Fact table population | 114 |
 | `07_drop_temp_tables.sql` | Temporary table cleanup | 52 |
 | `08_verify_bq_queries.sql` | BQ verification queries | 182 |

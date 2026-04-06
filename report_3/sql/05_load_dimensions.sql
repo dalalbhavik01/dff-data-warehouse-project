@@ -127,7 +127,7 @@ SELECT
     s.CITY                                        AS city,
     s.ZIP                                         AS zip_code,
     CAST(s.ZONE AS INT)                           AS zone,
-    CAST(s.URBAN AS INT)                          AS is_urban,
+    CAST(s.URBAN AS BIT)                          AS is_urban,
     CAST(s.WEEKVOL AS INT)                        AS weekly_volume,
     CAST(s.INCOME AS DECIMAL(10,2))               AS avg_income,
     CAST(s.EDUC AS DECIMAL(5,2))                  AS education_pct,
@@ -157,20 +157,17 @@ GO
 -- 5. DimProduct (~3,112 rows — from staging)
 -- ===============================
 -- Loaded from tmp_Product_All in staging (UNION of 4 category tables).
--- Joins to DimCategory to get the surrogate category_key.
 
 INSERT INTO dbo.DimProduct 
-    (upc, description, size, case_pack, commodity_code, item_number, category_key)
+    (upc, description, size, case_pack, commodity_code, item_number)
 SELECT 
     p.UPC,
     p.DESCRIP                                     AS description,
     p.SIZE                                        AS size,
     p.CASE_PACK                                   AS case_pack,
     p.COM_CODE                                    AS commodity_code,
-    p.NITEM                                       AS item_number,
-    dc.category_key
-FROM [team1_staging_area].dbo.tmp_Product_All p
-INNER JOIN dbo.DimCategory dc ON p.CATEGORY_CODE = dc.category_code;
+    p.NITEM                                       AS item_number
+FROM [team1_staging_area].dbo.tmp_Product_All p;
 GO
 
 PRINT '5/5 DimProduct loaded:';

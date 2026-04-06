@@ -76,7 +76,7 @@ CREATE TABLE dbo.DimStore (
     city                 VARCHAR(40)       NULL,
     zip_code             VARCHAR(10)       NULL,
     zone                 INT               NULL,
-    is_urban             INT               NULL,
+    is_urban             BIT               NULL,
     weekly_volume        INT               NULL,
     avg_income           DECIMAL(10,2)     NULL,
     education_pct        DECIMAL(5,2)      NULL,
@@ -107,10 +107,7 @@ CREATE TABLE dbo.DimProduct (
     case_pack       INT               NULL,
     commodity_code  INT               NULL,
     item_number     BIGINT            NULL,
-    category_key    INT               NULL,
-    CONSTRAINT PK_DimProduct PRIMARY KEY CLUSTERED (product_key),
-    CONSTRAINT FK_DimProduct_Category FOREIGN KEY (category_key)
-        REFERENCES dbo.DimCategory(category_key)
+    CONSTRAINT PK_DimProduct PRIMARY KEY CLUSTERED (product_key)
 );
 GO
 
