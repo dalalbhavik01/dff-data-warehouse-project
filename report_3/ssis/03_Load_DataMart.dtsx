@@ -1,0 +1,824 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="4/6/2026 12:00:00 AM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:DTSID="{3E6A9271-F553-441E-9606-0C1690ACEB91}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:ObjectName="03_Load_DataMart"
+  DTS:PackageFormatVersion="8"
+  DTS:VersionBuild="1"
+  DTS:VersionMajor="1">
+  <DTS:Property DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[OLE_Staging]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{A46CF277-DF53-461B-BCD7-C6E59F198C49}"
+      DTS:ObjectName="OLE_Staging">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=infodata16.mbs.tamu.edu;Initial Catalog=team1_staging_area;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[OLE_DW]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{5419AA05-0450-4302-8D68-0D36BF7CC19E}"
+      DTS:ObjectName="OLE_DW">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=infodata16.mbs.tamu.edu;Initial Catalog=team1_dw_area;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\=================================================="
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{F8AA742E-4242-4DF5-99B7-6F59B3514E4E}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:ObjectName="==================================================">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask"
+          SQLTask:Connection="OLE_DW"
+          SQLTask:SqlStatementSource="-- ============================================================
+-- Script 05: Load Dimension Tables
+-- DFF Data Warehouse Project — Report 3
+-- Run AFTER Script 04 (Transform). Loads dimensions BEFORE facts.
+-- Order: DimCategory → DimPromotion → DimTime → DimStore → DimProduct
+-- ============================================================
+USE [team1_dw_area];" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\==============================="
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{A2B29EAB-EBC3-4179-B619-6CB9BE810E1C}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:ObjectName="===============================">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask"
+          SQLTask:Connection="OLE_DW"
+          SQLTask:SqlStatementSource="-- ===============================
+-- 1. DimCategory (28 rows — hardcoded)
+-- ===============================
+-- These are the 28 product categories from the DFF dataset.
+-- Category codes are derived from the 3-letter filename abbreviations.
+-- Department groupings are based on standard grocery store organization.
+
+INSERT INTO dbo.DimCategory (category_code, category_name, department) VALUES
+(&#x27;ANA&#x27;, &#x27;Analgesics&#x27;,          &#x27;Health &amp; Beauty&#x27;),
+(&#x27;BAT&#x27;, &#x27;Bath Soap&#x27;,           &#x27;Health &amp; Beauty&#x27;),
+(&#x27;BER&#x27;, &#x27;Beer&#x27;,                &#x27;Beverages&#x27;),
+(&#x27;BJC&#x27;, &#x27;Bottled Juices&#x27;,      &#x27;Beverages&#x27;),
+(&#x27;CER&#x27;, &#x27;Cereals&#x27;,             &#x27;Grocery&#x27;),
+(&#x27;CHE&#x27;, &#x27;Cheeses&#x27;,             &#x27;Dairy&#x27;),
+(&#x27;CIG&#x27;, &#x27;Cigarettes&#x27;,          &#x27;Tobacco&#x27;),
+(&#x27;COO&#x27;, &#x27;Cookies&#x27;,             &#x27;Snacks&#x27;),
+(&#x27;CRA&#x27;, &#x27;Crackers&#x27;,            &#x27;Snacks&#x27;),
+(&#x27;CSO&#x27;, &#x27;Canned Soup&#x27;,         &#x27;Grocery&#x27;),
+(&#x27;DID&#x27;, &#x27;Dish Detergent&#x27;,      &#x27;Household&#x27;),
+(&#x27;FEC&#x27;, &#x27;Front End Candies&#x27;,   &#x27;Snacks&#x27;),
+(&#x27;FRD&#x27;, &#x27;Frozen Dinners&#x27;,      &#x27;Frozen&#x27;),
+(&#x27;FRE&#x27;, &#x27;Frozen Entrees&#x27;,      &#x27;Frozen&#x27;),
+(&#x27;FRJ&#x27;, &#x27;Frozen Juices&#x27;,       &#x27;Beverages&#x27;),
+(&#x27;FSF&#x27;, &#x27;Fabric Softeners&#x27;,    &#x27;Household&#x27;),
+(&#x27;GRO&#x27;, &#x27;Grooming Products&#x27;,   &#x27;Health &amp; Beauty&#x27;),
+(&#x27;LND&#x27;, &#x27;Laundry Detergents&#x27;,  &#x27;Household&#x27;),
+(&#x27;OAT&#x27;, &#x27;Oatmeal&#x27;,             &#x27;Grocery&#x27;),
+(&#x27;PTW&#x27;, &#x27;Paper Towels&#x27;,        &#x27;Household&#x27;),
+(&#x27;SDR&#x27;, &#x27;Soft Drinks&#x27;,         &#x27;Beverages&#x27;),
+(&#x27;SHA&#x27;, &#x27;Shampoos&#x27;,            &#x27;Health &amp; Beauty&#x27;),
+(&#x27;SNA&#x27;, &#x27;Snack Crackers&#x27;,      &#x27;Snacks&#x27;),
+(&#x27;SOA&#x27;, &#x27;Soaps&#x27;,               &#x27;Health &amp; Beauty&#x27;),
+(&#x27;TBR&#x27;, &#x27;Toothbrushes&#x27;,        &#x27;Health &amp; Beauty&#x27;),
+(&#x27;TNA&#x27;, &#x27;Canned Tuna&#x27;,         &#x27;Grocery&#x27;),
+(&#x27;TPA&#x27;, &#x27;Toothpaste&#x27;,          &#x27;Health &amp; Beauty&#x27;),
+(&#x27;TTI&#x27;, &#x27;Toilet Tissue&#x27;,       &#x27;Household&#x27;);" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\05_load_dimensions_Print_2"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{2215312A-CA59-4AE7-B6A5-8E4AE91E07AF}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:ObjectName="05_load_dimensions_Print_2">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask"
+          SQLTask:Connection="OLE_DW"
+          SQLTask:SqlStatementSource="PRINT &#x27;1/5 DimCategory loaded:&#x27;;
+SELECT COUNT(*) AS RowCount FROM dbo.DimCategory;
+SELECT * FROM dbo.DimCategory ORDER BY category_key;" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\==============================="
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{B206EFAF-479E-429F-81C2-E4DF38AC6917}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:ObjectName="===============================">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask"
+          SQLTask:Connection="OLE_DW"
+          SQLTask:SqlStatementSource="-- ===============================
+-- 2. DimPromotion (4 rows — hardcoded)
+-- ===============================
+-- Maps the SALE column values from Movement files to descriptive labels.
+-- NULL/blank/&#x27;N&#x27; → &#x27;No Promotion&#x27;, B → &#x27;Bonus Buy&#x27;, C → &#x27;Coupon&#x27;, S → &#x27;Sale/Discount&#x27;
+-- deal_code for &#x27;No Promotion&#x27; is stored as &#x27;N&#x27; (transformed from NULL/blank during staging).
+
+INSERT INTO dbo.DimPromotion (deal_code, deal_type, is_promoted) VALUES
+(&#x27;N&#x27;,  &#x27;No Promotion&#x27;, 0),
+(&#x27;B&#x27;,  &#x27;Bonus Buy&#x27;,    1),
+(&#x27;C&#x27;,  &#x27;Coupon&#x27;,       1),
+(&#x27;S&#x27;,  &#x27;Sale/Discount&#x27;, 1);" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\05_load_dimensions_Print_4"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{82DD6E3F-3AD2-432A-9B88-2A002A52A664}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:ObjectName="05_load_dimensions_Print_4">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask"
+          SQLTask:Connection="OLE_DW"
+          SQLTask:SqlStatementSource="PRINT &#x27;2/5 DimPromotion loaded:&#x27;;
+SELECT * FROM dbo.DimPromotion;" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\==============================="
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{5CAFA027-71D0-41D0-9CB0-6B4C6A483F75}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:ObjectName="===============================">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask"
+          SQLTask:Connection="OLE_DW"
+          SQLTask:SqlStatementSource="-- ===============================
+-- 3. DimTime (~400 rows — generated via CTE)
+-- ===============================
+-- DFF uses proprietary week IDs (WEEK column in Movement files).
+-- Week 1 corresponds to September 14, 1989 per the DFF codebook.
+-- Each subsequent week_id increments by 7 days.
+-- We generate week_id 1 through 400 to cover the full dataset period.
+
+;WITH WeekCTE AS (
+    SELECT 1 AS week_id
+    UNION ALL
+    SELECT week_id + 1 FROM WeekCTE WHERE week_id &lt; 400
+)
+INSERT INTO dbo.DimTime 
+    (week_id, week_start_date, week_end_date, [month], month_name, 
+     [quarter], [year], fiscal_year, is_holiday_week)
+SELECT 
+    week_id,
+    DATEADD(WEEK, week_id - 1, &#x27;1989-09-14&#x27;)     AS week_start_date,
+    DATEADD(DAY, 6, DATEADD(WEEK, week_id - 1, &#x27;1989-09-14&#x27;)) AS week_end_date,
+    MONTH(DATEADD(WEEK, week_id - 1, &#x27;1989-09-14&#x27;))           AS [month],
+    DATENAME(MONTH, DATEADD(WEEK, week_id - 1, &#x27;1989-09-14&#x27;)) AS month_name,
+    DATEPART(QUARTER, DATEADD(WEEK, week_id - 1, &#x27;1989-09-14&#x27;)) AS [quarter],
+    YEAR(DATEADD(WEEK, week_id - 1, &#x27;1989-09-14&#x27;))            AS [year],
+    YEAR(DATEADD(WEEK, week_id - 1, &#x27;1989-09-14&#x27;))            AS fiscal_year,
+    -- Mark common US holiday weeks (Thanksgiving week ~47-48, Christmas ~52, July 4th ~27)
+    CASE 
+        WHEN DATEPART(WEEK, DATEADD(WEEK, week_id - 1, &#x27;1989-09-14&#x27;)) IN (47, 48, 52, 1, 27)
+        THEN 1 ELSE 0 
+    END AS is_holiday_week
+FROM WeekCTE
+OPTION (MAXRECURSION 400);" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\05_load_dimensions_Print_6"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{C94B5BD2-64EB-4D66-B6E3-6F798959E790}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:ObjectName="05_load_dimensions_Print_6">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask"
+          SQLTask:Connection="OLE_DW"
+          SQLTask:SqlStatementSource="PRINT &#x27;3/5 DimTime loaded:&#x27;;
+SELECT COUNT(*) AS RowCount FROM dbo.DimTime;
+SELECT TOP 10 * FROM dbo.DimTime ORDER BY time_key;" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\==============================="
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{DFA3F5A7-F3CB-40DE-BEF0-12AD21800B55}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:ObjectName="===============================">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask"
+          SQLTask:Connection="OLE_DW"
+          SQLTask:SqlStatementSource="-- ===============================
+-- 4. DimStore (~107 rows — from staging)
+-- ===============================
+-- Loaded from cleaned stg_Store in the staging database.
+-- Transformations applied during INSERT:
+--   - CAST string columns to proper data types
+--   - Derive price_tier from binary flags (PRICLOW/PRICMED/PRICHIGH)
+--   - Replace NULL NAME/CITY with &#x27;UNKNOWN&#x27; (already done in Script 04)
+
+INSERT INTO dbo.DimStore 
+    (store_id, store_name, city, zip_code, zone, is_urban, weekly_volume,
+     avg_income, education_pct, poverty_pct, avg_household_size,
+     ethnic_diversity, population_density, price_tier,
+     age_under_9_pct, age_over_60_pct, working_women_pct)
+SELECT 
+    CAST(s.STORE AS INT)                          AS store_id,
+    s.NAME                                        AS store_name,
+    s.CITY                                        AS city,
+    s.ZIP                                         AS zip_code,
+    CAST(s.ZONE AS INT)                           AS zone,
+    CAST(s.URBAN AS BIT)                          AS is_urban,
+    CAST(s.WEEKVOL AS INT)                        AS weekly_volume,
+    CAST(s.INCOME AS DECIMAL(10,2))               AS avg_income,
+    CAST(s.EDUC AS DECIMAL(5,2))                  AS education_pct,
+    CAST(s.POVERTY AS DECIMAL(5,2))               AS poverty_pct,
+    CAST(s.HSIZEAVG AS DECIMAL(4,2))              AS avg_household_size,
+    CAST(s.ETHNIC AS DECIMAL(5,2))                AS ethnic_diversity,
+    CAST(s.DENSITY AS DECIMAL(10,2))              AS population_density,
+    CASE 
+        WHEN s.PRICLOW = &#x27;1&#x27;  THEN &#x27;Low&#x27;
+        WHEN s.PRICMED = &#x27;1&#x27;  THEN &#x27;Medium&#x27;
+        WHEN s.PRICHIGH = &#x27;1&#x27; THEN &#x27;High&#x27;
+        ELSE &#x27;Unknown&#x27;
+    END                                           AS price_tier,
+    CAST(s.AGE9 AS DECIMAL(5,2))                  AS age_under_9_pct,
+    CAST(s.AGE60 AS DECIMAL(5,2))                 AS age_over_60_pct,
+    CAST(s.WORKWOM AS DECIMAL(5,2))               AS working_women_pct
+FROM [team1_staging_area].dbo.stg_Store s
+WHERE ISNUMERIC(s.STORE) = 1;" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\05_load_dimensions_Print_8"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{4C67BE39-6955-4B3B-AF09-67E09977B930}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:ObjectName="05_load_dimensions_Print_8">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask"
+          SQLTask:Connection="OLE_DW"
+          SQLTask:SqlStatementSource="PRINT &#x27;4/5 DimStore loaded:&#x27;;
+SELECT COUNT(*) AS RowCount FROM dbo.DimStore;
+SELECT TOP 10 * FROM dbo.DimStore ORDER BY store_key;" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\==============================="
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{82C77C46-5B52-4ABC-A51B-7CAC41EE1E7F}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:ObjectName="===============================">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask"
+          SQLTask:Connection="OLE_DW"
+          SQLTask:SqlStatementSource="-- ===============================
+-- 5. DimProduct (~3,112 rows — from staging)
+-- ===============================
+-- Loaded from tmp_Product_All in staging (UNION of 4 category tables).
+
+INSERT INTO dbo.DimProduct 
+    (upc, description, size, case_pack, commodity_code, item_number)
+SELECT 
+    p.UPC,
+    p.DESCRIP                                     AS description,
+    p.SIZE                                        AS size,
+    p.CASE_PACK                                   AS case_pack,
+    p.COM_CODE                                    AS commodity_code,
+    p.NITEM                                       AS item_number
+FROM [team1_staging_area].dbo.tmp_Product_All p;" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\05_load_dimensions_Print_10"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{1B39BAD8-A1C2-4D5A-B2FF-63F28A5C4F97}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:ObjectName="05_load_dimensions_Print_10">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask"
+          SQLTask:Connection="OLE_DW"
+          SQLTask:SqlStatementSource="PRINT &#x27;5/5 DimProduct loaded:&#x27;;
+SELECT COUNT(*) AS RowCount FROM dbo.DimProduct;
+SELECT TOP 10 * FROM dbo.DimProduct ORDER BY product_key;" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\==============================="
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{C44091AA-A1B0-406E-BCB1-9FE0371DF6C2}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:ObjectName="===============================">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask"
+          SQLTask:Connection="OLE_DW"
+          SQLTask:SqlStatementSource="-- ===============================
+-- DIMENSION LOAD VERIFICATION
+-- ===============================
+PRINT &#x27;========================================&#x27;;
+PRINT &#x27;  ALL DIMENSION TABLES LOADED&#x27;;
+PRINT &#x27;========================================&#x27;;
+
+SELECT &#x27;DimCategory&#x27;  AS TableName, COUNT(*) AS RowCount FROM dbo.DimCategory
+UNION ALL SELECT &#x27;DimPromotion&#x27;, COUNT(*) FROM dbo.DimPromotion
+UNION ALL SELECT &#x27;DimTime&#x27;,      COUNT(*) FROM dbo.DimTime
+UNION ALL SELECT &#x27;DimStore&#x27;,     COUNT(*) FROM dbo.DimStore
+UNION ALL SELECT &#x27;DimProduct&#x27;,   COUNT(*) FROM dbo.DimProduct
+ORDER BY TableName;" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\=================================================="
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{2E6BEAC1-D9D9-4D9D-9C92-23EC4541F0E5}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:ObjectName="==================================================">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask"
+          SQLTask:Connection="OLE_DW"
+          SQLTask:SqlStatementSource="-- ============================================================
+-- Script 06: Load Fact Tables
+-- DFF Data Warehouse Project — Report 3
+-- Run AFTER Script 05 (Load Dimensions).
+-- Dimensions must be populated first because fact tables
+-- reference dimension surrogate keys via foreign keys.
+-- ============================================================
+USE [team1_dw_area];" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\==============================="
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{B4E4EA10-52E3-40AC-90DE-D4DA49B8CDB6}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:ObjectName="===============================">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask"
+          SQLTask:Connection="OLE_DW"
+          SQLTask:SqlStatementSource="-- ===============================
+-- 1. FactWeeklySales
+-- ===============================
+-- Grain: One row per UPC × Store × Week
+-- Sources: 4 movement staging tables (SDR, CSO, TPA, CRA)
+-- Filters: OK = 1 (valid data), PRICE &gt; 0 (avoid zero-price rows)
+-- Derived columns:
+--   unit_price        = PRICE / QTY
+--   revenue           = MOVE × (PRICE / QTY)
+--   profit_margin_pct = (PROFIT / revenue) × 100
+
+PRINT &#x27;Loading FactWeeklySales... (this may take several minutes for ~34M rows)&#x27;;" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\06_load_facts_2"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{4363233D-E7F3-4D3F-A62C-3A23F8E210D4}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:ObjectName="06_load_facts_2">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask"
+          SQLTask:Connection="OLE_DW"
+          SQLTask:SqlStatementSource="INSERT INTO dbo.FactWeeklySales
+    (product_key, store_key, time_key, category_key, promotion_key,
+     units_sold, unit_price, shelf_price, price_qty, revenue, 
+     gross_profit, profit_margin_pct)
+SELECT 
+    dp.product_key,
+    ds.store_key,
+    dt.time_key,
+    dc.category_key,
+    dpr.promotion_key,
+    sm.MOVE                                                    AS units_sold,
+    CASE WHEN sm.QTY &gt; 0 
+         THEN CAST(sm.PRICE / sm.QTY AS DECIMAL(8,2)) 
+         ELSE NULL 
+    END                                                        AS unit_price,
+    CAST(sm.PRICE AS DECIMAL(8,2))                             AS shelf_price,
+    sm.QTY                                                     AS price_qty,
+    CASE WHEN sm.QTY &gt; 0 
+         THEN CAST(sm.MOVE * (sm.PRICE / sm.QTY) AS DECIMAL(12,2)) 
+         ELSE 0 
+    END                                                        AS revenue,
+    CAST(sm.PROFIT AS DECIMAL(10,2))                           AS gross_profit,
+    CASE WHEN sm.MOVE &gt; 0 AND sm.QTY &gt; 0 AND sm.PRICE &gt; 0
+         THEN CAST(
+              (sm.PROFIT / (sm.MOVE * (sm.PRICE / sm.QTY))) * 100 
+              AS DECIMAL(5,2))
+         ELSE NULL 
+    END                                                        AS profit_margin_pct
+FROM (
+    -- UNION ALL of the 4 category movement staging tables
+    SELECT UPC, STORE, WEEK, MOVE, QTY, PRICE, SALE, PROFIT, OK, CATEGORY_CODE 
+    FROM [team1_staging_area].dbo.stg_Movement_SDR 
+    WHERE OK = 1 AND PRICE &gt; 0
+    UNION ALL
+    SELECT UPC, STORE, WEEK, MOVE, QTY, PRICE, SALE, PROFIT, OK, CATEGORY_CODE 
+    FROM [team1_staging_area].dbo.stg_Movement_CSO 
+    WHERE OK = 1 AND PRICE &gt; 0
+    UNION ALL
+    SELECT UPC, STORE, WEEK, MOVE, QTY, PRICE, SALE, PROFIT, OK, CATEGORY_CODE 
+    FROM [team1_staging_area].dbo.stg_Movement_TPA 
+    WHERE OK = 1 AND PRICE &gt; 0
+    UNION ALL
+    SELECT UPC, STORE, WEEK, MOVE, QTY, PRICE, SALE, PROFIT, OK, CATEGORY_CODE 
+    FROM [team1_staging_area].dbo.stg_Movement_CRA 
+    WHERE OK = 1 AND PRICE &gt; 0
+) sm
+-- Join to dimension tables to get surrogate keys
+INNER JOIN dbo.DimProduct dp 
+    ON sm.UPC = dp.upc
+INNER JOIN dbo.DimStore ds 
+    ON sm.STORE = ds.store_id
+INNER JOIN dbo.DimTime dt 
+    ON sm.WEEK = dt.week_id
+INNER JOIN dbo.DimCategory dc 
+    ON sm.CATEGORY_CODE = dc.category_code
+INNER JOIN dbo.DimPromotion dpr 
+    ON sm.SALE = dpr.deal_code;" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\06_load_facts_Print_3"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{ADE5FF54-2281-4A5D-81B5-CDADCBFB841A}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:ObjectName="06_load_facts_Print_3">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask"
+          SQLTask:Connection="OLE_DW"
+          SQLTask:SqlStatementSource="PRINT &#x27;FactWeeklySales loaded:&#x27;;
+SELECT COUNT(*) AS RowCount FROM dbo.FactWeeklySales;
+SELECT TOP 10 * FROM dbo.FactWeeklySales ORDER BY sales_fact_id;" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Row_count_by_category_verification"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{B3C248B6-3552-49BA-83DB-3381C369FD94}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:ObjectName="Row_count_by_category_verification">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask"
+          SQLTask:Connection="OLE_DW"
+          SQLTask:SqlStatementSource="-- Row count by category (verification)
+SELECT dc.category_name, COUNT(*) AS FactRows
+FROM dbo.FactWeeklySales f
+JOIN dbo.DimCategory dc ON f.category_key = dc.category_key
+GROUP BY dc.category_name
+ORDER BY FactRows DESC;" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\==============================="
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{28857B8B-B5A9-424F-B4E8-799D362453F3}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:ObjectName="===============================">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask"
+          SQLTask:Connection="OLE_DW"
+          SQLTask:SqlStatementSource="-- ===============================
+-- FACT TABLE VERIFICATION
+-- ===============================
+PRINT &#x27;========================================&#x27;;
+PRINT &#x27;  FACT TABLE LOADED&#x27;;
+PRINT &#x27;========================================&#x27;;
+
+SELECT &#x27;FactWeeklySales&#x27; AS TableName, COUNT(*) AS RowCount FROM dbo.FactWeeklySales;" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Quick_data_quality_check:_any_NULL_keys?"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{5F239FEF-039B-4DFF-835D-FE0BC805B36F}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:ObjectName="Quick_data_quality_check:_any_NULL_keys?">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask"
+          SQLTask:Connection="OLE_DW"
+          SQLTask:SqlStatementSource="-- Quick data quality check: any NULL keys?
+SELECT &#x27;NULL product_key&#x27;   AS Issue, COUNT(*) AS Cnt FROM dbo.FactWeeklySales WHERE product_key IS NULL
+UNION ALL SELECT &#x27;NULL store_key&#x27;,   COUNT(*) FROM dbo.FactWeeklySales WHERE store_key IS NULL
+UNION ALL SELECT &#x27;NULL time_key&#x27;,    COUNT(*) FROM dbo.FactWeeklySales WHERE time_key IS NULL
+UNION ALL SELECT &#x27;NULL category_key&#x27;, COUNT(*) FROM dbo.FactWeeklySales WHERE category_key IS NULL
+UNION ALL SELECT &#x27;NULL promotion_key&#x27;, COUNT(*) FROM dbo.FactWeeklySales WHERE promotion_key IS NULL;" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\=================================================="
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{953816CB-904E-4BAE-A6D2-18DE8C028C31}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:ObjectName="==================================================">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask"
+          SQLTask:Connection="OLE_Staging"
+          SQLTask:SqlStatementSource="-- ============================================================
+-- Script 07: Drop Temporary Tables from Staging Area
+-- DFF Data Warehouse Project — Report 3
+-- Run AFTER all dimension and fact tables have been loaded.
+-- The assignment requires: &quot;Once loading of each table is done,
+-- remove all temp tables from the staging area.&quot;
+-- ============================================================
+USE [team1_staging_area];" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\==============================="
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{1E2A8764-6886-4C96-9F20-91309362C1F2}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:ObjectName="===============================">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask"
+          SQLTask:Connection="OLE_Staging"
+          SQLTask:SqlStatementSource="-- ===============================
+-- LIST OF TEMPORARY TABLES
+-- ===============================
+-- The following temporary tables were created in the staging area
+-- during the transformation phase (Script 04) and are no longer
+-- needed after the data mart has been populated:
+--
+--   1. tmp_Product_All  — UNION of 4 UPC category staging tables
+--                          Used to load DimProduct
+--
+-- Note: The original staging tables (stg_Movement_*, stg_Product_*,
+-- stg_Store) are also temporary but may be
+-- retained for audit/verification purposes until the project is
+-- fully validated.
+
+PRINT &#x27;Dropping temporary tables from staging area...&#x27;;" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Drop_tmp_Product_All"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{5BD05D08-36D8-49AD-A4B2-B257899C0BA5}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:ObjectName="Drop_tmp_Product_All">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask"
+          SQLTask:Connection="OLE_Staging"
+          SQLTask:SqlStatementSource="-- Drop tmp_Product_All
+IF OBJECT_ID(&#x27;dbo.tmp_Product_All&#x27;, &#x27;U&#x27;) IS NOT NULL
+BEGIN
+    DROP TABLE dbo.tmp_Product_All;
+    PRINT &#x27;DROPPED: tmp_Product_All&#x27;;
+END" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\==============================="
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{70654EEA-9A58-4447-854F-0638DD4267EE}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:ObjectName="===============================">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask"
+          SQLTask:Connection="OLE_Staging"
+          SQLTask:SqlStatementSource="-- ===============================
+-- VERIFICATION
+-- ===============================
+-- Show remaining tables in staging area
+SELECT TABLE_NAME
+FROM INFORMATION_SCHEMA.TABLES
+WHERE TABLE_SCHEMA = &#x27;dbo&#x27; AND TABLE_TYPE = &#x27;BASE TABLE&#x27;
+ORDER BY TABLE_NAME;" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\07_drop_temp_tables_Print_4"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{C2E42C3D-D20E-48A5-AD94-D02AAA40338C}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:ObjectName="07_drop_temp_tables_Print_4">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask"
+          SQLTask:Connection="OLE_Staging"
+          SQLTask:SqlStatementSource="PRINT &#x27;========================================&#x27;;
+PRINT &#x27;  TEMPORARY TABLES REMOVED&#x27;;
+PRINT &#x27;  Remaining tables are base staging tables&#x27;;
+PRINT &#x27;  retained for audit/verification.&#x27;;
+PRINT &#x27;========================================&#x27;;" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[==================================================_to_===============================]"
+      DTS:CreationName=""
+      DTS:DTSID="{1DDD793F-4490-4A73-836F-7101610BF09A}"
+      DTS:From="Package\=================================================="
+      DTS:To="Package\==============================="
+      DTS:ObjectName="==================================================_to_===============================" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[===============================_to_05_load_dimensions_Print_2]"
+      DTS:CreationName=""
+      DTS:DTSID="{026F3647-3D2B-4542-B7E8-03E80023C23E}"
+      DTS:From="Package\==============================="
+      DTS:To="Package\05_load_dimensions_Print_2"
+      DTS:ObjectName="===============================_to_05_load_dimensions_Print_2" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[05_load_dimensions_Print_2_to_===============================]"
+      DTS:CreationName=""
+      DTS:DTSID="{49F8D399-3AF2-42AC-9380-5CEB468AABF6}"
+      DTS:From="Package\05_load_dimensions_Print_2"
+      DTS:To="Package\==============================="
+      DTS:ObjectName="05_load_dimensions_Print_2_to_===============================" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[===============================_to_05_load_dimensions_Print_4]"
+      DTS:CreationName=""
+      DTS:DTSID="{C84E468D-D89A-4164-93B5-D8361A5E68C3}"
+      DTS:From="Package\==============================="
+      DTS:To="Package\05_load_dimensions_Print_4"
+      DTS:ObjectName="===============================_to_05_load_dimensions_Print_4" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[05_load_dimensions_Print_4_to_===============================]"
+      DTS:CreationName=""
+      DTS:DTSID="{208227F8-544A-4F8A-9443-A400BEA21C4E}"
+      DTS:From="Package\05_load_dimensions_Print_4"
+      DTS:To="Package\==============================="
+      DTS:ObjectName="05_load_dimensions_Print_4_to_===============================" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[===============================_to_05_load_dimensions_Print_6]"
+      DTS:CreationName=""
+      DTS:DTSID="{E4A82568-09AA-41B9-A678-4516519BEC34}"
+      DTS:From="Package\==============================="
+      DTS:To="Package\05_load_dimensions_Print_6"
+      DTS:ObjectName="===============================_to_05_load_dimensions_Print_6" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[05_load_dimensions_Print_6_to_===============================]"
+      DTS:CreationName=""
+      DTS:DTSID="{63A98EFF-1CED-42A9-B867-E6F5A0EA0D55}"
+      DTS:From="Package\05_load_dimensions_Print_6"
+      DTS:To="Package\==============================="
+      DTS:ObjectName="05_load_dimensions_Print_6_to_===============================" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[===============================_to_05_load_dimensions_Print_8]"
+      DTS:CreationName=""
+      DTS:DTSID="{B5F24E64-D161-4DBD-AD89-751437544C03}"
+      DTS:From="Package\==============================="
+      DTS:To="Package\05_load_dimensions_Print_8"
+      DTS:ObjectName="===============================_to_05_load_dimensions_Print_8" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[05_load_dimensions_Print_8_to_===============================]"
+      DTS:CreationName=""
+      DTS:DTSID="{8649CD93-C8FD-46CF-892D-D0C55C3369C9}"
+      DTS:From="Package\05_load_dimensions_Print_8"
+      DTS:To="Package\==============================="
+      DTS:ObjectName="05_load_dimensions_Print_8_to_===============================" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[===============================_to_05_load_dimensions_Print_10]"
+      DTS:CreationName=""
+      DTS:DTSID="{00A0B290-72FF-4C05-B3D3-F847D5ECE5B8}"
+      DTS:From="Package\==============================="
+      DTS:To="Package\05_load_dimensions_Print_10"
+      DTS:ObjectName="===============================_to_05_load_dimensions_Print_10" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[05_load_dimensions_Print_10_to_===============================]"
+      DTS:CreationName=""
+      DTS:DTSID="{97D3D8DC-A5F7-4AE8-84FF-FEFEB67F8CC8}"
+      DTS:From="Package\05_load_dimensions_Print_10"
+      DTS:To="Package\==============================="
+      DTS:ObjectName="05_load_dimensions_Print_10_to_===============================" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[===============================_to_==================================================]"
+      DTS:CreationName=""
+      DTS:DTSID="{236E76AF-6647-425B-9ED6-0D515EDE846D}"
+      DTS:From="Package\==============================="
+      DTS:To="Package\=================================================="
+      DTS:ObjectName="===============================_to_==================================================" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[==================================================_to_===============================]"
+      DTS:CreationName=""
+      DTS:DTSID="{AD28E6D4-DFF6-4F4A-BCF4-0A54F56D755B}"
+      DTS:From="Package\=================================================="
+      DTS:To="Package\==============================="
+      DTS:ObjectName="==================================================_to_===============================" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[===============================_to_06_load_facts_2]"
+      DTS:CreationName=""
+      DTS:DTSID="{ECE86098-C289-431C-B77B-96F038136B7D}"
+      DTS:From="Package\==============================="
+      DTS:To="Package\06_load_facts_2"
+      DTS:ObjectName="===============================_to_06_load_facts_2" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[06_load_facts_2_to_06_load_facts_Print_3]"
+      DTS:CreationName=""
+      DTS:DTSID="{21096A76-C0E5-46C8-A792-90F26787ECE5}"
+      DTS:From="Package\06_load_facts_2"
+      DTS:To="Package\06_load_facts_Print_3"
+      DTS:ObjectName="06_load_facts_2_to_06_load_facts_Print_3" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[06_load_facts_Print_3_to_Row_count_by_category_verification]"
+      DTS:CreationName=""
+      DTS:DTSID="{7B81F57A-8527-40E9-8729-E489837E4AC8}"
+      DTS:From="Package\06_load_facts_Print_3"
+      DTS:To="Package\Row_count_by_category_verification"
+      DTS:ObjectName="06_load_facts_Print_3_to_Row_count_by_category_verification" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Row_count_by_category_verification_to_===============================]"
+      DTS:CreationName=""
+      DTS:DTSID="{D47128B6-533E-4F73-8966-93A1B1BEC193}"
+      DTS:From="Package\Row_count_by_category_verification"
+      DTS:To="Package\==============================="
+      DTS:ObjectName="Row_count_by_category_verification_to_===============================" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[===============================_to_Quick_data_quality_check:_any_NULL_keys?]"
+      DTS:CreationName=""
+      DTS:DTSID="{DEF12F51-09FA-48C1-A335-8533E71D9D0C}"
+      DTS:From="Package\==============================="
+      DTS:To="Package\Quick_data_quality_check:_any_NULL_keys?"
+      DTS:ObjectName="===============================_to_Quick_data_quality_check:_any_NULL_keys?" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Quick_data_quality_check:_any_NULL_keys?_to_==================================================]"
+      DTS:CreationName=""
+      DTS:DTSID="{844D463A-0331-4393-B1CB-AA9844073AF5}"
+      DTS:From="Package\Quick_data_quality_check:_any_NULL_keys?"
+      DTS:To="Package\=================================================="
+      DTS:ObjectName="Quick_data_quality_check:_any_NULL_keys?_to_==================================================" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[==================================================_to_===============================]"
+      DTS:CreationName=""
+      DTS:DTSID="{AEC53963-9809-4300-86B2-04942852D92B}"
+      DTS:From="Package\=================================================="
+      DTS:To="Package\==============================="
+      DTS:ObjectName="==================================================_to_===============================" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[===============================_to_Drop_tmp_Product_All]"
+      DTS:CreationName=""
+      DTS:DTSID="{2307B876-5EFE-493E-AAD9-0DE56ABF474D}"
+      DTS:From="Package\==============================="
+      DTS:To="Package\Drop_tmp_Product_All"
+      DTS:ObjectName="===============================_to_Drop_tmp_Product_All" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Drop_tmp_Product_All_to_===============================]"
+      DTS:CreationName=""
+      DTS:DTSID="{C0D774BE-E84A-4823-9504-293D98A89329}"
+      DTS:From="Package\Drop_tmp_Product_All"
+      DTS:To="Package\==============================="
+      DTS:ObjectName="Drop_tmp_Product_All_to_===============================" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[===============================_to_07_drop_temp_tables_Print_4]"
+      DTS:CreationName=""
+      DTS:DTSID="{1B46C153-F04E-4608-80B8-E195A1C782B7}"
+      DTS:From="Package\==============================="
+      DTS:To="Package\07_drop_temp_tables_Print_4"
+      DTS:ObjectName="===============================_to_07_drop_temp_tables_Print_4" />
+  </DTS:PrecedenceConstraints>
+</DTS:Executable>

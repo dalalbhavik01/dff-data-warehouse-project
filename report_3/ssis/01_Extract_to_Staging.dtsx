@@ -1,0 +1,2379 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="4/6/2026 12:00:00 AM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:DTSID="{744E2DC5-C497-47CC-8942-1727A512EBC6}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:ObjectName="01_Extract_to_Staging"
+  DTS:PackageFormatVersion="8"
+  DTS:VersionBuild="1"
+  DTS:VersionMajor="1">
+  <DTS:Property DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[OLE_Staging]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{E2D3C006-73FE-4B2E-8E4E-1649C2775CA8}"
+      DTS:ObjectName="OLE_Staging">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=infodata16.mbs.tamu.edu;Initial Catalog=team1_staging_area;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[FF_DFT_Movement_SDR]"
+      DTS:CreationName="FLATFILE"
+      DTS:DTSID="{2F074213-FEDD-46A2-9B60-250513962B7F}"
+      DTS:ObjectName="FF_DFT_Movement_SDR">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:Format="Delimited"
+          DTS:LocaleID="1033"
+          DTS:HeaderRowDelimiter="_x000D__x000A_"
+          DTS:ColumnNamesInFirstDataRow="True"
+          DTS:RowDelimiter=""
+          DTS:TextQualifier="_x003C_none_x003E_"
+          DTS:CodePage="1252"
+          DTS:ConnectionString="C:\DFF_Data/wsdr.csv">
+          <DTS:FlatFileColumns><DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_I8"
+                
+                DTS:ObjectName="UPC"
+                DTS:DTSID="{22408470-801F-4500-A711-BC33DCDAE6C2}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_I4"
+                
+                DTS:ObjectName="STORE"
+                DTS:DTSID="{3B3659A7-5B85-4B2D-8679-7A3627257A06}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_I4"
+                
+                DTS:ObjectName="WEEK"
+                DTS:DTSID="{E0A16859-BECA-4F1B-98B0-46889C0B9C19}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_I4"
+                
+                DTS:ObjectName="MOVE"
+                DTS:DTSID="{B99D08BA-87BD-42D0-88F6-28E8515772AA}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_I4"
+                
+                DTS:ObjectName="QTY"
+                DTS:DTSID="{6BDA7E97-575B-4052-8911-89A1F03BF624}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_R8"
+                
+                DTS:ObjectName="PRICE"
+                DTS:DTSID="{D2F5D5AB-1332-4FD8-82A1-CDD541902736}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_STR"
+                DTS:MaximumWidth=&quot;5&quot;
+                DTS:ObjectName="SALE"
+                DTS:DTSID="{0DC045EA-E578-413A-82D5-8A7C5D2CE624}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_R8"
+                
+                DTS:ObjectName="PROFIT"
+                DTS:DTSID="{998ADE2B-0439-40FD-9CAB-641A08CE19E6}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x000D__x000A_"
+                DTS:DataType="DT_I4"
+                
+                DTS:ObjectName="OK"
+                DTS:DTSID="{647A4F08-B66F-4142-8F71-1B60E5DAA988}" />
+          </DTS:FlatFileColumns>
+        </DTS:ConnectionManager>
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[FF_DFT_Movement_CSO]"
+      DTS:CreationName="FLATFILE"
+      DTS:DTSID="{4EE2D52C-E393-4134-8B79-9C725BF06833}"
+      DTS:ObjectName="FF_DFT_Movement_CSO">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:Format="Delimited"
+          DTS:LocaleID="1033"
+          DTS:HeaderRowDelimiter="_x000D__x000A_"
+          DTS:ColumnNamesInFirstDataRow="True"
+          DTS:RowDelimiter=""
+          DTS:TextQualifier="_x003C_none_x003E_"
+          DTS:CodePage="1252"
+          DTS:ConnectionString="C:\DFF_Data/WCSO-Done.csv">
+          <DTS:FlatFileColumns><DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_I8"
+                
+                DTS:ObjectName="UPC"
+                DTS:DTSID="{C6FEACBB-B2DE-418F-900F-C2C0C62C2DF7}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_I4"
+                
+                DTS:ObjectName="STORE"
+                DTS:DTSID="{A8EDD93D-3479-49E9-8090-AC5ED8DB1BBD}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_I4"
+                
+                DTS:ObjectName="WEEK"
+                DTS:DTSID="{B5BB77A6-74F9-49B7-8243-3C4ACEAE455F}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_I4"
+                
+                DTS:ObjectName="MOVE"
+                DTS:DTSID="{9126E05E-C74E-4127-893F-99D4B8DB272B}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_I4"
+                
+                DTS:ObjectName="QTY"
+                DTS:DTSID="{61049A9F-DD56-4992-82DC-49406C89AD0A}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_R8"
+                
+                DTS:ObjectName="PRICE"
+                DTS:DTSID="{20D55948-F495-41C9-BED4-A600FF55A3D7}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_STR"
+                DTS:MaximumWidth=&quot;5&quot;
+                DTS:ObjectName="SALE"
+                DTS:DTSID="{7A47FAA2-CFFE-4202-993A-2BFDB5307180}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_R8"
+                
+                DTS:ObjectName="PROFIT"
+                DTS:DTSID="{97B2F825-BA46-417C-B372-AF13DB52DA15}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x000D__x000A_"
+                DTS:DataType="DT_I4"
+                
+                DTS:ObjectName="OK"
+                DTS:DTSID="{0DFA8C12-76C3-48B3-B059-011BA41D8F84}" />
+          </DTS:FlatFileColumns>
+        </DTS:ConnectionManager>
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[FF_DFT_Movement_TPA]"
+      DTS:CreationName="FLATFILE"
+      DTS:DTSID="{13B85B98-9C45-4D0D-81F7-FDDFAEDAACE3}"
+      DTS:ObjectName="FF_DFT_Movement_TPA">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:Format="Delimited"
+          DTS:LocaleID="1033"
+          DTS:HeaderRowDelimiter="_x000D__x000A_"
+          DTS:ColumnNamesInFirstDataRow="True"
+          DTS:RowDelimiter=""
+          DTS:TextQualifier="_x003C_none_x003E_"
+          DTS:CodePage="1252"
+          DTS:ConnectionString="C:\DFF_Data/WTPA_done.csv">
+          <DTS:FlatFileColumns><DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_I8"
+                
+                DTS:ObjectName="UPC"
+                DTS:DTSID="{E71DFA23-4B48-4731-BDCE-9C958758593F}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_I4"
+                
+                DTS:ObjectName="STORE"
+                DTS:DTSID="{597BD522-D1DB-4871-8CDB-9372D4EFE4BC}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_I4"
+                
+                DTS:ObjectName="WEEK"
+                DTS:DTSID="{6B861780-A051-4BAE-BA7A-290FD0556D18}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_I4"
+                
+                DTS:ObjectName="MOVE"
+                DTS:DTSID="{6A8ED1AB-807D-4D77-BE89-33F3C584BDD3}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_I4"
+                
+                DTS:ObjectName="QTY"
+                DTS:DTSID="{4FF5AF3A-0B75-4165-9659-FB5066EFBAF5}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_R8"
+                
+                DTS:ObjectName="PRICE"
+                DTS:DTSID="{F4F0EB3C-34C6-4488-8EA0-A38EFBEABA5D}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_STR"
+                DTS:MaximumWidth=&quot;5&quot;
+                DTS:ObjectName="SALE"
+                DTS:DTSID="{1F4A8493-D7BC-43F6-B4D9-A970C106E095}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_R8"
+                
+                DTS:ObjectName="PROFIT"
+                DTS:DTSID="{9CE8BF8B-CA9F-4508-8787-EB38AC312F08}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x000D__x000A_"
+                DTS:DataType="DT_I4"
+                
+                DTS:ObjectName="OK"
+                DTS:DTSID="{8E05988F-C146-4324-BE8D-1D95F37314CB}" />
+          </DTS:FlatFileColumns>
+        </DTS:ConnectionManager>
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[FF_DFT_Movement_CRA]"
+      DTS:CreationName="FLATFILE"
+      DTS:DTSID="{BA255ED0-D096-493F-98F2-2DF4E1C12461}"
+      DTS:ObjectName="FF_DFT_Movement_CRA">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:Format="Delimited"
+          DTS:LocaleID="1033"
+          DTS:HeaderRowDelimiter="_x000D__x000A_"
+          DTS:ColumnNamesInFirstDataRow="True"
+          DTS:RowDelimiter=""
+          DTS:TextQualifier="_x003C_none_x003E_"
+          DTS:CodePage="1252"
+          DTS:ConnectionString="C:\DFF_Data/Done-WCRA.csv">
+          <DTS:FlatFileColumns><DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_I8"
+                
+                DTS:ObjectName="UPC"
+                DTS:DTSID="{231A4312-1F04-4566-86D8-B2FFF46C7DBC}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_I4"
+                
+                DTS:ObjectName="STORE"
+                DTS:DTSID="{89881501-3E02-46B3-A8FC-AC73E40F8AB1}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_I4"
+                
+                DTS:ObjectName="WEEK"
+                DTS:DTSID="{465C17CA-B745-480D-BFD4-6E604A2C811F}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_I4"
+                
+                DTS:ObjectName="MOVE"
+                DTS:DTSID="{ADB720BE-22D4-44DE-86E3-4A6F8E3CE588}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_I4"
+                
+                DTS:ObjectName="QTY"
+                DTS:DTSID="{2DE3DDEB-F9A6-455E-A1E1-7C09AB16E777}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_R8"
+                
+                DTS:ObjectName="PRICE"
+                DTS:DTSID="{E93E7F27-41B0-4428-92EF-6D47BF5919A1}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_STR"
+                DTS:MaximumWidth=&quot;5&quot;
+                DTS:ObjectName="SALE"
+                DTS:DTSID="{B1A7E5F2-691B-4978-8513-D5D2326DFFDB}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_R8"
+                
+                DTS:ObjectName="PROFIT"
+                DTS:DTSID="{3B97C9DA-9387-4004-A635-E09AE9B7FE36}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x000D__x000A_"
+                DTS:DataType="DT_I4"
+                
+                DTS:ObjectName="OK"
+                DTS:DTSID="{02F90692-09F1-4E5E-85D9-E8A98C750786}" />
+          </DTS:FlatFileColumns>
+        </DTS:ConnectionManager>
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[FF_DFT_Product_SDR]"
+      DTS:CreationName="FLATFILE"
+      DTS:DTSID="{7A5031FE-C9BF-47A4-8719-49CE961ABF56}"
+      DTS:ObjectName="FF_DFT_Product_SDR">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:Format="Delimited"
+          DTS:LocaleID="1033"
+          DTS:HeaderRowDelimiter="_x000D__x000A_"
+          DTS:ColumnNamesInFirstDataRow="True"
+          DTS:RowDelimiter=""
+          DTS:TextQualifier="_x003C_none_x003E_"
+          DTS:CodePage="1252"
+          DTS:ConnectionString="C:\DFF_Data/UPCSDR.csv">
+          <DTS:FlatFileColumns><DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_I4"
+                
+                DTS:ObjectName="COM_CODE"
+                DTS:DTSID="{766149DA-618D-4560-A978-E2323558984D}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_I8"
+                
+                DTS:ObjectName="UPC"
+                DTS:DTSID="{8A0D7B6F-6672-41F8-9DF6-5764DE806849}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_STR"
+                DTS:MaximumWidth=&quot;100&quot;
+                DTS:ObjectName="DESCRIP"
+                DTS:DTSID="{992344E1-1D9B-4965-A22F-6EAD5A3880E0}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_STR"
+                DTS:MaximumWidth=&quot;30&quot;
+                DTS:ObjectName="SIZE"
+                DTS:DTSID="{B5A10C21-9CD5-4869-954B-3B146D4686C1}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_I4"
+                
+                DTS:ObjectName="CASE_PACK"
+                DTS:DTSID="{C91CCECA-14A7-465E-B004-96725028FE19}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x000D__x000A_"
+                DTS:DataType="DT_I8"
+                
+                DTS:ObjectName="NITEM"
+                DTS:DTSID="{4A84A23D-C964-451A-9BD5-FBBBF0E24240}" />
+          </DTS:FlatFileColumns>
+        </DTS:ConnectionManager>
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[FF_DFT_Product_CSO]"
+      DTS:CreationName="FLATFILE"
+      DTS:DTSID="{D43145A2-2758-4981-81A6-140C8F40ADD8}"
+      DTS:ObjectName="FF_DFT_Product_CSO">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:Format="Delimited"
+          DTS:LocaleID="1033"
+          DTS:HeaderRowDelimiter="_x000D__x000A_"
+          DTS:ColumnNamesInFirstDataRow="True"
+          DTS:RowDelimiter=""
+          DTS:TextQualifier="_x003C_none_x003E_"
+          DTS:CodePage="1252"
+          DTS:ConnectionString="C:\DFF_Data/UPCCSO.csv">
+          <DTS:FlatFileColumns><DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_I4"
+                
+                DTS:ObjectName="COM_CODE"
+                DTS:DTSID="{A3CA9B74-3590-4418-8F9C-839DC00B55CB}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_I8"
+                
+                DTS:ObjectName="UPC"
+                DTS:DTSID="{28AB7B36-47A1-4F51-BA48-DC5A7F2620F1}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_STR"
+                DTS:MaximumWidth=&quot;100&quot;
+                DTS:ObjectName="DESCRIP"
+                DTS:DTSID="{3522971F-D8D5-4E22-ACFD-114DA447425B}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_STR"
+                DTS:MaximumWidth=&quot;30&quot;
+                DTS:ObjectName="SIZE"
+                DTS:DTSID="{6C000D4B-BC04-4280-A49C-4BFD44701FE4}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_I4"
+                
+                DTS:ObjectName="CASE_PACK"
+                DTS:DTSID="{7689247E-D344-4D42-94D8-4336FF6F4AB8}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x000D__x000A_"
+                DTS:DataType="DT_I8"
+                
+                DTS:ObjectName="NITEM"
+                DTS:DTSID="{87851E29-3CE8-485C-A02A-787B0B1DD69D}" />
+          </DTS:FlatFileColumns>
+        </DTS:ConnectionManager>
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[FF_DFT_Product_TPA]"
+      DTS:CreationName="FLATFILE"
+      DTS:DTSID="{117292DB-6DBA-4498-94E8-5F34702B7FA4}"
+      DTS:ObjectName="FF_DFT_Product_TPA">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:Format="Delimited"
+          DTS:LocaleID="1033"
+          DTS:HeaderRowDelimiter="_x000D__x000A_"
+          DTS:ColumnNamesInFirstDataRow="True"
+          DTS:RowDelimiter=""
+          DTS:TextQualifier="_x003C_none_x003E_"
+          DTS:CodePage="1252"
+          DTS:ConnectionString="C:\DFF_Data/UPCTPA.csv">
+          <DTS:FlatFileColumns><DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_I4"
+                
+                DTS:ObjectName="COM_CODE"
+                DTS:DTSID="{D098D689-6662-41C1-9A96-CC642903E581}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_I8"
+                
+                DTS:ObjectName="UPC"
+                DTS:DTSID="{0D46D2F0-F2C6-4FB6-B8B8-37E3E5AD743F}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_STR"
+                DTS:MaximumWidth=&quot;100&quot;
+                DTS:ObjectName="DESCRIP"
+                DTS:DTSID="{C99FED2A-9ABB-42AA-864E-33FB258AC4A7}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_STR"
+                DTS:MaximumWidth=&quot;30&quot;
+                DTS:ObjectName="SIZE"
+                DTS:DTSID="{8C77EE26-3D56-4E32-AEC0-F80DE831D5A3}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_I4"
+                
+                DTS:ObjectName="CASE_PACK"
+                DTS:DTSID="{32BC2E7C-1979-4869-AC88-77F990CED30D}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x000D__x000A_"
+                DTS:DataType="DT_I8"
+                
+                DTS:ObjectName="NITEM"
+                DTS:DTSID="{170D3FDB-FB8C-443A-A791-D4FE44520C6B}" />
+          </DTS:FlatFileColumns>
+        </DTS:ConnectionManager>
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[FF_DFT_Product_CRA]"
+      DTS:CreationName="FLATFILE"
+      DTS:DTSID="{E5577D67-9E12-4C3A-A2C9-110522B4FDF4}"
+      DTS:ObjectName="FF_DFT_Product_CRA">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:Format="Delimited"
+          DTS:LocaleID="1033"
+          DTS:HeaderRowDelimiter="_x000D__x000A_"
+          DTS:ColumnNamesInFirstDataRow="True"
+          DTS:RowDelimiter=""
+          DTS:TextQualifier="_x003C_none_x003E_"
+          DTS:CodePage="1252"
+          DTS:ConnectionString="C:\DFF_Data/UPCCRA.csv">
+          <DTS:FlatFileColumns><DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_I4"
+                
+                DTS:ObjectName="COM_CODE"
+                DTS:DTSID="{477B65ED-9E84-4541-BD2D-3D54749C5547}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_I8"
+                
+                DTS:ObjectName="UPC"
+                DTS:DTSID="{6966124F-C405-495E-9C88-0C675BBFEE7F}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_STR"
+                DTS:MaximumWidth=&quot;100&quot;
+                DTS:ObjectName="DESCRIP"
+                DTS:DTSID="{AF6FFBDB-90A1-4A48-9A96-77F6B4E86120}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_STR"
+                DTS:MaximumWidth=&quot;30&quot;
+                DTS:ObjectName="SIZE"
+                DTS:DTSID="{7AF71F03-AEB1-44A1-BDF2-610049DCB0B6}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_I4"
+                
+                DTS:ObjectName="CASE_PACK"
+                DTS:DTSID="{B427BF18-D33E-4079-8F5C-CEB001F8578F}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x000D__x000A_"
+                DTS:DataType="DT_I8"
+                
+                DTS:ObjectName="NITEM"
+                DTS:DTSID="{B3D44399-E5B1-4249-8146-B5DFFD12BA83}" />
+          </DTS:FlatFileColumns>
+        </DTS:ConnectionManager>
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[FF_DFT_Store]"
+      DTS:CreationName="FLATFILE"
+      DTS:DTSID="{E114AC05-CEB3-4FD5-BB61-950F9712AB02}"
+      DTS:ObjectName="FF_DFT_Store">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:Format="Delimited"
+          DTS:LocaleID="1033"
+          DTS:HeaderRowDelimiter="_x000D__x000A_"
+          DTS:ColumnNamesInFirstDataRow="True"
+          DTS:RowDelimiter=""
+          DTS:TextQualifier="_x003C_none_x003E_"
+          DTS:CodePage="1252"
+          DTS:ConnectionString="C:\DFF_Data/DEMO.csv">
+          <DTS:FlatFileColumns><DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_STR"
+                DTS:MaximumWidth=&quot;10&quot;
+                DTS:ObjectName="STORE"
+                DTS:DTSID="{2DE4F6AA-3C80-4100-81A8-CA4804242DCD}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_STR"
+                DTS:MaximumWidth=&quot;60&quot;
+                DTS:ObjectName="NAME"
+                DTS:DTSID="{F6BB2180-073C-4919-A4AE-1F1D6B2FC9D0}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_STR"
+                DTS:MaximumWidth=&quot;50&quot;
+                DTS:ObjectName="CITY"
+                DTS:DTSID="{0DE0ACCE-8790-4DCA-AE85-8DBD7437E626}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_STR"
+                DTS:MaximumWidth=&quot;10&quot;
+                DTS:ObjectName="ZIP"
+                DTS:DTSID="{D0E995E2-1545-439A-A5B1-B8532C524D05}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_STR"
+                DTS:MaximumWidth=&quot;10&quot;
+                DTS:ObjectName="ZONE"
+                DTS:DTSID="{109EA3A2-AB2F-46D4-BDFA-02C8C14860E2}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_STR"
+                DTS:MaximumWidth=&quot;10&quot;
+                DTS:ObjectName="URBAN"
+                DTS:DTSID="{CDA89D6E-42D9-46AB-A459-5EE378532B53}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_STR"
+                DTS:MaximumWidth=&quot;20&quot;
+                DTS:ObjectName="WEEKVOL"
+                DTS:DTSID="{7DCAB3A9-E49D-4AA4-A717-7A9A45BC9C32}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_STR"
+                DTS:MaximumWidth=&quot;20&quot;
+                DTS:ObjectName="INCOME"
+                DTS:DTSID="{BBBF3776-7A39-4A00-A737-45DBD902FAB4}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_STR"
+                DTS:MaximumWidth=&quot;20&quot;
+                DTS:ObjectName="EDUC"
+                DTS:DTSID="{8D7E7C9D-EDF9-44EB-B10E-D1FC12E0FF93}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_STR"
+                DTS:MaximumWidth=&quot;20&quot;
+                DTS:ObjectName="POVERTY"
+                DTS:DTSID="{0D0CE0EA-840C-4BC2-AF78-C2A9F239BA71}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_STR"
+                DTS:MaximumWidth=&quot;20&quot;
+                DTS:ObjectName="HSIZEAVG"
+                DTS:DTSID="{8645B253-A6D6-4A11-AF7A-E56A5826A4DD}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_STR"
+                DTS:MaximumWidth=&quot;20&quot;
+                DTS:ObjectName="ETHNIC"
+                DTS:DTSID="{850B800B-60CB-40CD-8B53-12F245913EC3}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_STR"
+                DTS:MaximumWidth=&quot;20&quot;
+                DTS:ObjectName="DENSITY"
+                DTS:DTSID="{406BC99D-EB53-4459-8F1A-2CF08A813037}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_STR"
+                DTS:MaximumWidth=&quot;20&quot;
+                DTS:ObjectName="AGE9"
+                DTS:DTSID="{0E1D772D-3C22-4095-AD06-BAA91541CA55}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_STR"
+                DTS:MaximumWidth=&quot;20&quot;
+                DTS:ObjectName="AGE60"
+                DTS:DTSID="{2B8AB2AB-E776-49CC-8F06-1F72B618B7A6}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_STR"
+                DTS:MaximumWidth=&quot;20&quot;
+                DTS:ObjectName="WORKWOM"
+                DTS:DTSID="{6171EB78-57AB-47D1-BE32-6CCED8A8DF38}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_STR"
+                DTS:MaximumWidth=&quot;10&quot;
+                DTS:ObjectName="PRICLOW"
+                DTS:DTSID="{8B69A1A7-7F98-4989-AB49-66FECED7A4B5}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x002C_"
+                DTS:DataType="DT_STR"
+                DTS:MaximumWidth=&quot;10&quot;
+                DTS:ObjectName="PRICMED"
+                DTS:DTSID="{24F4C534-EF26-40B0-AC1F-37A79FEA8A04}" />
+              <DTS:FlatFileColumn
+                DTS:ColumnType="Delimited"
+                DTS:ColumnDelimiter="_x000D__x000A_"
+                DTS:DataType="DT_STR"
+                DTS:MaximumWidth=&quot;10&quot;
+                DTS:ObjectName="PRICHIGH"
+                DTS:DTSID="{E9EF1D3C-B393-4022-BEFA-4FC4ADC72BB4}" />
+          </DTS:FlatFileColumns>
+        </DTS:ConnectionManager>
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\DFT_Movement_SDR"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:DTSID="{EAEFF8AB-D69D-4115-95DC-542239EBA5AE}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="DFT_Movement_SDR"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation;">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline version="1">
+          <components>
+            <component refId="Package\DFT_Movement_SDR\FF_Source"
+              componentClassID="Microsoft.FlatFileSource"
+              name="FF_Source">
+              <properties>
+                <property name="RetainNulls">false</property>
+              </properties>
+              <connections>
+                <connection refId="Package\DFT_Movement_SDR\FF_Source.Connections[FlatFileConnection]"
+                  connectionManagerID="Package.ConnectionManagers[FF_DFT_Movement_SDR]"
+                  connectionManagerRefId="Package.ConnectionManagers[FF_DFT_Movement_SDR]"
+                  name="FlatFileConnection" />
+              </connections>
+              <outputs>
+                <output refId="Package\DFT_Movement_SDR\FF_Source.Outputs[Flat File Source Output]"
+                  name="Flat File Source Output">
+                  <outputColumns>
+                    <outputColumn refId="Package\DFT_Movement_SDR\FF_Source.Outputs[Flat File Source Output].Columns[UPC]"
+                      dataType="DT_I8"
+                      
+                      name="UPC" />
+                    <outputColumn refId="Package\DFT_Movement_SDR\FF_Source.Outputs[Flat File Source Output].Columns[STORE]"
+                      dataType="DT_I4"
+                      
+                      name="STORE" />
+                    <outputColumn refId="Package\DFT_Movement_SDR\FF_Source.Outputs[Flat File Source Output].Columns[WEEK]"
+                      dataType="DT_I4"
+                      
+                      name="WEEK" />
+                    <outputColumn refId="Package\DFT_Movement_SDR\FF_Source.Outputs[Flat File Source Output].Columns[MOVE]"
+                      dataType="DT_I4"
+                      
+                      name="MOVE" />
+                    <outputColumn refId="Package\DFT_Movement_SDR\FF_Source.Outputs[Flat File Source Output].Columns[QTY]"
+                      dataType="DT_I4"
+                      
+                      name="QTY" />
+                    <outputColumn refId="Package\DFT_Movement_SDR\FF_Source.Outputs[Flat File Source Output].Columns[PRICE]"
+                      dataType="DT_R8"
+                      
+                      name="PRICE" />
+                    <outputColumn refId="Package\DFT_Movement_SDR\FF_Source.Outputs[Flat File Source Output].Columns[SALE]"
+                      dataType="DT_STR"
+                      length=&quot;5&quot;
+                      name="SALE" />
+                    <outputColumn refId="Package\DFT_Movement_SDR\FF_Source.Outputs[Flat File Source Output].Columns[PROFIT]"
+                      dataType="DT_R8"
+                      
+                      name="PROFIT" />
+                    <outputColumn refId="Package\DFT_Movement_SDR\FF_Source.Outputs[Flat File Source Output].Columns[OK]"
+                      dataType="DT_I4"
+                      
+                      name="OK" />
+                  </outputColumns>
+                </output>
+              </outputs>
+            </component>
+            <component refId="Package\DFT_Movement_SDR\OLE_Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              name="OLE_Destination">
+              <properties>
+                <property name="OpenRowset">[dbo].[stg_Movement_SDR]</property>
+                <property name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property name="AccessMode">3</property>
+                <property name="FastLoadKeepIdentity">false</property>
+                <property name="FastLoadKeepNulls">false</property>
+                <property name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection refId="Package\DFT_Movement_SDR\OLE_Destination.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[OLE_Staging]"
+                  connectionManagerRefId="Package.ConnectionManagers[OLE_Staging]"
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input refId="Package\DFT_Movement_SDR\OLE_Destination.Inputs[OLE DB Destination Input]"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn refId="Package\DFT_Movement_SDR\OLE_Destination.Inputs[OLE DB Destination Input].Columns[UPC]"
+                      cachedName="UPC"
+                      externalMetadataColumnId="Package\DFT_Movement_SDR\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[UPC]"
+                      lineageId="Package\DFT_Movement_SDR\FF_Source.Outputs[Flat File Source Output].Columns[UPC]" />
+                    <inputColumn refId="Package\DFT_Movement_SDR\OLE_Destination.Inputs[OLE DB Destination Input].Columns[STORE]"
+                      cachedName="STORE"
+                      externalMetadataColumnId="Package\DFT_Movement_SDR\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[STORE]"
+                      lineageId="Package\DFT_Movement_SDR\FF_Source.Outputs[Flat File Source Output].Columns[STORE]" />
+                    <inputColumn refId="Package\DFT_Movement_SDR\OLE_Destination.Inputs[OLE DB Destination Input].Columns[WEEK]"
+                      cachedName="WEEK"
+                      externalMetadataColumnId="Package\DFT_Movement_SDR\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[WEEK]"
+                      lineageId="Package\DFT_Movement_SDR\FF_Source.Outputs[Flat File Source Output].Columns[WEEK]" />
+                    <inputColumn refId="Package\DFT_Movement_SDR\OLE_Destination.Inputs[OLE DB Destination Input].Columns[MOVE]"
+                      cachedName="MOVE"
+                      externalMetadataColumnId="Package\DFT_Movement_SDR\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[MOVE]"
+                      lineageId="Package\DFT_Movement_SDR\FF_Source.Outputs[Flat File Source Output].Columns[MOVE]" />
+                    <inputColumn refId="Package\DFT_Movement_SDR\OLE_Destination.Inputs[OLE DB Destination Input].Columns[QTY]"
+                      cachedName="QTY"
+                      externalMetadataColumnId="Package\DFT_Movement_SDR\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[QTY]"
+                      lineageId="Package\DFT_Movement_SDR\FF_Source.Outputs[Flat File Source Output].Columns[QTY]" />
+                    <inputColumn refId="Package\DFT_Movement_SDR\OLE_Destination.Inputs[OLE DB Destination Input].Columns[PRICE]"
+                      cachedName="PRICE"
+                      externalMetadataColumnId="Package\DFT_Movement_SDR\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[PRICE]"
+                      lineageId="Package\DFT_Movement_SDR\FF_Source.Outputs[Flat File Source Output].Columns[PRICE]" />
+                    <inputColumn refId="Package\DFT_Movement_SDR\OLE_Destination.Inputs[OLE DB Destination Input].Columns[SALE]"
+                      cachedName="SALE"
+                      externalMetadataColumnId="Package\DFT_Movement_SDR\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[SALE]"
+                      lineageId="Package\DFT_Movement_SDR\FF_Source.Outputs[Flat File Source Output].Columns[SALE]" />
+                    <inputColumn refId="Package\DFT_Movement_SDR\OLE_Destination.Inputs[OLE DB Destination Input].Columns[PROFIT]"
+                      cachedName="PROFIT"
+                      externalMetadataColumnId="Package\DFT_Movement_SDR\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[PROFIT]"
+                      lineageId="Package\DFT_Movement_SDR\FF_Source.Outputs[Flat File Source Output].Columns[PROFIT]" />
+                    <inputColumn refId="Package\DFT_Movement_SDR\OLE_Destination.Inputs[OLE DB Destination Input].Columns[OK]"
+                      cachedName="OK"
+                      externalMetadataColumnId="Package\DFT_Movement_SDR\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[OK]"
+                      lineageId="Package\DFT_Movement_SDR\FF_Source.Outputs[Flat File Source Output].Columns[OK]" />
+                  </inputColumns>
+                  <externalMetadataColumns>
+                    <externalMetadataColumn refId="Package\DFT_Movement_SDR\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[UPC]"
+                      dataType="DT_I8"
+                      
+                      name="UPC" />
+                    <externalMetadataColumn refId="Package\DFT_Movement_SDR\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[STORE]"
+                      dataType="DT_I4"
+                      
+                      name="STORE" />
+                    <externalMetadataColumn refId="Package\DFT_Movement_SDR\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[WEEK]"
+                      dataType="DT_I4"
+                      
+                      name="WEEK" />
+                    <externalMetadataColumn refId="Package\DFT_Movement_SDR\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[MOVE]"
+                      dataType="DT_I4"
+                      
+                      name="MOVE" />
+                    <externalMetadataColumn refId="Package\DFT_Movement_SDR\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[QTY]"
+                      dataType="DT_I4"
+                      
+                      name="QTY" />
+                    <externalMetadataColumn refId="Package\DFT_Movement_SDR\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[PRICE]"
+                      dataType="DT_R8"
+                      
+                      name="PRICE" />
+                    <externalMetadataColumn refId="Package\DFT_Movement_SDR\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[SALE]"
+                      dataType="DT_STR"
+                      length=&quot;5&quot;
+                      name="SALE" />
+                    <externalMetadataColumn refId="Package\DFT_Movement_SDR\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[PROFIT]"
+                      dataType="DT_R8"
+                      
+                      name="PROFIT" />
+                    <externalMetadataColumn refId="Package\DFT_Movement_SDR\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[OK]"
+                      dataType="DT_I4"
+                      
+                      name="OK" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+            </component>
+          </components>
+          <paths>
+            <path refId="Package\DFT_Movement_SDR.Paths[Output]"
+              endId="Package\DFT_Movement_SDR\OLE_Destination.Inputs[OLE DB Destination Input]"
+              startId="Package\DFT_Movement_SDR\FF_Source.Outputs[Flat File Source Output]"
+              name="Output" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\DFT_Movement_CSO"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:DTSID="{BCB8AFE6-F2C7-487D-B88D-6E60C422586B}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="DFT_Movement_CSO"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation;">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline version="1">
+          <components>
+            <component refId="Package\DFT_Movement_CSO\FF_Source"
+              componentClassID="Microsoft.FlatFileSource"
+              name="FF_Source">
+              <properties>
+                <property name="RetainNulls">false</property>
+              </properties>
+              <connections>
+                <connection refId="Package\DFT_Movement_CSO\FF_Source.Connections[FlatFileConnection]"
+                  connectionManagerID="Package.ConnectionManagers[FF_DFT_Movement_CSO]"
+                  connectionManagerRefId="Package.ConnectionManagers[FF_DFT_Movement_CSO]"
+                  name="FlatFileConnection" />
+              </connections>
+              <outputs>
+                <output refId="Package\DFT_Movement_CSO\FF_Source.Outputs[Flat File Source Output]"
+                  name="Flat File Source Output">
+                  <outputColumns>
+                    <outputColumn refId="Package\DFT_Movement_CSO\FF_Source.Outputs[Flat File Source Output].Columns[UPC]"
+                      dataType="DT_I8"
+                      
+                      name="UPC" />
+                    <outputColumn refId="Package\DFT_Movement_CSO\FF_Source.Outputs[Flat File Source Output].Columns[STORE]"
+                      dataType="DT_I4"
+                      
+                      name="STORE" />
+                    <outputColumn refId="Package\DFT_Movement_CSO\FF_Source.Outputs[Flat File Source Output].Columns[WEEK]"
+                      dataType="DT_I4"
+                      
+                      name="WEEK" />
+                    <outputColumn refId="Package\DFT_Movement_CSO\FF_Source.Outputs[Flat File Source Output].Columns[MOVE]"
+                      dataType="DT_I4"
+                      
+                      name="MOVE" />
+                    <outputColumn refId="Package\DFT_Movement_CSO\FF_Source.Outputs[Flat File Source Output].Columns[QTY]"
+                      dataType="DT_I4"
+                      
+                      name="QTY" />
+                    <outputColumn refId="Package\DFT_Movement_CSO\FF_Source.Outputs[Flat File Source Output].Columns[PRICE]"
+                      dataType="DT_R8"
+                      
+                      name="PRICE" />
+                    <outputColumn refId="Package\DFT_Movement_CSO\FF_Source.Outputs[Flat File Source Output].Columns[SALE]"
+                      dataType="DT_STR"
+                      length=&quot;5&quot;
+                      name="SALE" />
+                    <outputColumn refId="Package\DFT_Movement_CSO\FF_Source.Outputs[Flat File Source Output].Columns[PROFIT]"
+                      dataType="DT_R8"
+                      
+                      name="PROFIT" />
+                    <outputColumn refId="Package\DFT_Movement_CSO\FF_Source.Outputs[Flat File Source Output].Columns[OK]"
+                      dataType="DT_I4"
+                      
+                      name="OK" />
+                  </outputColumns>
+                </output>
+              </outputs>
+            </component>
+            <component refId="Package\DFT_Movement_CSO\OLE_Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              name="OLE_Destination">
+              <properties>
+                <property name="OpenRowset">[dbo].[stg_Movement_CSO]</property>
+                <property name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property name="AccessMode">3</property>
+                <property name="FastLoadKeepIdentity">false</property>
+                <property name="FastLoadKeepNulls">false</property>
+                <property name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection refId="Package\DFT_Movement_CSO\OLE_Destination.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[OLE_Staging]"
+                  connectionManagerRefId="Package.ConnectionManagers[OLE_Staging]"
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input refId="Package\DFT_Movement_CSO\OLE_Destination.Inputs[OLE DB Destination Input]"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn refId="Package\DFT_Movement_CSO\OLE_Destination.Inputs[OLE DB Destination Input].Columns[UPC]"
+                      cachedName="UPC"
+                      externalMetadataColumnId="Package\DFT_Movement_CSO\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[UPC]"
+                      lineageId="Package\DFT_Movement_CSO\FF_Source.Outputs[Flat File Source Output].Columns[UPC]" />
+                    <inputColumn refId="Package\DFT_Movement_CSO\OLE_Destination.Inputs[OLE DB Destination Input].Columns[STORE]"
+                      cachedName="STORE"
+                      externalMetadataColumnId="Package\DFT_Movement_CSO\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[STORE]"
+                      lineageId="Package\DFT_Movement_CSO\FF_Source.Outputs[Flat File Source Output].Columns[STORE]" />
+                    <inputColumn refId="Package\DFT_Movement_CSO\OLE_Destination.Inputs[OLE DB Destination Input].Columns[WEEK]"
+                      cachedName="WEEK"
+                      externalMetadataColumnId="Package\DFT_Movement_CSO\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[WEEK]"
+                      lineageId="Package\DFT_Movement_CSO\FF_Source.Outputs[Flat File Source Output].Columns[WEEK]" />
+                    <inputColumn refId="Package\DFT_Movement_CSO\OLE_Destination.Inputs[OLE DB Destination Input].Columns[MOVE]"
+                      cachedName="MOVE"
+                      externalMetadataColumnId="Package\DFT_Movement_CSO\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[MOVE]"
+                      lineageId="Package\DFT_Movement_CSO\FF_Source.Outputs[Flat File Source Output].Columns[MOVE]" />
+                    <inputColumn refId="Package\DFT_Movement_CSO\OLE_Destination.Inputs[OLE DB Destination Input].Columns[QTY]"
+                      cachedName="QTY"
+                      externalMetadataColumnId="Package\DFT_Movement_CSO\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[QTY]"
+                      lineageId="Package\DFT_Movement_CSO\FF_Source.Outputs[Flat File Source Output].Columns[QTY]" />
+                    <inputColumn refId="Package\DFT_Movement_CSO\OLE_Destination.Inputs[OLE DB Destination Input].Columns[PRICE]"
+                      cachedName="PRICE"
+                      externalMetadataColumnId="Package\DFT_Movement_CSO\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[PRICE]"
+                      lineageId="Package\DFT_Movement_CSO\FF_Source.Outputs[Flat File Source Output].Columns[PRICE]" />
+                    <inputColumn refId="Package\DFT_Movement_CSO\OLE_Destination.Inputs[OLE DB Destination Input].Columns[SALE]"
+                      cachedName="SALE"
+                      externalMetadataColumnId="Package\DFT_Movement_CSO\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[SALE]"
+                      lineageId="Package\DFT_Movement_CSO\FF_Source.Outputs[Flat File Source Output].Columns[SALE]" />
+                    <inputColumn refId="Package\DFT_Movement_CSO\OLE_Destination.Inputs[OLE DB Destination Input].Columns[PROFIT]"
+                      cachedName="PROFIT"
+                      externalMetadataColumnId="Package\DFT_Movement_CSO\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[PROFIT]"
+                      lineageId="Package\DFT_Movement_CSO\FF_Source.Outputs[Flat File Source Output].Columns[PROFIT]" />
+                    <inputColumn refId="Package\DFT_Movement_CSO\OLE_Destination.Inputs[OLE DB Destination Input].Columns[OK]"
+                      cachedName="OK"
+                      externalMetadataColumnId="Package\DFT_Movement_CSO\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[OK]"
+                      lineageId="Package\DFT_Movement_CSO\FF_Source.Outputs[Flat File Source Output].Columns[OK]" />
+                  </inputColumns>
+                  <externalMetadataColumns>
+                    <externalMetadataColumn refId="Package\DFT_Movement_CSO\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[UPC]"
+                      dataType="DT_I8"
+                      
+                      name="UPC" />
+                    <externalMetadataColumn refId="Package\DFT_Movement_CSO\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[STORE]"
+                      dataType="DT_I4"
+                      
+                      name="STORE" />
+                    <externalMetadataColumn refId="Package\DFT_Movement_CSO\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[WEEK]"
+                      dataType="DT_I4"
+                      
+                      name="WEEK" />
+                    <externalMetadataColumn refId="Package\DFT_Movement_CSO\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[MOVE]"
+                      dataType="DT_I4"
+                      
+                      name="MOVE" />
+                    <externalMetadataColumn refId="Package\DFT_Movement_CSO\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[QTY]"
+                      dataType="DT_I4"
+                      
+                      name="QTY" />
+                    <externalMetadataColumn refId="Package\DFT_Movement_CSO\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[PRICE]"
+                      dataType="DT_R8"
+                      
+                      name="PRICE" />
+                    <externalMetadataColumn refId="Package\DFT_Movement_CSO\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[SALE]"
+                      dataType="DT_STR"
+                      length=&quot;5&quot;
+                      name="SALE" />
+                    <externalMetadataColumn refId="Package\DFT_Movement_CSO\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[PROFIT]"
+                      dataType="DT_R8"
+                      
+                      name="PROFIT" />
+                    <externalMetadataColumn refId="Package\DFT_Movement_CSO\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[OK]"
+                      dataType="DT_I4"
+                      
+                      name="OK" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+            </component>
+          </components>
+          <paths>
+            <path refId="Package\DFT_Movement_CSO.Paths[Output]"
+              endId="Package\DFT_Movement_CSO\OLE_Destination.Inputs[OLE DB Destination Input]"
+              startId="Package\DFT_Movement_CSO\FF_Source.Outputs[Flat File Source Output]"
+              name="Output" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\DFT_Movement_TPA"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:DTSID="{FC932E6C-7F03-4988-B69B-192B62DB454F}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="DFT_Movement_TPA"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation;">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline version="1">
+          <components>
+            <component refId="Package\DFT_Movement_TPA\FF_Source"
+              componentClassID="Microsoft.FlatFileSource"
+              name="FF_Source">
+              <properties>
+                <property name="RetainNulls">false</property>
+              </properties>
+              <connections>
+                <connection refId="Package\DFT_Movement_TPA\FF_Source.Connections[FlatFileConnection]"
+                  connectionManagerID="Package.ConnectionManagers[FF_DFT_Movement_TPA]"
+                  connectionManagerRefId="Package.ConnectionManagers[FF_DFT_Movement_TPA]"
+                  name="FlatFileConnection" />
+              </connections>
+              <outputs>
+                <output refId="Package\DFT_Movement_TPA\FF_Source.Outputs[Flat File Source Output]"
+                  name="Flat File Source Output">
+                  <outputColumns>
+                    <outputColumn refId="Package\DFT_Movement_TPA\FF_Source.Outputs[Flat File Source Output].Columns[UPC]"
+                      dataType="DT_I8"
+                      
+                      name="UPC" />
+                    <outputColumn refId="Package\DFT_Movement_TPA\FF_Source.Outputs[Flat File Source Output].Columns[STORE]"
+                      dataType="DT_I4"
+                      
+                      name="STORE" />
+                    <outputColumn refId="Package\DFT_Movement_TPA\FF_Source.Outputs[Flat File Source Output].Columns[WEEK]"
+                      dataType="DT_I4"
+                      
+                      name="WEEK" />
+                    <outputColumn refId="Package\DFT_Movement_TPA\FF_Source.Outputs[Flat File Source Output].Columns[MOVE]"
+                      dataType="DT_I4"
+                      
+                      name="MOVE" />
+                    <outputColumn refId="Package\DFT_Movement_TPA\FF_Source.Outputs[Flat File Source Output].Columns[QTY]"
+                      dataType="DT_I4"
+                      
+                      name="QTY" />
+                    <outputColumn refId="Package\DFT_Movement_TPA\FF_Source.Outputs[Flat File Source Output].Columns[PRICE]"
+                      dataType="DT_R8"
+                      
+                      name="PRICE" />
+                    <outputColumn refId="Package\DFT_Movement_TPA\FF_Source.Outputs[Flat File Source Output].Columns[SALE]"
+                      dataType="DT_STR"
+                      length=&quot;5&quot;
+                      name="SALE" />
+                    <outputColumn refId="Package\DFT_Movement_TPA\FF_Source.Outputs[Flat File Source Output].Columns[PROFIT]"
+                      dataType="DT_R8"
+                      
+                      name="PROFIT" />
+                    <outputColumn refId="Package\DFT_Movement_TPA\FF_Source.Outputs[Flat File Source Output].Columns[OK]"
+                      dataType="DT_I4"
+                      
+                      name="OK" />
+                  </outputColumns>
+                </output>
+              </outputs>
+            </component>
+            <component refId="Package\DFT_Movement_TPA\OLE_Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              name="OLE_Destination">
+              <properties>
+                <property name="OpenRowset">[dbo].[stg_Movement_TPA]</property>
+                <property name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property name="AccessMode">3</property>
+                <property name="FastLoadKeepIdentity">false</property>
+                <property name="FastLoadKeepNulls">false</property>
+                <property name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection refId="Package\DFT_Movement_TPA\OLE_Destination.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[OLE_Staging]"
+                  connectionManagerRefId="Package.ConnectionManagers[OLE_Staging]"
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input refId="Package\DFT_Movement_TPA\OLE_Destination.Inputs[OLE DB Destination Input]"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn refId="Package\DFT_Movement_TPA\OLE_Destination.Inputs[OLE DB Destination Input].Columns[UPC]"
+                      cachedName="UPC"
+                      externalMetadataColumnId="Package\DFT_Movement_TPA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[UPC]"
+                      lineageId="Package\DFT_Movement_TPA\FF_Source.Outputs[Flat File Source Output].Columns[UPC]" />
+                    <inputColumn refId="Package\DFT_Movement_TPA\OLE_Destination.Inputs[OLE DB Destination Input].Columns[STORE]"
+                      cachedName="STORE"
+                      externalMetadataColumnId="Package\DFT_Movement_TPA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[STORE]"
+                      lineageId="Package\DFT_Movement_TPA\FF_Source.Outputs[Flat File Source Output].Columns[STORE]" />
+                    <inputColumn refId="Package\DFT_Movement_TPA\OLE_Destination.Inputs[OLE DB Destination Input].Columns[WEEK]"
+                      cachedName="WEEK"
+                      externalMetadataColumnId="Package\DFT_Movement_TPA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[WEEK]"
+                      lineageId="Package\DFT_Movement_TPA\FF_Source.Outputs[Flat File Source Output].Columns[WEEK]" />
+                    <inputColumn refId="Package\DFT_Movement_TPA\OLE_Destination.Inputs[OLE DB Destination Input].Columns[MOVE]"
+                      cachedName="MOVE"
+                      externalMetadataColumnId="Package\DFT_Movement_TPA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[MOVE]"
+                      lineageId="Package\DFT_Movement_TPA\FF_Source.Outputs[Flat File Source Output].Columns[MOVE]" />
+                    <inputColumn refId="Package\DFT_Movement_TPA\OLE_Destination.Inputs[OLE DB Destination Input].Columns[QTY]"
+                      cachedName="QTY"
+                      externalMetadataColumnId="Package\DFT_Movement_TPA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[QTY]"
+                      lineageId="Package\DFT_Movement_TPA\FF_Source.Outputs[Flat File Source Output].Columns[QTY]" />
+                    <inputColumn refId="Package\DFT_Movement_TPA\OLE_Destination.Inputs[OLE DB Destination Input].Columns[PRICE]"
+                      cachedName="PRICE"
+                      externalMetadataColumnId="Package\DFT_Movement_TPA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[PRICE]"
+                      lineageId="Package\DFT_Movement_TPA\FF_Source.Outputs[Flat File Source Output].Columns[PRICE]" />
+                    <inputColumn refId="Package\DFT_Movement_TPA\OLE_Destination.Inputs[OLE DB Destination Input].Columns[SALE]"
+                      cachedName="SALE"
+                      externalMetadataColumnId="Package\DFT_Movement_TPA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[SALE]"
+                      lineageId="Package\DFT_Movement_TPA\FF_Source.Outputs[Flat File Source Output].Columns[SALE]" />
+                    <inputColumn refId="Package\DFT_Movement_TPA\OLE_Destination.Inputs[OLE DB Destination Input].Columns[PROFIT]"
+                      cachedName="PROFIT"
+                      externalMetadataColumnId="Package\DFT_Movement_TPA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[PROFIT]"
+                      lineageId="Package\DFT_Movement_TPA\FF_Source.Outputs[Flat File Source Output].Columns[PROFIT]" />
+                    <inputColumn refId="Package\DFT_Movement_TPA\OLE_Destination.Inputs[OLE DB Destination Input].Columns[OK]"
+                      cachedName="OK"
+                      externalMetadataColumnId="Package\DFT_Movement_TPA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[OK]"
+                      lineageId="Package\DFT_Movement_TPA\FF_Source.Outputs[Flat File Source Output].Columns[OK]" />
+                  </inputColumns>
+                  <externalMetadataColumns>
+                    <externalMetadataColumn refId="Package\DFT_Movement_TPA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[UPC]"
+                      dataType="DT_I8"
+                      
+                      name="UPC" />
+                    <externalMetadataColumn refId="Package\DFT_Movement_TPA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[STORE]"
+                      dataType="DT_I4"
+                      
+                      name="STORE" />
+                    <externalMetadataColumn refId="Package\DFT_Movement_TPA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[WEEK]"
+                      dataType="DT_I4"
+                      
+                      name="WEEK" />
+                    <externalMetadataColumn refId="Package\DFT_Movement_TPA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[MOVE]"
+                      dataType="DT_I4"
+                      
+                      name="MOVE" />
+                    <externalMetadataColumn refId="Package\DFT_Movement_TPA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[QTY]"
+                      dataType="DT_I4"
+                      
+                      name="QTY" />
+                    <externalMetadataColumn refId="Package\DFT_Movement_TPA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[PRICE]"
+                      dataType="DT_R8"
+                      
+                      name="PRICE" />
+                    <externalMetadataColumn refId="Package\DFT_Movement_TPA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[SALE]"
+                      dataType="DT_STR"
+                      length=&quot;5&quot;
+                      name="SALE" />
+                    <externalMetadataColumn refId="Package\DFT_Movement_TPA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[PROFIT]"
+                      dataType="DT_R8"
+                      
+                      name="PROFIT" />
+                    <externalMetadataColumn refId="Package\DFT_Movement_TPA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[OK]"
+                      dataType="DT_I4"
+                      
+                      name="OK" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+            </component>
+          </components>
+          <paths>
+            <path refId="Package\DFT_Movement_TPA.Paths[Output]"
+              endId="Package\DFT_Movement_TPA\OLE_Destination.Inputs[OLE DB Destination Input]"
+              startId="Package\DFT_Movement_TPA\FF_Source.Outputs[Flat File Source Output]"
+              name="Output" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\DFT_Movement_CRA"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:DTSID="{2BBEDA06-609E-472F-B10F-39381BA536FD}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="DFT_Movement_CRA"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation;">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline version="1">
+          <components>
+            <component refId="Package\DFT_Movement_CRA\FF_Source"
+              componentClassID="Microsoft.FlatFileSource"
+              name="FF_Source">
+              <properties>
+                <property name="RetainNulls">false</property>
+              </properties>
+              <connections>
+                <connection refId="Package\DFT_Movement_CRA\FF_Source.Connections[FlatFileConnection]"
+                  connectionManagerID="Package.ConnectionManagers[FF_DFT_Movement_CRA]"
+                  connectionManagerRefId="Package.ConnectionManagers[FF_DFT_Movement_CRA]"
+                  name="FlatFileConnection" />
+              </connections>
+              <outputs>
+                <output refId="Package\DFT_Movement_CRA\FF_Source.Outputs[Flat File Source Output]"
+                  name="Flat File Source Output">
+                  <outputColumns>
+                    <outputColumn refId="Package\DFT_Movement_CRA\FF_Source.Outputs[Flat File Source Output].Columns[UPC]"
+                      dataType="DT_I8"
+                      
+                      name="UPC" />
+                    <outputColumn refId="Package\DFT_Movement_CRA\FF_Source.Outputs[Flat File Source Output].Columns[STORE]"
+                      dataType="DT_I4"
+                      
+                      name="STORE" />
+                    <outputColumn refId="Package\DFT_Movement_CRA\FF_Source.Outputs[Flat File Source Output].Columns[WEEK]"
+                      dataType="DT_I4"
+                      
+                      name="WEEK" />
+                    <outputColumn refId="Package\DFT_Movement_CRA\FF_Source.Outputs[Flat File Source Output].Columns[MOVE]"
+                      dataType="DT_I4"
+                      
+                      name="MOVE" />
+                    <outputColumn refId="Package\DFT_Movement_CRA\FF_Source.Outputs[Flat File Source Output].Columns[QTY]"
+                      dataType="DT_I4"
+                      
+                      name="QTY" />
+                    <outputColumn refId="Package\DFT_Movement_CRA\FF_Source.Outputs[Flat File Source Output].Columns[PRICE]"
+                      dataType="DT_R8"
+                      
+                      name="PRICE" />
+                    <outputColumn refId="Package\DFT_Movement_CRA\FF_Source.Outputs[Flat File Source Output].Columns[SALE]"
+                      dataType="DT_STR"
+                      length=&quot;5&quot;
+                      name="SALE" />
+                    <outputColumn refId="Package\DFT_Movement_CRA\FF_Source.Outputs[Flat File Source Output].Columns[PROFIT]"
+                      dataType="DT_R8"
+                      
+                      name="PROFIT" />
+                    <outputColumn refId="Package\DFT_Movement_CRA\FF_Source.Outputs[Flat File Source Output].Columns[OK]"
+                      dataType="DT_I4"
+                      
+                      name="OK" />
+                  </outputColumns>
+                </output>
+              </outputs>
+            </component>
+            <component refId="Package\DFT_Movement_CRA\OLE_Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              name="OLE_Destination">
+              <properties>
+                <property name="OpenRowset">[dbo].[stg_Movement_CRA]</property>
+                <property name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property name="AccessMode">3</property>
+                <property name="FastLoadKeepIdentity">false</property>
+                <property name="FastLoadKeepNulls">false</property>
+                <property name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection refId="Package\DFT_Movement_CRA\OLE_Destination.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[OLE_Staging]"
+                  connectionManagerRefId="Package.ConnectionManagers[OLE_Staging]"
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input refId="Package\DFT_Movement_CRA\OLE_Destination.Inputs[OLE DB Destination Input]"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn refId="Package\DFT_Movement_CRA\OLE_Destination.Inputs[OLE DB Destination Input].Columns[UPC]"
+                      cachedName="UPC"
+                      externalMetadataColumnId="Package\DFT_Movement_CRA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[UPC]"
+                      lineageId="Package\DFT_Movement_CRA\FF_Source.Outputs[Flat File Source Output].Columns[UPC]" />
+                    <inputColumn refId="Package\DFT_Movement_CRA\OLE_Destination.Inputs[OLE DB Destination Input].Columns[STORE]"
+                      cachedName="STORE"
+                      externalMetadataColumnId="Package\DFT_Movement_CRA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[STORE]"
+                      lineageId="Package\DFT_Movement_CRA\FF_Source.Outputs[Flat File Source Output].Columns[STORE]" />
+                    <inputColumn refId="Package\DFT_Movement_CRA\OLE_Destination.Inputs[OLE DB Destination Input].Columns[WEEK]"
+                      cachedName="WEEK"
+                      externalMetadataColumnId="Package\DFT_Movement_CRA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[WEEK]"
+                      lineageId="Package\DFT_Movement_CRA\FF_Source.Outputs[Flat File Source Output].Columns[WEEK]" />
+                    <inputColumn refId="Package\DFT_Movement_CRA\OLE_Destination.Inputs[OLE DB Destination Input].Columns[MOVE]"
+                      cachedName="MOVE"
+                      externalMetadataColumnId="Package\DFT_Movement_CRA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[MOVE]"
+                      lineageId="Package\DFT_Movement_CRA\FF_Source.Outputs[Flat File Source Output].Columns[MOVE]" />
+                    <inputColumn refId="Package\DFT_Movement_CRA\OLE_Destination.Inputs[OLE DB Destination Input].Columns[QTY]"
+                      cachedName="QTY"
+                      externalMetadataColumnId="Package\DFT_Movement_CRA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[QTY]"
+                      lineageId="Package\DFT_Movement_CRA\FF_Source.Outputs[Flat File Source Output].Columns[QTY]" />
+                    <inputColumn refId="Package\DFT_Movement_CRA\OLE_Destination.Inputs[OLE DB Destination Input].Columns[PRICE]"
+                      cachedName="PRICE"
+                      externalMetadataColumnId="Package\DFT_Movement_CRA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[PRICE]"
+                      lineageId="Package\DFT_Movement_CRA\FF_Source.Outputs[Flat File Source Output].Columns[PRICE]" />
+                    <inputColumn refId="Package\DFT_Movement_CRA\OLE_Destination.Inputs[OLE DB Destination Input].Columns[SALE]"
+                      cachedName="SALE"
+                      externalMetadataColumnId="Package\DFT_Movement_CRA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[SALE]"
+                      lineageId="Package\DFT_Movement_CRA\FF_Source.Outputs[Flat File Source Output].Columns[SALE]" />
+                    <inputColumn refId="Package\DFT_Movement_CRA\OLE_Destination.Inputs[OLE DB Destination Input].Columns[PROFIT]"
+                      cachedName="PROFIT"
+                      externalMetadataColumnId="Package\DFT_Movement_CRA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[PROFIT]"
+                      lineageId="Package\DFT_Movement_CRA\FF_Source.Outputs[Flat File Source Output].Columns[PROFIT]" />
+                    <inputColumn refId="Package\DFT_Movement_CRA\OLE_Destination.Inputs[OLE DB Destination Input].Columns[OK]"
+                      cachedName="OK"
+                      externalMetadataColumnId="Package\DFT_Movement_CRA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[OK]"
+                      lineageId="Package\DFT_Movement_CRA\FF_Source.Outputs[Flat File Source Output].Columns[OK]" />
+                  </inputColumns>
+                  <externalMetadataColumns>
+                    <externalMetadataColumn refId="Package\DFT_Movement_CRA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[UPC]"
+                      dataType="DT_I8"
+                      
+                      name="UPC" />
+                    <externalMetadataColumn refId="Package\DFT_Movement_CRA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[STORE]"
+                      dataType="DT_I4"
+                      
+                      name="STORE" />
+                    <externalMetadataColumn refId="Package\DFT_Movement_CRA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[WEEK]"
+                      dataType="DT_I4"
+                      
+                      name="WEEK" />
+                    <externalMetadataColumn refId="Package\DFT_Movement_CRA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[MOVE]"
+                      dataType="DT_I4"
+                      
+                      name="MOVE" />
+                    <externalMetadataColumn refId="Package\DFT_Movement_CRA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[QTY]"
+                      dataType="DT_I4"
+                      
+                      name="QTY" />
+                    <externalMetadataColumn refId="Package\DFT_Movement_CRA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[PRICE]"
+                      dataType="DT_R8"
+                      
+                      name="PRICE" />
+                    <externalMetadataColumn refId="Package\DFT_Movement_CRA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[SALE]"
+                      dataType="DT_STR"
+                      length=&quot;5&quot;
+                      name="SALE" />
+                    <externalMetadataColumn refId="Package\DFT_Movement_CRA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[PROFIT]"
+                      dataType="DT_R8"
+                      
+                      name="PROFIT" />
+                    <externalMetadataColumn refId="Package\DFT_Movement_CRA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[OK]"
+                      dataType="DT_I4"
+                      
+                      name="OK" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+            </component>
+          </components>
+          <paths>
+            <path refId="Package\DFT_Movement_CRA.Paths[Output]"
+              endId="Package\DFT_Movement_CRA\OLE_Destination.Inputs[OLE DB Destination Input]"
+              startId="Package\DFT_Movement_CRA\FF_Source.Outputs[Flat File Source Output]"
+              name="Output" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\DFT_Product_SDR"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:DTSID="{27C83D30-C608-4743-A96A-AC3ABD053805}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="DFT_Product_SDR"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation;">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline version="1">
+          <components>
+            <component refId="Package\DFT_Product_SDR\FF_Source"
+              componentClassID="Microsoft.FlatFileSource"
+              name="FF_Source">
+              <properties>
+                <property name="RetainNulls">false</property>
+              </properties>
+              <connections>
+                <connection refId="Package\DFT_Product_SDR\FF_Source.Connections[FlatFileConnection]"
+                  connectionManagerID="Package.ConnectionManagers[FF_DFT_Product_SDR]"
+                  connectionManagerRefId="Package.ConnectionManagers[FF_DFT_Product_SDR]"
+                  name="FlatFileConnection" />
+              </connections>
+              <outputs>
+                <output refId="Package\DFT_Product_SDR\FF_Source.Outputs[Flat File Source Output]"
+                  name="Flat File Source Output">
+                  <outputColumns>
+                    <outputColumn refId="Package\DFT_Product_SDR\FF_Source.Outputs[Flat File Source Output].Columns[COM_CODE]"
+                      dataType="DT_I4"
+                      
+                      name="COM_CODE" />
+                    <outputColumn refId="Package\DFT_Product_SDR\FF_Source.Outputs[Flat File Source Output].Columns[UPC]"
+                      dataType="DT_I8"
+                      
+                      name="UPC" />
+                    <outputColumn refId="Package\DFT_Product_SDR\FF_Source.Outputs[Flat File Source Output].Columns[DESCRIP]"
+                      dataType="DT_STR"
+                      length=&quot;100&quot;
+                      name="DESCRIP" />
+                    <outputColumn refId="Package\DFT_Product_SDR\FF_Source.Outputs[Flat File Source Output].Columns[SIZE]"
+                      dataType="DT_STR"
+                      length=&quot;30&quot;
+                      name="SIZE" />
+                    <outputColumn refId="Package\DFT_Product_SDR\FF_Source.Outputs[Flat File Source Output].Columns[CASE_PACK]"
+                      dataType="DT_I4"
+                      
+                      name="CASE_PACK" />
+                    <outputColumn refId="Package\DFT_Product_SDR\FF_Source.Outputs[Flat File Source Output].Columns[NITEM]"
+                      dataType="DT_I8"
+                      
+                      name="NITEM" />
+                  </outputColumns>
+                </output>
+              </outputs>
+            </component>
+            <component refId="Package\DFT_Product_SDR\OLE_Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              name="OLE_Destination">
+              <properties>
+                <property name="OpenRowset">[dbo].[stg_Product_SDR]</property>
+                <property name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property name="AccessMode">3</property>
+                <property name="FastLoadKeepIdentity">false</property>
+                <property name="FastLoadKeepNulls">false</property>
+                <property name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection refId="Package\DFT_Product_SDR\OLE_Destination.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[OLE_Staging]"
+                  connectionManagerRefId="Package.ConnectionManagers[OLE_Staging]"
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input refId="Package\DFT_Product_SDR\OLE_Destination.Inputs[OLE DB Destination Input]"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn refId="Package\DFT_Product_SDR\OLE_Destination.Inputs[OLE DB Destination Input].Columns[COM_CODE]"
+                      cachedName="COM_CODE"
+                      externalMetadataColumnId="Package\DFT_Product_SDR\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[COM_CODE]"
+                      lineageId="Package\DFT_Product_SDR\FF_Source.Outputs[Flat File Source Output].Columns[COM_CODE]" />
+                    <inputColumn refId="Package\DFT_Product_SDR\OLE_Destination.Inputs[OLE DB Destination Input].Columns[UPC]"
+                      cachedName="UPC"
+                      externalMetadataColumnId="Package\DFT_Product_SDR\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[UPC]"
+                      lineageId="Package\DFT_Product_SDR\FF_Source.Outputs[Flat File Source Output].Columns[UPC]" />
+                    <inputColumn refId="Package\DFT_Product_SDR\OLE_Destination.Inputs[OLE DB Destination Input].Columns[DESCRIP]"
+                      cachedName="DESCRIP"
+                      externalMetadataColumnId="Package\DFT_Product_SDR\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[DESCRIP]"
+                      lineageId="Package\DFT_Product_SDR\FF_Source.Outputs[Flat File Source Output].Columns[DESCRIP]" />
+                    <inputColumn refId="Package\DFT_Product_SDR\OLE_Destination.Inputs[OLE DB Destination Input].Columns[SIZE]"
+                      cachedName="SIZE"
+                      externalMetadataColumnId="Package\DFT_Product_SDR\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[SIZE]"
+                      lineageId="Package\DFT_Product_SDR\FF_Source.Outputs[Flat File Source Output].Columns[SIZE]" />
+                    <inputColumn refId="Package\DFT_Product_SDR\OLE_Destination.Inputs[OLE DB Destination Input].Columns[CASE_PACK]"
+                      cachedName="CASE_PACK"
+                      externalMetadataColumnId="Package\DFT_Product_SDR\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[CASE_PACK]"
+                      lineageId="Package\DFT_Product_SDR\FF_Source.Outputs[Flat File Source Output].Columns[CASE_PACK]" />
+                    <inputColumn refId="Package\DFT_Product_SDR\OLE_Destination.Inputs[OLE DB Destination Input].Columns[NITEM]"
+                      cachedName="NITEM"
+                      externalMetadataColumnId="Package\DFT_Product_SDR\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[NITEM]"
+                      lineageId="Package\DFT_Product_SDR\FF_Source.Outputs[Flat File Source Output].Columns[NITEM]" />
+                  </inputColumns>
+                  <externalMetadataColumns>
+                    <externalMetadataColumn refId="Package\DFT_Product_SDR\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[COM_CODE]"
+                      dataType="DT_I4"
+                      
+                      name="COM_CODE" />
+                    <externalMetadataColumn refId="Package\DFT_Product_SDR\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[UPC]"
+                      dataType="DT_I8"
+                      
+                      name="UPC" />
+                    <externalMetadataColumn refId="Package\DFT_Product_SDR\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[DESCRIP]"
+                      dataType="DT_STR"
+                      length=&quot;100&quot;
+                      name="DESCRIP" />
+                    <externalMetadataColumn refId="Package\DFT_Product_SDR\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[SIZE]"
+                      dataType="DT_STR"
+                      length=&quot;30&quot;
+                      name="SIZE" />
+                    <externalMetadataColumn refId="Package\DFT_Product_SDR\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[CASE_PACK]"
+                      dataType="DT_I4"
+                      
+                      name="CASE_PACK" />
+                    <externalMetadataColumn refId="Package\DFT_Product_SDR\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[NITEM]"
+                      dataType="DT_I8"
+                      
+                      name="NITEM" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+            </component>
+          </components>
+          <paths>
+            <path refId="Package\DFT_Product_SDR.Paths[Output]"
+              endId="Package\DFT_Product_SDR\OLE_Destination.Inputs[OLE DB Destination Input]"
+              startId="Package\DFT_Product_SDR\FF_Source.Outputs[Flat File Source Output]"
+              name="Output" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\DFT_Product_CSO"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:DTSID="{C702C01B-3C5F-4621-AD2E-5D8F3AD6A823}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="DFT_Product_CSO"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation;">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline version="1">
+          <components>
+            <component refId="Package\DFT_Product_CSO\FF_Source"
+              componentClassID="Microsoft.FlatFileSource"
+              name="FF_Source">
+              <properties>
+                <property name="RetainNulls">false</property>
+              </properties>
+              <connections>
+                <connection refId="Package\DFT_Product_CSO\FF_Source.Connections[FlatFileConnection]"
+                  connectionManagerID="Package.ConnectionManagers[FF_DFT_Product_CSO]"
+                  connectionManagerRefId="Package.ConnectionManagers[FF_DFT_Product_CSO]"
+                  name="FlatFileConnection" />
+              </connections>
+              <outputs>
+                <output refId="Package\DFT_Product_CSO\FF_Source.Outputs[Flat File Source Output]"
+                  name="Flat File Source Output">
+                  <outputColumns>
+                    <outputColumn refId="Package\DFT_Product_CSO\FF_Source.Outputs[Flat File Source Output].Columns[COM_CODE]"
+                      dataType="DT_I4"
+                      
+                      name="COM_CODE" />
+                    <outputColumn refId="Package\DFT_Product_CSO\FF_Source.Outputs[Flat File Source Output].Columns[UPC]"
+                      dataType="DT_I8"
+                      
+                      name="UPC" />
+                    <outputColumn refId="Package\DFT_Product_CSO\FF_Source.Outputs[Flat File Source Output].Columns[DESCRIP]"
+                      dataType="DT_STR"
+                      length=&quot;100&quot;
+                      name="DESCRIP" />
+                    <outputColumn refId="Package\DFT_Product_CSO\FF_Source.Outputs[Flat File Source Output].Columns[SIZE]"
+                      dataType="DT_STR"
+                      length=&quot;30&quot;
+                      name="SIZE" />
+                    <outputColumn refId="Package\DFT_Product_CSO\FF_Source.Outputs[Flat File Source Output].Columns[CASE_PACK]"
+                      dataType="DT_I4"
+                      
+                      name="CASE_PACK" />
+                    <outputColumn refId="Package\DFT_Product_CSO\FF_Source.Outputs[Flat File Source Output].Columns[NITEM]"
+                      dataType="DT_I8"
+                      
+                      name="NITEM" />
+                  </outputColumns>
+                </output>
+              </outputs>
+            </component>
+            <component refId="Package\DFT_Product_CSO\OLE_Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              name="OLE_Destination">
+              <properties>
+                <property name="OpenRowset">[dbo].[stg_Product_CSO]</property>
+                <property name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property name="AccessMode">3</property>
+                <property name="FastLoadKeepIdentity">false</property>
+                <property name="FastLoadKeepNulls">false</property>
+                <property name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection refId="Package\DFT_Product_CSO\OLE_Destination.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[OLE_Staging]"
+                  connectionManagerRefId="Package.ConnectionManagers[OLE_Staging]"
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input refId="Package\DFT_Product_CSO\OLE_Destination.Inputs[OLE DB Destination Input]"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn refId="Package\DFT_Product_CSO\OLE_Destination.Inputs[OLE DB Destination Input].Columns[COM_CODE]"
+                      cachedName="COM_CODE"
+                      externalMetadataColumnId="Package\DFT_Product_CSO\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[COM_CODE]"
+                      lineageId="Package\DFT_Product_CSO\FF_Source.Outputs[Flat File Source Output].Columns[COM_CODE]" />
+                    <inputColumn refId="Package\DFT_Product_CSO\OLE_Destination.Inputs[OLE DB Destination Input].Columns[UPC]"
+                      cachedName="UPC"
+                      externalMetadataColumnId="Package\DFT_Product_CSO\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[UPC]"
+                      lineageId="Package\DFT_Product_CSO\FF_Source.Outputs[Flat File Source Output].Columns[UPC]" />
+                    <inputColumn refId="Package\DFT_Product_CSO\OLE_Destination.Inputs[OLE DB Destination Input].Columns[DESCRIP]"
+                      cachedName="DESCRIP"
+                      externalMetadataColumnId="Package\DFT_Product_CSO\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[DESCRIP]"
+                      lineageId="Package\DFT_Product_CSO\FF_Source.Outputs[Flat File Source Output].Columns[DESCRIP]" />
+                    <inputColumn refId="Package\DFT_Product_CSO\OLE_Destination.Inputs[OLE DB Destination Input].Columns[SIZE]"
+                      cachedName="SIZE"
+                      externalMetadataColumnId="Package\DFT_Product_CSO\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[SIZE]"
+                      lineageId="Package\DFT_Product_CSO\FF_Source.Outputs[Flat File Source Output].Columns[SIZE]" />
+                    <inputColumn refId="Package\DFT_Product_CSO\OLE_Destination.Inputs[OLE DB Destination Input].Columns[CASE_PACK]"
+                      cachedName="CASE_PACK"
+                      externalMetadataColumnId="Package\DFT_Product_CSO\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[CASE_PACK]"
+                      lineageId="Package\DFT_Product_CSO\FF_Source.Outputs[Flat File Source Output].Columns[CASE_PACK]" />
+                    <inputColumn refId="Package\DFT_Product_CSO\OLE_Destination.Inputs[OLE DB Destination Input].Columns[NITEM]"
+                      cachedName="NITEM"
+                      externalMetadataColumnId="Package\DFT_Product_CSO\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[NITEM]"
+                      lineageId="Package\DFT_Product_CSO\FF_Source.Outputs[Flat File Source Output].Columns[NITEM]" />
+                  </inputColumns>
+                  <externalMetadataColumns>
+                    <externalMetadataColumn refId="Package\DFT_Product_CSO\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[COM_CODE]"
+                      dataType="DT_I4"
+                      
+                      name="COM_CODE" />
+                    <externalMetadataColumn refId="Package\DFT_Product_CSO\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[UPC]"
+                      dataType="DT_I8"
+                      
+                      name="UPC" />
+                    <externalMetadataColumn refId="Package\DFT_Product_CSO\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[DESCRIP]"
+                      dataType="DT_STR"
+                      length=&quot;100&quot;
+                      name="DESCRIP" />
+                    <externalMetadataColumn refId="Package\DFT_Product_CSO\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[SIZE]"
+                      dataType="DT_STR"
+                      length=&quot;30&quot;
+                      name="SIZE" />
+                    <externalMetadataColumn refId="Package\DFT_Product_CSO\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[CASE_PACK]"
+                      dataType="DT_I4"
+                      
+                      name="CASE_PACK" />
+                    <externalMetadataColumn refId="Package\DFT_Product_CSO\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[NITEM]"
+                      dataType="DT_I8"
+                      
+                      name="NITEM" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+            </component>
+          </components>
+          <paths>
+            <path refId="Package\DFT_Product_CSO.Paths[Output]"
+              endId="Package\DFT_Product_CSO\OLE_Destination.Inputs[OLE DB Destination Input]"
+              startId="Package\DFT_Product_CSO\FF_Source.Outputs[Flat File Source Output]"
+              name="Output" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\DFT_Product_TPA"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:DTSID="{69C57E1C-978F-48DE-BEDA-BC3F600E9977}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="DFT_Product_TPA"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation;">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline version="1">
+          <components>
+            <component refId="Package\DFT_Product_TPA\FF_Source"
+              componentClassID="Microsoft.FlatFileSource"
+              name="FF_Source">
+              <properties>
+                <property name="RetainNulls">false</property>
+              </properties>
+              <connections>
+                <connection refId="Package\DFT_Product_TPA\FF_Source.Connections[FlatFileConnection]"
+                  connectionManagerID="Package.ConnectionManagers[FF_DFT_Product_TPA]"
+                  connectionManagerRefId="Package.ConnectionManagers[FF_DFT_Product_TPA]"
+                  name="FlatFileConnection" />
+              </connections>
+              <outputs>
+                <output refId="Package\DFT_Product_TPA\FF_Source.Outputs[Flat File Source Output]"
+                  name="Flat File Source Output">
+                  <outputColumns>
+                    <outputColumn refId="Package\DFT_Product_TPA\FF_Source.Outputs[Flat File Source Output].Columns[COM_CODE]"
+                      dataType="DT_I4"
+                      
+                      name="COM_CODE" />
+                    <outputColumn refId="Package\DFT_Product_TPA\FF_Source.Outputs[Flat File Source Output].Columns[UPC]"
+                      dataType="DT_I8"
+                      
+                      name="UPC" />
+                    <outputColumn refId="Package\DFT_Product_TPA\FF_Source.Outputs[Flat File Source Output].Columns[DESCRIP]"
+                      dataType="DT_STR"
+                      length=&quot;100&quot;
+                      name="DESCRIP" />
+                    <outputColumn refId="Package\DFT_Product_TPA\FF_Source.Outputs[Flat File Source Output].Columns[SIZE]"
+                      dataType="DT_STR"
+                      length=&quot;30&quot;
+                      name="SIZE" />
+                    <outputColumn refId="Package\DFT_Product_TPA\FF_Source.Outputs[Flat File Source Output].Columns[CASE_PACK]"
+                      dataType="DT_I4"
+                      
+                      name="CASE_PACK" />
+                    <outputColumn refId="Package\DFT_Product_TPA\FF_Source.Outputs[Flat File Source Output].Columns[NITEM]"
+                      dataType="DT_I8"
+                      
+                      name="NITEM" />
+                  </outputColumns>
+                </output>
+              </outputs>
+            </component>
+            <component refId="Package\DFT_Product_TPA\OLE_Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              name="OLE_Destination">
+              <properties>
+                <property name="OpenRowset">[dbo].[stg_Product_TPA]</property>
+                <property name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property name="AccessMode">3</property>
+                <property name="FastLoadKeepIdentity">false</property>
+                <property name="FastLoadKeepNulls">false</property>
+                <property name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection refId="Package\DFT_Product_TPA\OLE_Destination.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[OLE_Staging]"
+                  connectionManagerRefId="Package.ConnectionManagers[OLE_Staging]"
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input refId="Package\DFT_Product_TPA\OLE_Destination.Inputs[OLE DB Destination Input]"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn refId="Package\DFT_Product_TPA\OLE_Destination.Inputs[OLE DB Destination Input].Columns[COM_CODE]"
+                      cachedName="COM_CODE"
+                      externalMetadataColumnId="Package\DFT_Product_TPA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[COM_CODE]"
+                      lineageId="Package\DFT_Product_TPA\FF_Source.Outputs[Flat File Source Output].Columns[COM_CODE]" />
+                    <inputColumn refId="Package\DFT_Product_TPA\OLE_Destination.Inputs[OLE DB Destination Input].Columns[UPC]"
+                      cachedName="UPC"
+                      externalMetadataColumnId="Package\DFT_Product_TPA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[UPC]"
+                      lineageId="Package\DFT_Product_TPA\FF_Source.Outputs[Flat File Source Output].Columns[UPC]" />
+                    <inputColumn refId="Package\DFT_Product_TPA\OLE_Destination.Inputs[OLE DB Destination Input].Columns[DESCRIP]"
+                      cachedName="DESCRIP"
+                      externalMetadataColumnId="Package\DFT_Product_TPA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[DESCRIP]"
+                      lineageId="Package\DFT_Product_TPA\FF_Source.Outputs[Flat File Source Output].Columns[DESCRIP]" />
+                    <inputColumn refId="Package\DFT_Product_TPA\OLE_Destination.Inputs[OLE DB Destination Input].Columns[SIZE]"
+                      cachedName="SIZE"
+                      externalMetadataColumnId="Package\DFT_Product_TPA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[SIZE]"
+                      lineageId="Package\DFT_Product_TPA\FF_Source.Outputs[Flat File Source Output].Columns[SIZE]" />
+                    <inputColumn refId="Package\DFT_Product_TPA\OLE_Destination.Inputs[OLE DB Destination Input].Columns[CASE_PACK]"
+                      cachedName="CASE_PACK"
+                      externalMetadataColumnId="Package\DFT_Product_TPA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[CASE_PACK]"
+                      lineageId="Package\DFT_Product_TPA\FF_Source.Outputs[Flat File Source Output].Columns[CASE_PACK]" />
+                    <inputColumn refId="Package\DFT_Product_TPA\OLE_Destination.Inputs[OLE DB Destination Input].Columns[NITEM]"
+                      cachedName="NITEM"
+                      externalMetadataColumnId="Package\DFT_Product_TPA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[NITEM]"
+                      lineageId="Package\DFT_Product_TPA\FF_Source.Outputs[Flat File Source Output].Columns[NITEM]" />
+                  </inputColumns>
+                  <externalMetadataColumns>
+                    <externalMetadataColumn refId="Package\DFT_Product_TPA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[COM_CODE]"
+                      dataType="DT_I4"
+                      
+                      name="COM_CODE" />
+                    <externalMetadataColumn refId="Package\DFT_Product_TPA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[UPC]"
+                      dataType="DT_I8"
+                      
+                      name="UPC" />
+                    <externalMetadataColumn refId="Package\DFT_Product_TPA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[DESCRIP]"
+                      dataType="DT_STR"
+                      length=&quot;100&quot;
+                      name="DESCRIP" />
+                    <externalMetadataColumn refId="Package\DFT_Product_TPA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[SIZE]"
+                      dataType="DT_STR"
+                      length=&quot;30&quot;
+                      name="SIZE" />
+                    <externalMetadataColumn refId="Package\DFT_Product_TPA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[CASE_PACK]"
+                      dataType="DT_I4"
+                      
+                      name="CASE_PACK" />
+                    <externalMetadataColumn refId="Package\DFT_Product_TPA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[NITEM]"
+                      dataType="DT_I8"
+                      
+                      name="NITEM" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+            </component>
+          </components>
+          <paths>
+            <path refId="Package\DFT_Product_TPA.Paths[Output]"
+              endId="Package\DFT_Product_TPA\OLE_Destination.Inputs[OLE DB Destination Input]"
+              startId="Package\DFT_Product_TPA\FF_Source.Outputs[Flat File Source Output]"
+              name="Output" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\DFT_Product_CRA"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:DTSID="{6BB5294F-1696-401F-8F56-740AE1D95384}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="DFT_Product_CRA"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation;">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline version="1">
+          <components>
+            <component refId="Package\DFT_Product_CRA\FF_Source"
+              componentClassID="Microsoft.FlatFileSource"
+              name="FF_Source">
+              <properties>
+                <property name="RetainNulls">false</property>
+              </properties>
+              <connections>
+                <connection refId="Package\DFT_Product_CRA\FF_Source.Connections[FlatFileConnection]"
+                  connectionManagerID="Package.ConnectionManagers[FF_DFT_Product_CRA]"
+                  connectionManagerRefId="Package.ConnectionManagers[FF_DFT_Product_CRA]"
+                  name="FlatFileConnection" />
+              </connections>
+              <outputs>
+                <output refId="Package\DFT_Product_CRA\FF_Source.Outputs[Flat File Source Output]"
+                  name="Flat File Source Output">
+                  <outputColumns>
+                    <outputColumn refId="Package\DFT_Product_CRA\FF_Source.Outputs[Flat File Source Output].Columns[COM_CODE]"
+                      dataType="DT_I4"
+                      
+                      name="COM_CODE" />
+                    <outputColumn refId="Package\DFT_Product_CRA\FF_Source.Outputs[Flat File Source Output].Columns[UPC]"
+                      dataType="DT_I8"
+                      
+                      name="UPC" />
+                    <outputColumn refId="Package\DFT_Product_CRA\FF_Source.Outputs[Flat File Source Output].Columns[DESCRIP]"
+                      dataType="DT_STR"
+                      length=&quot;100&quot;
+                      name="DESCRIP" />
+                    <outputColumn refId="Package\DFT_Product_CRA\FF_Source.Outputs[Flat File Source Output].Columns[SIZE]"
+                      dataType="DT_STR"
+                      length=&quot;30&quot;
+                      name="SIZE" />
+                    <outputColumn refId="Package\DFT_Product_CRA\FF_Source.Outputs[Flat File Source Output].Columns[CASE_PACK]"
+                      dataType="DT_I4"
+                      
+                      name="CASE_PACK" />
+                    <outputColumn refId="Package\DFT_Product_CRA\FF_Source.Outputs[Flat File Source Output].Columns[NITEM]"
+                      dataType="DT_I8"
+                      
+                      name="NITEM" />
+                  </outputColumns>
+                </output>
+              </outputs>
+            </component>
+            <component refId="Package\DFT_Product_CRA\OLE_Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              name="OLE_Destination">
+              <properties>
+                <property name="OpenRowset">[dbo].[stg_Product_CRA]</property>
+                <property name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property name="AccessMode">3</property>
+                <property name="FastLoadKeepIdentity">false</property>
+                <property name="FastLoadKeepNulls">false</property>
+                <property name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection refId="Package\DFT_Product_CRA\OLE_Destination.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[OLE_Staging]"
+                  connectionManagerRefId="Package.ConnectionManagers[OLE_Staging]"
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input refId="Package\DFT_Product_CRA\OLE_Destination.Inputs[OLE DB Destination Input]"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn refId="Package\DFT_Product_CRA\OLE_Destination.Inputs[OLE DB Destination Input].Columns[COM_CODE]"
+                      cachedName="COM_CODE"
+                      externalMetadataColumnId="Package\DFT_Product_CRA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[COM_CODE]"
+                      lineageId="Package\DFT_Product_CRA\FF_Source.Outputs[Flat File Source Output].Columns[COM_CODE]" />
+                    <inputColumn refId="Package\DFT_Product_CRA\OLE_Destination.Inputs[OLE DB Destination Input].Columns[UPC]"
+                      cachedName="UPC"
+                      externalMetadataColumnId="Package\DFT_Product_CRA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[UPC]"
+                      lineageId="Package\DFT_Product_CRA\FF_Source.Outputs[Flat File Source Output].Columns[UPC]" />
+                    <inputColumn refId="Package\DFT_Product_CRA\OLE_Destination.Inputs[OLE DB Destination Input].Columns[DESCRIP]"
+                      cachedName="DESCRIP"
+                      externalMetadataColumnId="Package\DFT_Product_CRA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[DESCRIP]"
+                      lineageId="Package\DFT_Product_CRA\FF_Source.Outputs[Flat File Source Output].Columns[DESCRIP]" />
+                    <inputColumn refId="Package\DFT_Product_CRA\OLE_Destination.Inputs[OLE DB Destination Input].Columns[SIZE]"
+                      cachedName="SIZE"
+                      externalMetadataColumnId="Package\DFT_Product_CRA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[SIZE]"
+                      lineageId="Package\DFT_Product_CRA\FF_Source.Outputs[Flat File Source Output].Columns[SIZE]" />
+                    <inputColumn refId="Package\DFT_Product_CRA\OLE_Destination.Inputs[OLE DB Destination Input].Columns[CASE_PACK]"
+                      cachedName="CASE_PACK"
+                      externalMetadataColumnId="Package\DFT_Product_CRA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[CASE_PACK]"
+                      lineageId="Package\DFT_Product_CRA\FF_Source.Outputs[Flat File Source Output].Columns[CASE_PACK]" />
+                    <inputColumn refId="Package\DFT_Product_CRA\OLE_Destination.Inputs[OLE DB Destination Input].Columns[NITEM]"
+                      cachedName="NITEM"
+                      externalMetadataColumnId="Package\DFT_Product_CRA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[NITEM]"
+                      lineageId="Package\DFT_Product_CRA\FF_Source.Outputs[Flat File Source Output].Columns[NITEM]" />
+                  </inputColumns>
+                  <externalMetadataColumns>
+                    <externalMetadataColumn refId="Package\DFT_Product_CRA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[COM_CODE]"
+                      dataType="DT_I4"
+                      
+                      name="COM_CODE" />
+                    <externalMetadataColumn refId="Package\DFT_Product_CRA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[UPC]"
+                      dataType="DT_I8"
+                      
+                      name="UPC" />
+                    <externalMetadataColumn refId="Package\DFT_Product_CRA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[DESCRIP]"
+                      dataType="DT_STR"
+                      length=&quot;100&quot;
+                      name="DESCRIP" />
+                    <externalMetadataColumn refId="Package\DFT_Product_CRA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[SIZE]"
+                      dataType="DT_STR"
+                      length=&quot;30&quot;
+                      name="SIZE" />
+                    <externalMetadataColumn refId="Package\DFT_Product_CRA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[CASE_PACK]"
+                      dataType="DT_I4"
+                      
+                      name="CASE_PACK" />
+                    <externalMetadataColumn refId="Package\DFT_Product_CRA\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[NITEM]"
+                      dataType="DT_I8"
+                      
+                      name="NITEM" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+            </component>
+          </components>
+          <paths>
+            <path refId="Package\DFT_Product_CRA.Paths[Output]"
+              endId="Package\DFT_Product_CRA\OLE_Destination.Inputs[OLE DB Destination Input]"
+              startId="Package\DFT_Product_CRA\FF_Source.Outputs[Flat File Source Output]"
+              name="Output" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\DFT_Store"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:DTSID="{86E948BA-985A-4CC2-87D4-3B6520868064}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="DFT_Store"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation;">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline version="1">
+          <components>
+            <component refId="Package\DFT_Store\FF_Source"
+              componentClassID="Microsoft.FlatFileSource"
+              name="FF_Source">
+              <properties>
+                <property name="RetainNulls">false</property>
+              </properties>
+              <connections>
+                <connection refId="Package\DFT_Store\FF_Source.Connections[FlatFileConnection]"
+                  connectionManagerID="Package.ConnectionManagers[FF_DFT_Store]"
+                  connectionManagerRefId="Package.ConnectionManagers[FF_DFT_Store]"
+                  name="FlatFileConnection" />
+              </connections>
+              <outputs>
+                <output refId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output]"
+                  name="Flat File Source Output">
+                  <outputColumns>
+                    <outputColumn refId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[STORE]"
+                      dataType="DT_STR"
+                      length=&quot;10&quot;
+                      name="STORE" />
+                    <outputColumn refId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[NAME]"
+                      dataType="DT_STR"
+                      length=&quot;60&quot;
+                      name="NAME" />
+                    <outputColumn refId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[CITY]"
+                      dataType="DT_STR"
+                      length=&quot;50&quot;
+                      name="CITY" />
+                    <outputColumn refId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[ZIP]"
+                      dataType="DT_STR"
+                      length=&quot;10&quot;
+                      name="ZIP" />
+                    <outputColumn refId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[ZONE]"
+                      dataType="DT_STR"
+                      length=&quot;10&quot;
+                      name="ZONE" />
+                    <outputColumn refId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[URBAN]"
+                      dataType="DT_STR"
+                      length=&quot;10&quot;
+                      name="URBAN" />
+                    <outputColumn refId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[WEEKVOL]"
+                      dataType="DT_STR"
+                      length=&quot;20&quot;
+                      name="WEEKVOL" />
+                    <outputColumn refId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[INCOME]"
+                      dataType="DT_STR"
+                      length=&quot;20&quot;
+                      name="INCOME" />
+                    <outputColumn refId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[EDUC]"
+                      dataType="DT_STR"
+                      length=&quot;20&quot;
+                      name="EDUC" />
+                    <outputColumn refId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[POVERTY]"
+                      dataType="DT_STR"
+                      length=&quot;20&quot;
+                      name="POVERTY" />
+                    <outputColumn refId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[HSIZEAVG]"
+                      dataType="DT_STR"
+                      length=&quot;20&quot;
+                      name="HSIZEAVG" />
+                    <outputColumn refId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[ETHNIC]"
+                      dataType="DT_STR"
+                      length=&quot;20&quot;
+                      name="ETHNIC" />
+                    <outputColumn refId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[DENSITY]"
+                      dataType="DT_STR"
+                      length=&quot;20&quot;
+                      name="DENSITY" />
+                    <outputColumn refId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[AGE9]"
+                      dataType="DT_STR"
+                      length=&quot;20&quot;
+                      name="AGE9" />
+                    <outputColumn refId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[AGE60]"
+                      dataType="DT_STR"
+                      length=&quot;20&quot;
+                      name="AGE60" />
+                    <outputColumn refId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[WORKWOM]"
+                      dataType="DT_STR"
+                      length=&quot;20&quot;
+                      name="WORKWOM" />
+                    <outputColumn refId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[PRICLOW]"
+                      dataType="DT_STR"
+                      length=&quot;10&quot;
+                      name="PRICLOW" />
+                    <outputColumn refId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[PRICMED]"
+                      dataType="DT_STR"
+                      length=&quot;10&quot;
+                      name="PRICMED" />
+                    <outputColumn refId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[PRICHIGH]"
+                      dataType="DT_STR"
+                      length=&quot;10&quot;
+                      name="PRICHIGH" />
+                  </outputColumns>
+                </output>
+              </outputs>
+            </component>
+            <component refId="Package\DFT_Store\OLE_Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              name="OLE_Destination">
+              <properties>
+                <property name="OpenRowset">[dbo].[stg_Store]</property>
+                <property name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property name="AccessMode">3</property>
+                <property name="FastLoadKeepIdentity">false</property>
+                <property name="FastLoadKeepNulls">false</property>
+                <property name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection refId="Package\DFT_Store\OLE_Destination.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[OLE_Staging]"
+                  connectionManagerRefId="Package.ConnectionManagers[OLE_Staging]"
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input]"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].Columns[STORE]"
+                      cachedName="STORE"
+                      externalMetadataColumnId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[STORE]"
+                      lineageId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[STORE]" />
+                    <inputColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].Columns[NAME]"
+                      cachedName="NAME"
+                      externalMetadataColumnId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[NAME]"
+                      lineageId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[NAME]" />
+                    <inputColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].Columns[CITY]"
+                      cachedName="CITY"
+                      externalMetadataColumnId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[CITY]"
+                      lineageId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[CITY]" />
+                    <inputColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].Columns[ZIP]"
+                      cachedName="ZIP"
+                      externalMetadataColumnId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[ZIP]"
+                      lineageId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[ZIP]" />
+                    <inputColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].Columns[ZONE]"
+                      cachedName="ZONE"
+                      externalMetadataColumnId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[ZONE]"
+                      lineageId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[ZONE]" />
+                    <inputColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].Columns[URBAN]"
+                      cachedName="URBAN"
+                      externalMetadataColumnId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[URBAN]"
+                      lineageId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[URBAN]" />
+                    <inputColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].Columns[WEEKVOL]"
+                      cachedName="WEEKVOL"
+                      externalMetadataColumnId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[WEEKVOL]"
+                      lineageId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[WEEKVOL]" />
+                    <inputColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].Columns[INCOME]"
+                      cachedName="INCOME"
+                      externalMetadataColumnId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[INCOME]"
+                      lineageId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[INCOME]" />
+                    <inputColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].Columns[EDUC]"
+                      cachedName="EDUC"
+                      externalMetadataColumnId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[EDUC]"
+                      lineageId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[EDUC]" />
+                    <inputColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].Columns[POVERTY]"
+                      cachedName="POVERTY"
+                      externalMetadataColumnId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[POVERTY]"
+                      lineageId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[POVERTY]" />
+                    <inputColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].Columns[HSIZEAVG]"
+                      cachedName="HSIZEAVG"
+                      externalMetadataColumnId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[HSIZEAVG]"
+                      lineageId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[HSIZEAVG]" />
+                    <inputColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].Columns[ETHNIC]"
+                      cachedName="ETHNIC"
+                      externalMetadataColumnId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[ETHNIC]"
+                      lineageId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[ETHNIC]" />
+                    <inputColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].Columns[DENSITY]"
+                      cachedName="DENSITY"
+                      externalMetadataColumnId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[DENSITY]"
+                      lineageId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[DENSITY]" />
+                    <inputColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].Columns[AGE9]"
+                      cachedName="AGE9"
+                      externalMetadataColumnId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[AGE9]"
+                      lineageId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[AGE9]" />
+                    <inputColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].Columns[AGE60]"
+                      cachedName="AGE60"
+                      externalMetadataColumnId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[AGE60]"
+                      lineageId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[AGE60]" />
+                    <inputColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].Columns[WORKWOM]"
+                      cachedName="WORKWOM"
+                      externalMetadataColumnId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[WORKWOM]"
+                      lineageId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[WORKWOM]" />
+                    <inputColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].Columns[PRICLOW]"
+                      cachedName="PRICLOW"
+                      externalMetadataColumnId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[PRICLOW]"
+                      lineageId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[PRICLOW]" />
+                    <inputColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].Columns[PRICMED]"
+                      cachedName="PRICMED"
+                      externalMetadataColumnId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[PRICMED]"
+                      lineageId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[PRICMED]" />
+                    <inputColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].Columns[PRICHIGH]"
+                      cachedName="PRICHIGH"
+                      externalMetadataColumnId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[PRICHIGH]"
+                      lineageId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output].Columns[PRICHIGH]" />
+                  </inputColumns>
+                  <externalMetadataColumns>
+                    <externalMetadataColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[STORE]"
+                      dataType="DT_STR"
+                      length=&quot;10&quot;
+                      name="STORE" />
+                    <externalMetadataColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[NAME]"
+                      dataType="DT_STR"
+                      length=&quot;60&quot;
+                      name="NAME" />
+                    <externalMetadataColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[CITY]"
+                      dataType="DT_STR"
+                      length=&quot;50&quot;
+                      name="CITY" />
+                    <externalMetadataColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[ZIP]"
+                      dataType="DT_STR"
+                      length=&quot;10&quot;
+                      name="ZIP" />
+                    <externalMetadataColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[ZONE]"
+                      dataType="DT_STR"
+                      length=&quot;10&quot;
+                      name="ZONE" />
+                    <externalMetadataColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[URBAN]"
+                      dataType="DT_STR"
+                      length=&quot;10&quot;
+                      name="URBAN" />
+                    <externalMetadataColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[WEEKVOL]"
+                      dataType="DT_STR"
+                      length=&quot;20&quot;
+                      name="WEEKVOL" />
+                    <externalMetadataColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[INCOME]"
+                      dataType="DT_STR"
+                      length=&quot;20&quot;
+                      name="INCOME" />
+                    <externalMetadataColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[EDUC]"
+                      dataType="DT_STR"
+                      length=&quot;20&quot;
+                      name="EDUC" />
+                    <externalMetadataColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[POVERTY]"
+                      dataType="DT_STR"
+                      length=&quot;20&quot;
+                      name="POVERTY" />
+                    <externalMetadataColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[HSIZEAVG]"
+                      dataType="DT_STR"
+                      length=&quot;20&quot;
+                      name="HSIZEAVG" />
+                    <externalMetadataColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[ETHNIC]"
+                      dataType="DT_STR"
+                      length=&quot;20&quot;
+                      name="ETHNIC" />
+                    <externalMetadataColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[DENSITY]"
+                      dataType="DT_STR"
+                      length=&quot;20&quot;
+                      name="DENSITY" />
+                    <externalMetadataColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[AGE9]"
+                      dataType="DT_STR"
+                      length=&quot;20&quot;
+                      name="AGE9" />
+                    <externalMetadataColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[AGE60]"
+                      dataType="DT_STR"
+                      length=&quot;20&quot;
+                      name="AGE60" />
+                    <externalMetadataColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[WORKWOM]"
+                      dataType="DT_STR"
+                      length=&quot;20&quot;
+                      name="WORKWOM" />
+                    <externalMetadataColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[PRICLOW]"
+                      dataType="DT_STR"
+                      length=&quot;10&quot;
+                      name="PRICLOW" />
+                    <externalMetadataColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[PRICMED]"
+                      dataType="DT_STR"
+                      length=&quot;10&quot;
+                      name="PRICMED" />
+                    <externalMetadataColumn refId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[PRICHIGH]"
+                      dataType="DT_STR"
+                      length=&quot;10&quot;
+                      name="PRICHIGH" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+            </component>
+          </components>
+          <paths>
+            <path refId="Package\DFT_Store.Paths[Output]"
+              endId="Package\DFT_Store\OLE_Destination.Inputs[OLE DB Destination Input]"
+              startId="Package\DFT_Store\FF_Source.Outputs[Flat File Source Output]"
+              name="Output" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[DFT_Movement_SDR_to_DFT_Movement_CSO]"
+      DTS:CreationName=""
+      DTS:DTSID="{7254BAF6-9D62-46F1-BAEE-D402562C14EF}"
+      DTS:From="Package\DFT_Movement_SDR"
+      DTS:To="Package\DFT_Movement_CSO"
+      DTS:ObjectName="DFT_Movement_SDR_to_DFT_Movement_CSO" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[DFT_Movement_CSO_to_DFT_Movement_TPA]"
+      DTS:CreationName=""
+      DTS:DTSID="{6E2C53D5-60D3-4792-8399-2E3EFD101567}"
+      DTS:From="Package\DFT_Movement_CSO"
+      DTS:To="Package\DFT_Movement_TPA"
+      DTS:ObjectName="DFT_Movement_CSO_to_DFT_Movement_TPA" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[DFT_Movement_TPA_to_DFT_Movement_CRA]"
+      DTS:CreationName=""
+      DTS:DTSID="{E84101C4-01B9-4943-93DB-612E3F31D57E}"
+      DTS:From="Package\DFT_Movement_TPA"
+      DTS:To="Package\DFT_Movement_CRA"
+      DTS:ObjectName="DFT_Movement_TPA_to_DFT_Movement_CRA" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[DFT_Movement_CRA_to_DFT_Product_SDR]"
+      DTS:CreationName=""
+      DTS:DTSID="{EE875AC6-9A07-46CF-B31E-90D4287CD1FE}"
+      DTS:From="Package\DFT_Movement_CRA"
+      DTS:To="Package\DFT_Product_SDR"
+      DTS:ObjectName="DFT_Movement_CRA_to_DFT_Product_SDR" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[DFT_Product_SDR_to_DFT_Product_CSO]"
+      DTS:CreationName=""
+      DTS:DTSID="{94E37D67-FB38-410D-AD64-A8BD9BEC3F61}"
+      DTS:From="Package\DFT_Product_SDR"
+      DTS:To="Package\DFT_Product_CSO"
+      DTS:ObjectName="DFT_Product_SDR_to_DFT_Product_CSO" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[DFT_Product_CSO_to_DFT_Product_TPA]"
+      DTS:CreationName=""
+      DTS:DTSID="{40B0B218-02D6-434F-94AD-B530100B0E93}"
+      DTS:From="Package\DFT_Product_CSO"
+      DTS:To="Package\DFT_Product_TPA"
+      DTS:ObjectName="DFT_Product_CSO_to_DFT_Product_TPA" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[DFT_Product_TPA_to_DFT_Product_CRA]"
+      DTS:CreationName=""
+      DTS:DTSID="{06E4DF7E-85DA-46EC-91A4-79993036C34B}"
+      DTS:From="Package\DFT_Product_TPA"
+      DTS:To="Package\DFT_Product_CRA"
+      DTS:ObjectName="DFT_Product_TPA_to_DFT_Product_CRA" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[DFT_Product_CRA_to_DFT_Store]"
+      DTS:CreationName=""
+      DTS:DTSID="{33171B4F-B11C-4864-AD4F-2F8BCA094F30}"
+      DTS:From="Package\DFT_Product_CRA"
+      DTS:To="Package\DFT_Store"
+      DTS:ObjectName="DFT_Product_CRA_to_DFT_Store" />
+  </DTS:PrecedenceConstraints>
+</DTS:Executable>
