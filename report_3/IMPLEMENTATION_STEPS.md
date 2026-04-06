@@ -209,10 +209,9 @@ If you are doing this project from home instead of the Mays lab, you MUST do the
    - `SQL_Load_DimStore` (Execute SQL → paste DimStore INSERT...SELECT)
    - `SQL_Load_DimProduct` (Execute SQL → paste DimProduct INSERT...SELECT)
    - `SQL_Load_FactWeeklySales` (Execute SQL → paste from `06_load_facts.sql`)
-   - `SQL_Load_FactCustomerTraffic` (Execute SQL → paste from `06_load_facts.sql`)
    - `SQL_Drop_Temp_Tables` (Execute SQL → paste from `07_drop_temp_tables.sql`)
 
-4. Connect with green arrows: Category → Promotion → Time → Store → Product → FactWeeklySales → FactCustomerTraffic → DropTemp
+4. Connect with green arrows: Category → Promotion → Time → Store → Product → FactWeeklySales → DropTemp
 
 5. **📸 Screenshot 15:** Control Flow of Package 3
 
@@ -236,15 +235,13 @@ If you are doing this project from home instead of the Mays lab, you MUST do the
     ```
 11. **📸 Screenshots 18-22:** One for each dimension table
 
-**Verify fact tables:**
+**Verify fact table:**
 12. Run in SSMS:
     ```sql
     SELECT TOP 10 * FROM FactWeeklySales;
     SELECT COUNT(*) FROM FactWeeklySales;    -- ~34.6M
-    SELECT TOP 10 * FROM FactCustomerTraffic;
-    SELECT COUNT(*) FROM FactCustomerTraffic; -- ~327K
     ```
-13. **📸 Screenshots 23-24:** One for each fact table
+13. **📸 Screenshot 23:** FactWeeklySales TOP 10 + COUNT
 
 **Verify temp table cleanup:**
 14. Check Object Explorer → team1_staging_area → Tables

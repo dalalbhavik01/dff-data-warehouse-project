@@ -145,42 +145,6 @@ CREATE TABLE dbo.stg_Store (
 );
 GO
 
--- -------------------------------------------------------
--- Customer Traffic Staging Table
--- Source: Ccount/CCOUNT.csv (327,045 rows)
--- Many columns stored as VARCHAR because source uses '.'
--- as placeholder for missing values
--- -------------------------------------------------------
-CREATE TABLE dbo.stg_CustomerTraffic (
-    STORE         VARCHAR(10),
-    DATE_COL      VARCHAR(50),
-    GROCERY       VARCHAR(20),
-    DAIRY         VARCHAR(20),
-    FROZEN        VARCHAR(20),
-    MEAT          VARCHAR(20),
-    PRODUCE       VARCHAR(20),
-    DELI          VARCHAR(20),
-    BAKERY        VARCHAR(20),
-    PHARMACY      VARCHAR(20),
-    BEER          VARCHAR(20),
-    WINE          VARCHAR(20),
-    SPIRITS       VARCHAR(20),
-    CUSTCOUN      VARCHAR(20),
-    MVPCLUB       VARCHAR(20),
-    GROCCOUP      VARCHAR(20),
-    DAIRYCOUP     VARCHAR(20),
-    FROZNCOUP     VARCHAR(20),
-    MEATCOUP      VARCHAR(20),
-    PRODCOUP      VARCHAR(20),
-    DELICOUP      VARCHAR(20),
-    BAKCOUP       VARCHAR(20),
-    PHARMCOUP     VARCHAR(20),
-    BEERCOUP      VARCHAR(20),
-    WINECOUP      VARCHAR(20),
-    SPIRCOUP      VARCHAR(20),
-    WEEK          VARCHAR(10)
-);
-GO
 
 -- -------------------------------------------------------
 -- Verification: List all staging tables

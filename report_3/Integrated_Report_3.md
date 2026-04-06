@@ -193,6 +193,8 @@ The professor selected 5 BQs from our list of 10 for implementation:
 
 ### 4.2 Star Schema — Table Definitions
 
+**Implementation scope:** The full DFF dataset contains 28 product categories (~14,000 UPCs, ~134.9M movement rows). This implementation is scoped to the 4 categories required by the 5 selected BQs: Soft Drinks (SDR), Canned Soup (CSO), Toothpaste (TPA), and Crackers (CRA), yielding ~3,112 UPCs and ~34.6M movement rows. The schema supports full-scale loading of all 28 categories without structural changes.
+
 #### FactWeeklySales (Central Fact Table)
 
 | Column | Data Type | Description | Source | Additivity |
@@ -911,14 +913,14 @@ All SQL scripts used in this project are available in the `report_3/sql/` direct
 
 | Script | Purpose | Lines |
 |:--|:--|:--|
-| `01_create_databases.sql` | CREATE DATABASE statements | 37 |
-| `02_create_staging_tables.sql` | All staging table definitions | 177 |
-| `03_create_dw_tables.sql` | All dimension + fact table definitions | 166 |
-| `04_transform_staging.sql` | Data cleaning & transformation | 155 |
-| `05_load_dimensions.sql` | Dimension table population | 160 |
-| `06_load_facts.sql` | Fact table population | 128 |
-| `07_drop_temp_tables.sql` | Temporary table cleanup | 30 |
-| `08_verify_bq_queries.sql` | BQ verification queries | 127 |
+| `01_create_databases.sql` | CREATE DATABASE statements | 35 |
+| `02_create_staging_tables.sql` | All staging table definitions | 159 |
+| `03_create_dw_tables.sql` | All dimension + fact table definitions | 161 |
+| `04_transform_staging.sql` | Data cleaning & transformation | 164 |
+| `05_load_dimensions.sql` | Dimension table population | 194 |
+| `06_load_facts.sql` | Fact table population | 114 |
+| `07_drop_temp_tables.sql` | Temporary table cleanup | 52 |
+| `08_verify_bq_queries.sql` | BQ verification queries | 182 |
 
 ### Appendix B: Mapping Tables (Excel)
 

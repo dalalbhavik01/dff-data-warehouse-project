@@ -34,7 +34,7 @@ GO
 -- -------------------------------------------------------
 CREATE TABLE dbo.DimPromotion (
     promotion_key   INT IDENTITY(1,1) NOT NULL,
-    deal_code       CHAR(1)           NULL,
+    deal_code       CHAR(1)           NOT NULL,
     deal_type       VARCHAR(20)       NOT NULL,
     is_promoted     BIT               NOT NULL,
     CONSTRAINT PK_DimPromotion PRIMARY KEY CLUSTERED (promotion_key)
@@ -147,34 +147,6 @@ CREATE TABLE dbo.FactWeeklySales (
 );
 GO
 
--- -------------------------------------------------------
--- FactCustomerTraffic — Secondary fact table
--- Grain: One row per Store × Week
--- Source: CCOUNT staging table
--- Estimated: ~327K rows
--- -------------------------------------------------------
-CREATE TABLE dbo.FactCustomerTraffic (
-    traffic_fact_id          INT IDENTITY(1,1)  NOT NULL,
-    store_key                INT                NOT NULL,
-    time_key                 INT                NOT NULL,
-    total_customers          DECIMAL(10,2)      NULL,
-    grocery_count            DECIMAL(10,2)      NULL,
-    dairy_count              DECIMAL(10,2)      NULL,
-    frozen_count             DECIMAL(10,2)      NULL,
-    meat_count               DECIMAL(10,2)      NULL,
-    produce_count            DECIMAL(10,2)      NULL,
-    deli_count               DECIMAL(10,2)      NULL,
-    bakery_count             DECIMAL(10,2)      NULL,
-    pharmacy_count           DECIMAL(10,2)      NULL,
-    beer_count               DECIMAL(10,2)      NULL,
-    spirits_count            DECIMAL(10,2)      NULL,
-    mvp_club_count           DECIMAL(10,2)      NULL,
-    total_coupon_redemptions DECIMAL(10,2)      NULL,
-    CONSTRAINT PK_FactCustomerTraffic PRIMARY KEY CLUSTERED (traffic_fact_id),
-    CONSTRAINT FK_Traffic_Store FOREIGN KEY (store_key) REFERENCES dbo.DimStore(store_key),
-    CONSTRAINT FK_Traffic_Time  FOREIGN KEY (time_key)  REFERENCES dbo.DimTime(time_key)
-);
-GO
 
 -- -------------------------------------------------------
 -- Verification: List all DW tables

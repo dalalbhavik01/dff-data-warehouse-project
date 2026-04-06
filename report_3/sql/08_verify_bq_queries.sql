@@ -178,6 +178,5 @@ UNION ALL SELECT 'DimTime',            COUNT(*) FROM dbo.DimTime
 UNION ALL SELECT 'DimStore',           COUNT(*) FROM dbo.DimStore
 UNION ALL SELECT 'DimProduct',         COUNT(*) FROM dbo.DimProduct
 UNION ALL SELECT 'FactWeeklySales',    COUNT(*) FROM dbo.FactWeeklySales
-UNION ALL SELECT 'FactCustomerTraffic', COUNT(*) FROM dbo.FactCustomerTraffic
 ORDER BY TableName;
 GO

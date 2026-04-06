@@ -19,7 +19,7 @@ GO
 --                          Used to load DimProduct
 --
 -- Note: The original staging tables (stg_Movement_*, stg_Product_*,
--- stg_Store, stg_CustomerTraffic) are also temporary but may be
+-- stg_Store) are also temporary but may be
 -- retained for audit/verification purposes until the project is
 -- fully validated.
 

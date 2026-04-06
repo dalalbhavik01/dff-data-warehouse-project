@@ -95,70 +95,13 @@ ORDER BY FactRows DESC;
 GO
 
 -- ===============================
--- 2. FactCustomerTraffic
--- ===============================
--- Grain: One row per Store × Week
--- Source: stg_CustomerTraffic (cleaned)
--- Joins to DimStore and DimTime for surrogate keys
--- Derived: total_coupon_redemptions = SUM of all *COUP columns
-
-PRINT 'Loading FactCustomerTraffic...';
-GO
-
-INSERT INTO dbo.FactCustomerTraffic
-    (store_key, time_key, total_customers, 
-     grocery_count, dairy_count, frozen_count, meat_count,
-     produce_count, deli_count, bakery_count, pharmacy_count,
-     beer_count, spirits_count, mvp_club_count, total_coupon_redemptions)
-SELECT 
-    ds.store_key,
-    dt.time_key,
-    CAST(ct.CUSTCOUN AS DECIMAL(10,2))                         AS total_customers,
-    CAST(ct.GROCERY AS DECIMAL(10,2))                          AS grocery_count,
-    CAST(ct.DAIRY AS DECIMAL(10,2))                            AS dairy_count,
-    CAST(ct.FROZEN AS DECIMAL(10,2))                           AS frozen_count,
-    CAST(ct.MEAT AS DECIMAL(10,2))                             AS meat_count,
-    CAST(ct.PRODUCE AS DECIMAL(10,2))                          AS produce_count,
-    CAST(ct.DELI AS DECIMAL(10,2))                             AS deli_count,
-    CAST(ct.BAKERY AS DECIMAL(10,2))                           AS bakery_count,
-    CAST(ct.PHARMACY AS DECIMAL(10,2))                         AS pharmacy_count,
-    CAST(ct.BEER AS DECIMAL(10,2))                             AS beer_count,
-    CAST(ct.SPIRITS AS DECIMAL(10,2))                          AS spirits_count,
-    CAST(ct.MVPCLUB AS DECIMAL(10,2))                          AS mvp_club_count,
-    -- Sum all coupon columns for total_coupon_redemptions
-    ISNULL(CAST(ct.GROCCOUP AS DECIMAL(10,2)), 0) +
-    ISNULL(CAST(ct.DAIRYCOUP AS DECIMAL(10,2)), 0) +
-    ISNULL(CAST(ct.FROZNCOUP AS DECIMAL(10,2)), 0) +
-    ISNULL(CAST(ct.MEATCOUP AS DECIMAL(10,2)), 0) +
-    ISNULL(CAST(ct.PRODCOUP AS DECIMAL(10,2)), 0) +
-    ISNULL(CAST(ct.DELICOUP AS DECIMAL(10,2)), 0) +
-    ISNULL(CAST(ct.BAKCOUP AS DECIMAL(10,2)), 0) +
-    ISNULL(CAST(ct.PHARMCOUP AS DECIMAL(10,2)), 0) +
-    ISNULL(CAST(ct.BEERCOUP AS DECIMAL(10,2)), 0) +
-    ISNULL(CAST(ct.WINECOUP AS DECIMAL(10,2)), 0) +
-    ISNULL(CAST(ct.SPIRCOUP AS DECIMAL(10,2)), 0)             AS total_coupon_redemptions
-FROM [team1_staging_area].dbo.stg_CustomerTraffic ct
-INNER JOIN dbo.DimStore ds 
-    ON CAST(ct.STORE AS INT) = ds.store_id
-INNER JOIN dbo.DimTime dt 
-    ON CAST(ct.WEEK AS INT) = dt.week_id;
-GO
-
-PRINT 'FactCustomerTraffic loaded:';
-SELECT COUNT(*) AS RowCount FROM dbo.FactCustomerTraffic;
-SELECT TOP 10 * FROM dbo.FactCustomerTraffic ORDER BY traffic_fact_id;
-GO
-
--- ===============================
 -- FACT TABLE VERIFICATION
 -- ===============================
 PRINT '========================================';
-PRINT '  ALL FACT TABLES LOADED';
+PRINT '  FACT TABLE LOADED';
 PRINT '========================================';
 
-SELECT 'FactWeeklySales'      AS TableName, COUNT(*) AS RowCount FROM dbo.FactWeeklySales
-UNION ALL 
-SELECT 'FactCustomerTraffic', COUNT(*) FROM dbo.FactCustomerTraffic;
+SELECT 'FactWeeklySales' AS TableName, COUNT(*) AS RowCount FROM dbo.FactWeeklySales;
 GO
 
 -- Quick data quality check: any NULL keys?
@@ -168,3 +111,4 @@ UNION ALL SELECT 'NULL time_key',    COUNT(*) FROM dbo.FactWeeklySales WHERE tim
 UNION ALL SELECT 'NULL category_key', COUNT(*) FROM dbo.FactWeeklySales WHERE category_key IS NULL
 UNION ALL SELECT 'NULL promotion_key', COUNT(*) FROM dbo.FactWeeklySales WHERE promotion_key IS NULL;
 GO
+

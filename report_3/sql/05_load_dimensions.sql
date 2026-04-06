@@ -71,7 +71,7 @@ GO
 -- ===============================
 -- 3. DimTime (~400 rows — generated via CTE)
 -- ===============================
--- DFF uses proprietary week IDs (WEEK column in Movement/CCOUNT files).
+-- DFF uses proprietary week IDs (WEEK column in Movement files).
 -- Week 1 corresponds to September 14, 1989 per the DFF codebook.
 -- Each subsequent week_id increments by 7 days.
 -- We generate week_id 1 through 400 to cover the full dataset period.

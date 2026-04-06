@@ -144,53 +144,6 @@ SELECT COUNT(*) AS StoreCount FROM dbo.stg_Store;
 GO
 
 -- ===============================
--- CUSTOMER TRAFFIC TRANSFORMATIONS
--- ===============================
-
--- T8: Replace '.' placeholders with NULL across all department columns
--- The CCOUNT.csv file uses '.' instead of NULL for missing values
-
-UPDATE dbo.stg_CustomerTraffic SET GROCERY   = NULL WHERE GROCERY = '.';
-UPDATE dbo.stg_CustomerTraffic SET DAIRY     = NULL WHERE DAIRY = '.';
-UPDATE dbo.stg_CustomerTraffic SET FROZEN    = NULL WHERE FROZEN = '.';
-UPDATE dbo.stg_CustomerTraffic SET MEAT      = NULL WHERE MEAT = '.';
-UPDATE dbo.stg_CustomerTraffic SET PRODUCE   = NULL WHERE PRODUCE = '.';
-UPDATE dbo.stg_CustomerTraffic SET DELI      = NULL WHERE DELI = '.';
-UPDATE dbo.stg_CustomerTraffic SET BAKERY    = NULL WHERE BAKERY = '.';
-UPDATE dbo.stg_CustomerTraffic SET PHARMACY  = NULL WHERE PHARMACY = '.';
-UPDATE dbo.stg_CustomerTraffic SET BEER      = NULL WHERE BEER = '.';
-UPDATE dbo.stg_CustomerTraffic SET WINE      = NULL WHERE WINE = '.';
-UPDATE dbo.stg_CustomerTraffic SET SPIRITS   = NULL WHERE SPIRITS = '.';
-UPDATE dbo.stg_CustomerTraffic SET CUSTCOUN  = NULL WHERE CUSTCOUN = '.';
-UPDATE dbo.stg_CustomerTraffic SET MVPCLUB   = NULL WHERE MVPCLUB = '.';
-UPDATE dbo.stg_CustomerTraffic SET GROCCOUP  = NULL WHERE GROCCOUP = '.';
-UPDATE dbo.stg_CustomerTraffic SET DAIRYCOUP = NULL WHERE DAIRYCOUP = '.';
-UPDATE dbo.stg_CustomerTraffic SET FROZNCOUP = NULL WHERE FROZNCOUP = '.';
-UPDATE dbo.stg_CustomerTraffic SET MEATCOUP  = NULL WHERE MEATCOUP = '.';
-UPDATE dbo.stg_CustomerTraffic SET PRODCOUP  = NULL WHERE PRODCOUP = '.';
-UPDATE dbo.stg_CustomerTraffic SET DELICOUP  = NULL WHERE DELICOUP = '.';
-UPDATE dbo.stg_CustomerTraffic SET BAKCOUP   = NULL WHERE BAKCOUP = '.';
-UPDATE dbo.stg_CustomerTraffic SET PHARMCOUP = NULL WHERE PHARMCOUP = '.';
-UPDATE dbo.stg_CustomerTraffic SET BEERCOUP  = NULL WHERE BEERCOUP = '.';
-UPDATE dbo.stg_CustomerTraffic SET WINECOUP  = NULL WHERE WINECOUP = '.';
-UPDATE dbo.stg_CustomerTraffic SET SPIRCOUP  = NULL WHERE SPIRCOUP = '.';
-GO
-
--- T9: Filter out STORE = 0 rows (header/summary rows)
-DELETE FROM dbo.stg_CustomerTraffic 
-WHERE STORE = '0' OR ISNUMERIC(STORE) = 0;
-GO
-
--- T10: Filter out negative WEEK values (pre-tracking period)
-DELETE FROM dbo.stg_CustomerTraffic 
-WHERE ISNUMERIC(WEEK) = 1 AND CAST(WEEK AS INT) < 1;
-GO
-
-PRINT 'T8-T10 Complete: Customer traffic data cleaned.';
-SELECT COUNT(*) AS TrafficRowCount FROM dbo.stg_CustomerTraffic;
-GO
-
--- ===============================
 -- FINAL VERIFICATION
 -- ===============================
 PRINT '========================================';
@@ -206,7 +159,6 @@ UNION ALL SELECT 'stg_Product_CSO',  COUNT(*) FROM dbo.stg_Product_CSO
 UNION ALL SELECT 'stg_Product_TPA',  COUNT(*) FROM dbo.stg_Product_TPA
 UNION ALL SELECT 'stg_Product_CRA',  COUNT(*) FROM dbo.stg_Product_CRA
 UNION ALL SELECT 'stg_Store',        COUNT(*) FROM dbo.stg_Store
-UNION ALL SELECT 'stg_CustomerTraffic', COUNT(*) FROM dbo.stg_CustomerTraffic
 UNION ALL SELECT 'tmp_Product_All',  COUNT(*) FROM dbo.tmp_Product_All
 ORDER BY TableName;
 GO
