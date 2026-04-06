@@ -12,7 +12,7 @@
 2. Subject Area Understanding
 3. Overview of Kimball's Methodology
 4. Data Warehouse Logical Design (Star Schema Design)
-5. ETL Plan
+5. Development of the ETL Plan
 6. Implementation of the ETL Plan
 7. References
 8. Appendix
@@ -318,9 +318,9 @@ The professor selected 5 BQs from our list of 10 for implementation:
 
 *[INSERT: Star Schema ERD from Visio or LucidChart. Per professor's feedback: write attributes with data types inside each table box (e.g., "store_key INT PK"). Do NOT label the relationship lines — just draw plain lines connecting fact to dimensions.]*
 
-### 4.5 Mapping Table #1: Source Files → Staging Tables
+### 4.5 Mapping Table #1: Source Files to Staging Tables
 
-| Source File | Source Attribute | Mapping | Staging Table Type | Staging Table | Staging Attribute |
+| source_file_name | source_file_attribute | mapping | staging_table_type | staging_table_name | staging_table_attribute |
 |:--|:--|:--|:--|:--|:--|
 | wsdr.csv | UPC | Copy | Relation | stg_Movement_SDR | UPC |
 | wsdr.csv | STORE | Copy | Relation | stg_Movement_SDR | STORE |
@@ -332,9 +332,36 @@ The professor selected 5 BQs from our list of 10 for implementation:
 | wsdr.csv | PROFIT | Copy | Relation | stg_Movement_SDR | PROFIT |
 | wsdr.csv | OK | Copy | Relation | stg_Movement_SDR | OK |
 | wsdr.csv | (filename) | Derive: extract 'SDR' | Relation | stg_Movement_SDR | CATEGORY_CODE |
-| WCSO-Done.csv | (all columns) | Copy (same as above) | Relation | stg_Movement_CSO | (same structure) |
-| WTPA_done.csv | (all columns) | Copy (same as above) | Relation | stg_Movement_TPA | (same structure) |
-| Done-WCRA.csv | (all columns) | Copy (same as above) | Relation | stg_Movement_CRA | (same structure) |
+| WCSO-Done.csv | UPC | Copy | Relation | stg_Movement_CSO | UPC |
+| WCSO-Done.csv | STORE | Copy | Relation | stg_Movement_CSO | STORE |
+| WCSO-Done.csv | WEEK | Copy | Relation | stg_Movement_CSO | WEEK |
+| WCSO-Done.csv | MOVE | Copy | Relation | stg_Movement_CSO | MOVE |
+| WCSO-Done.csv | QTY | Copy | Relation | stg_Movement_CSO | QTY |
+| WCSO-Done.csv | PRICE | Copy | Relation | stg_Movement_CSO | PRICE |
+| WCSO-Done.csv | SALE | Copy | Relation | stg_Movement_CSO | SALE |
+| WCSO-Done.csv | PROFIT | Copy | Relation | stg_Movement_CSO | PROFIT |
+| WCSO-Done.csv | OK | Copy | Relation | stg_Movement_CSO | OK |
+| WCSO-Done.csv | (filename) | Derive: extract 'CSO' | Relation | stg_Movement_CSO | CATEGORY_CODE |
+| WTPA_done.csv | UPC | Copy | Relation | stg_Movement_TPA | UPC |
+| WTPA_done.csv | STORE | Copy | Relation | stg_Movement_TPA | STORE |
+| WTPA_done.csv | WEEK | Copy | Relation | stg_Movement_TPA | WEEK |
+| WTPA_done.csv | MOVE | Copy | Relation | stg_Movement_TPA | MOVE |
+| WTPA_done.csv | QTY | Copy | Relation | stg_Movement_TPA | QTY |
+| WTPA_done.csv | PRICE | Copy | Relation | stg_Movement_TPA | PRICE |
+| WTPA_done.csv | SALE | Copy | Relation | stg_Movement_TPA | SALE |
+| WTPA_done.csv | PROFIT | Copy | Relation | stg_Movement_TPA | PROFIT |
+| WTPA_done.csv | OK | Copy | Relation | stg_Movement_TPA | OK |
+| WTPA_done.csv | (filename) | Derive: extract 'TPA' | Relation | stg_Movement_TPA | CATEGORY_CODE |
+| Done-WCRA.csv | UPC | Copy | Relation | stg_Movement_CRA | UPC |
+| Done-WCRA.csv | STORE | Copy | Relation | stg_Movement_CRA | STORE |
+| Done-WCRA.csv | WEEK | Copy | Relation | stg_Movement_CRA | WEEK |
+| Done-WCRA.csv | MOVE | Copy | Relation | stg_Movement_CRA | MOVE |
+| Done-WCRA.csv | QTY | Copy | Relation | stg_Movement_CRA | QTY |
+| Done-WCRA.csv | PRICE | Copy | Relation | stg_Movement_CRA | PRICE |
+| Done-WCRA.csv | SALE | Copy | Relation | stg_Movement_CRA | SALE |
+| Done-WCRA.csv | PROFIT | Copy | Relation | stg_Movement_CRA | PROFIT |
+| Done-WCRA.csv | OK | Copy | Relation | stg_Movement_CRA | OK |
+| Done-WCRA.csv | (filename) | Derive: extract 'CRA' | Relation | stg_Movement_CRA | CATEGORY_CODE |
 | UPCSDR.csv | COM_CODE | Copy | Relation | stg_Product_SDR | COM_CODE |
 | UPCSDR.csv | UPC | Copy | Relation | stg_Product_SDR | UPC |
 | UPCSDR.csv | DESCRIP | Copy | Relation | stg_Product_SDR | DESCRIP |
@@ -342,9 +369,27 @@ The professor selected 5 BQs from our list of 10 for implementation:
 | UPCSDR.csv | CASE | Copy | Relation | stg_Product_SDR | CASE_PACK |
 | UPCSDR.csv | NITEM | Copy | Relation | stg_Product_SDR | NITEM |
 | UPCSDR.csv | (filename) | Derive: extract 'SDR' | Relation | stg_Product_SDR | CATEGORY_CODE |
-| UPCCSO.csv | (all columns) | Copy (same as above) | Relation | stg_Product_CSO | (same structure) |
-| UPCTPA.csv | (all columns) | Copy (same as above) | Relation | stg_Product_TPA | (same structure) |
-| UPCCRA.csv | (all columns) | Copy (same as above) | Relation | stg_Product_CRA | (same structure) |
+| UPCCSO.csv | COM_CODE | Copy | Relation | stg_Product_CSO | COM_CODE |
+| UPCCSO.csv | UPC | Copy | Relation | stg_Product_CSO | UPC |
+| UPCCSO.csv | DESCRIP | Copy | Relation | stg_Product_CSO | DESCRIP |
+| UPCCSO.csv | SIZE | Copy | Relation | stg_Product_CSO | SIZE |
+| UPCCSO.csv | CASE | Copy | Relation | stg_Product_CSO | CASE_PACK |
+| UPCCSO.csv | NITEM | Copy | Relation | stg_Product_CSO | NITEM |
+| UPCCSO.csv | (filename) | Derive: extract 'CSO' | Relation | stg_Product_CSO | CATEGORY_CODE |
+| UPCTPA.csv | COM_CODE | Copy | Relation | stg_Product_TPA | COM_CODE |
+| UPCTPA.csv | UPC | Copy | Relation | stg_Product_TPA | UPC |
+| UPCTPA.csv | DESCRIP | Copy | Relation | stg_Product_TPA | DESCRIP |
+| UPCTPA.csv | SIZE | Copy | Relation | stg_Product_TPA | SIZE |
+| UPCTPA.csv | CASE | Copy | Relation | stg_Product_TPA | CASE_PACK |
+| UPCTPA.csv | NITEM | Copy | Relation | stg_Product_TPA | NITEM |
+| UPCTPA.csv | (filename) | Derive: extract 'TPA' | Relation | stg_Product_TPA | CATEGORY_CODE |
+| UPCCRA.csv | COM_CODE | Copy | Relation | stg_Product_CRA | COM_CODE |
+| UPCCRA.csv | UPC | Copy | Relation | stg_Product_CRA | UPC |
+| UPCCRA.csv | DESCRIP | Copy | Relation | stg_Product_CRA | DESCRIP |
+| UPCCRA.csv | SIZE | Copy | Relation | stg_Product_CRA | SIZE |
+| UPCCRA.csv | CASE | Copy | Relation | stg_Product_CRA | CASE_PACK |
+| UPCCRA.csv | NITEM | Copy | Relation | stg_Product_CRA | NITEM |
+| UPCCRA.csv | (filename) | Derive: extract 'CRA' | Relation | stg_Product_CRA | CATEGORY_CODE |
 | DEMO.csv | STORE | Copy | Relation | stg_Store | STORE |
 | DEMO.csv | NAME | Copy | Relation | stg_Store | NAME |
 | DEMO.csv | CITY | Copy | Relation | stg_Store | CITY |
@@ -353,13 +398,20 @@ The professor selected 5 BQs from our list of 10 for implementation:
 | DEMO.csv | URBAN | Copy | Relation | stg_Store | URBAN |
 | DEMO.csv | WEEKVOL | Copy | Relation | stg_Store | WEEKVOL |
 | DEMO.csv | INCOME | Copy | Relation | stg_Store | INCOME |
-| DEMO.csv | EDUC, POVERTY, HSIZEAVG, ETHNIC, DENSITY, AGE9, AGE60, WORKWOM | Copy | Relation | stg_Store | (same names) |
+| DEMO.csv | EDUC | Copy | Relation | stg_Store | EDUC |
+| DEMO.csv | POVERTY | Copy | Relation | stg_Store | POVERTY |
+| DEMO.csv | HSIZEAVG | Copy | Relation | stg_Store | HSIZEAVG |
+| DEMO.csv | ETHNIC | Copy | Relation | stg_Store | ETHNIC |
+| DEMO.csv | DENSITY | Copy | Relation | stg_Store | DENSITY |
+| DEMO.csv | AGE9 | Copy | Relation | stg_Store | AGE9 |
+| DEMO.csv | AGE60 | Copy | Relation | stg_Store | AGE60 |
+| DEMO.csv | WORKWOM | Copy | Relation | stg_Store | WORKWOM |
 | DEMO.csv | PRICLOW, PRICMED, PRICHIGH | Copy | Relation | stg_Store | PRICLOW, PRICMED, PRICHIGH |
 
 
-### 4.6 Mapping Table #2: Staging Tables → Data Mart Tables
+### 4.6 Mapping Table #2: Staging Tables to Data Mart Tables
 
-| Staging Table | Staging Attribute | Mapping | DM Table Type | DM Table | DM Attribute |
+| staging_table | staging_table_attribute | mapping | Data Mart_table_type | Data Mart_table_name | Data Mart_table_attribute |
 |:--|:--|:--|:--|:--|:--|
 | stg_Movement_* | MOVE | Copy | Fact | FactWeeklySales | units_sold |
 | stg_Movement_* | PRICE | Copy | Fact | FactWeeklySales | shelf_price |
@@ -385,7 +437,15 @@ The professor selected 5 BQs from our list of 10 for implementation:
 | stg_Store | CITY | Transform: ISNULL → 'UNKNOWN' | Dimension | DimStore | city |
 | stg_Store | ZIP, ZONE, WEEKVOL | Copy (CAST to INT) | Dimension | DimStore | zip_code, zone, weekly_volume |
 | stg_Store | URBAN | Copy (CAST to BIT) | Dimension | DimStore | is_urban |
-| stg_Store | INCOME, EDUC, POVERTY, etc. | Copy (CAST to DECIMAL) | Dimension | DimStore | avg_income, education_pct, poverty_pct, etc. |
+| stg_Store | INCOME | Copy (CAST to DECIMAL) | Dimension | DimStore | avg_income |
+| stg_Store | EDUC | Copy (CAST to DECIMAL) | Dimension | DimStore | education_pct |
+| stg_Store | POVERTY | Copy (CAST to DECIMAL) | Dimension | DimStore | poverty_pct |
+| stg_Store | HSIZEAVG | Copy (CAST to DECIMAL) | Dimension | DimStore | avg_household_size |
+| stg_Store | ETHNIC | Copy (CAST to DECIMAL) | Dimension | DimStore | ethnic_diversity |
+| stg_Store | DENSITY | Copy (CAST to DECIMAL) | Dimension | DimStore | population_density |
+| stg_Store | AGE9 | Copy (CAST to DECIMAL) | Dimension | DimStore | age_under_9_pct |
+| stg_Store | AGE60 | Copy (CAST to DECIMAL) | Dimension | DimStore | age_over_60_pct |
+| stg_Store | WORKWOM | Copy (CAST to DECIMAL) | Dimension | DimStore | working_women_pct |
 | stg_Store | PRICLOW, PRICMED, PRICHIGH | Transform: CASE WHEN | Dimension | DimStore | price_tier |
 | (generated) | week_id 1–400 | Transform: DATEADD | Dimension | DimTime | week_start_date, month, quarter, year |
 | (hardcoded) | 28 category codes | Direct INSERT | Dimension | DimCategory | category_code, category_name, department |
@@ -400,11 +460,11 @@ For **data standardization**, all naming follows consistent conventions: dimensi
 
 ---
 
-## Section 5: ETL Plan
+## Section 5: Development of the ETL Plan
 
-This section develops the complete ETL plan following the 10-step framework discussed in class (ETL Slide #1, Slide 6).
+This section develops the complete ETL plan following the framework discussed in class.
 
-### 5.1 Target Data in the Data Warehouse
+### 5.1 All Target Data in the Data Warehouse
 
 The data warehouse consists of 6 tables:
 
@@ -417,7 +477,7 @@ The data warehouse consists of 6 tables:
 | DimProduct | Dimension | product_key, upc, description, size, case_pack, commodity_code, item_number | ~3,112 |
 | FactWeeklySales | Fact | sales_fact_id, product_key, store_key, time_key, category_key, promotion_key, units_sold, unit_price, shelf_price, price_qty, revenue, gross_profit, profit_margin_pct | ~34.6M |
 
-### 5.2 Data Sources
+### 5.2 All Data Sources
 
 | Source | File | Location | Rows | Purpose |
 |:--|:--|:--|:--|:--|
@@ -433,14 +493,14 @@ The data warehouse consists of 6 tables:
 
 ### 5.3 Data Mappings
 
-Two mapping tables have been prepared (see Sections 4.5 and 4.6):
+Two mapping tables have been prepared in Excel format (see Sections 4.5 and 4.6):
 
-- **Mapping Table #1 (Source → Staging):** Documents how each source CSV column maps to a staging table attribute. All mappings at this stage are **Copy** operations, with one exception: CATEGORY_CODE is **Derived** from the source filename.
-- **Mapping Table #2 (Staging → Data Mart):** Documents how each staging attribute maps to a data mart column. Mappings include **Copy**, **Transform** (computed columns like revenue, unit_price), and **Lookup** (surrogate key resolution via dimension table joins).
+- **Mapping Table #1 (Source to Staging):** Documents how each source CSV column maps to a staging table attribute. All mappings at this stage are **Copy** operations, with one exception: CATEGORY_CODE is **Derived** from the source filename.
+- **Mapping Table #2 (Staging to Data Mart):** Documents how each staging attribute maps to a data mart column. Mappings include **Copy**, **Transform** (computed columns like revenue, unit_price), and **Lookup** (surrogate key resolution via dimension table joins).
 
-*Excel versions of both mapping tables are included in Appendix B.*
+*The complete Excel versions of both Mapping Table #1 and Mapping Table #2 are included in Appendix B.*
 
-### 5.4 Data Extraction Rules
+### 5.4 Comprehensive Data Extraction Rules
 
 | Rule | Description |
 |:--|:--|
@@ -477,7 +537,7 @@ Two mapping tables have been prepared (see Sections 4.5 and 4.6):
 | T18 | Generate week_start_date from week_id | DATEADD formula | DimTime.week_start_date | Date calculation |
 | T19 | Derive month, quarter, year from date | week_start_date | DimTime.month/quarter/year | Date parts |
 
-### 5.6 Aggregate Table Plan
+### 5.6 Plan for Aggregate Tables
 
 Three pre-computed aggregate tables will be created to improve query performance:
 
@@ -489,7 +549,7 @@ Three pre-computed aggregate tables will be created to improve query performance
 
 These aggregate tables echo the original FactWeeklySales structure at reduced grain, following Kimball's guidance that summary tables should mirror the base fact table's structure.
 
-### 5.7 Data Staging Area Organization
+### 5.7 Organization of Data Staging Area
 
 ```
 SQL Server 2016
@@ -520,7 +580,7 @@ SQL Server 2016
 |:--|:--|:--|
 | tmp_Product_All | UNION of 4 UPC staging tables for loading DimProduct | Loading DimProduct |
 
-### 5.8 Procedures for Data Extraction and Loading
+### 5.8 Procedures for All Data Extractions and Loadings
 
 The ETL is implemented through **three SSIS packages** executed sequentially:
 
@@ -530,7 +590,7 @@ The ETL is implemented through **three SSIS packages** executed sequentially:
 
 **Package 3: `03_Load_DataMart.dtsx`** — Creates and populates all dimension and fact tables in the data mart. Dimensions are loaded first (DimCategory → DimPromotion → DimTime → DimStore → DimProduct), then the fact table (FactWeeklySales). Uses both Execute SQL Tasks (for hardcoded inserts and complex JOINs) and Data Flow Tasks (for staging-to-DW transfers). Completes with DROP TABLE for temporary tables.
 
-### 5.9 ETL for Dimension Tables
+### 5.9 ETL for Dimension Table
 
 Dimensions are loaded **before** the fact table because fact table foreign keys reference dimension surrogate keys. The loading order ensures referential integrity.
 
@@ -559,7 +619,7 @@ Three derived columns are computed during loading: unit_price (PRICE/QTY), reven
 
 ## Section 6: Implementation of the ETL Plan
 
-This section documents the actual implementation of the ETL plan using SSIS (SQL Server Integration Services) and SSMS (SQL Server Management Studio) on SQL Server 2016. All SQL statements, SSIS screenshots, and before/after evidence are included.
+This section documents the actual implementation of the ETL plan using SSIS (SQL Server Integration Services) and SSMS (SQL Server Management Studio) on SQL Server 2016. All SQL statements used for ETL operations are included. Snapshots of before-and-after table contents and ETL runs are provided to demonstrate the effectiveness of each ETL step.
 
 ### 6.1 Database Creation
 
