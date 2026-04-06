@@ -532,7 +532,7 @@ The ETL is implemented through **three SSIS packages** executed sequentially:
 
 ### 5.9 ETL for Dimension Tables
 
-Dimensions are loaded **before** fact tables because fact table foreign keys reference dimension surrogate keys. The loading order ensures referential integrity.
+Dimensions are loaded **before** the fact table because fact table foreign keys reference dimension surrogate keys. The loading order ensures referential integrity.
 
 **DimCategory (28 rows):** Loaded via Execute SQL Task with hardcoded INSERT statements. All 28 product categories and their department groupings are inserted directly. No staging table needed.
 
@@ -544,7 +544,7 @@ Dimensions are loaded **before** fact tables because fact table foreign keys ref
 
 **DimProduct (~3,112 rows):** Loaded from tmp_Product_All (UNION of 4 UPC staging tables) using INSERT INTO...SELECT. Product descriptions are cleaned during the staging transformation phase (strip # and ~ characters).
 
-### 5.10 ETL for Fact Tables
+### 5.10 ETL for Fact Table
 
 **FactWeeklySales (~34.6M rows):** This is the largest and most complex load. An INSERT INTO...SELECT statement unions all four movement staging tables (filtered to OK=1 and PRICE>0), then JOINs to all five dimension tables to resolve surrogate keys:
 - DimProduct: JOIN on UPC to get product_key
@@ -676,7 +676,7 @@ FROM (
 
 ### 6.6 SSIS Package 3: Load Data Mart
 
-**Control Flow:** Package 3 loads dimensions first, then fact tables, then drops temporary tables.
+**Control Flow:** Package 3 loads dimensions first, then the fact table, then drops temporary tables.
 
 *[Screenshot 15: SSIS Control Flow — Package 3]*
 
