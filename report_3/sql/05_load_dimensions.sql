@@ -55,7 +55,7 @@ GO
 -- ===============================
 -- Maps the SALE column values from Movement files to descriptive labels.
 -- NULL/blank/'N' → 'No Promotion', B → 'Bonus Buy', C → 'Coupon', S → 'Sale/Discount'
--- deal_code for 'No Promotion' is stored as NULL (original source value).
+-- deal_code for 'No Promotion' is stored as 'N' (transformed from NULL/blank during staging).
 
 INSERT INTO dbo.DimPromotion (deal_code, deal_type, is_promoted) VALUES
 ('N',  'No Promotion', 0),
