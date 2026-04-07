@@ -588,7 +588,7 @@ The ETL is implemented through **three SSIS packages** executed sequentially:
 
 **Package 2: `02_Transform_Staging.dtsx`** — Executes transformations T1, T2, and T5–T7 in the staging area using Execute SQL Tasks. This includes adding CATEGORY_CODE columns, replacing NULL values, cleaning descriptions, and creating the tmp_Product_All UNION table.
 
-**Package 3: `03_Load_DataMart.dtsx`** — Creates and populates all dimension and fact tables in the data mart. Dimensions are loaded first (DimCategory → DimPromotion → DimTime → DimStore → DimProduct), then the fact table (FactWeeklySales). Uses both Execute SQL Tasks (for hardcoded inserts and complex JOINs) and Data Flow Tasks (for staging-to-DW transfers). Completes with DROP TABLE for temporary tables.
+**Package 3: `03_Load_DataMart.dtsx`** — Creates and populates all dimension and fact tables in the data mart using Execute SQL Tasks. Dimensions are loaded first (DimCategory, DimPromotion, DimTime, DimStore, DimProduct), then the fact table (FactWeeklySales). Completes with DROP TABLE for temporary tables.
 
 ### 5.9 ETL for Dimension Table
 
@@ -740,8 +740,8 @@ FROM (
 
 *[*Screenshot 15: SSIS Control Flow — Package 3*]*
 
-**Sample Data Flow Task (Store Dimension):**
-*[*Screenshot 16: SSIS Package 3 — DimStore Data Flow*]*
+**Sample Execute SQL Task (Dimension Loading):**
+*[*Screenshot 16: SSIS Package 3 -- Execute SQL Task for dimension loading*]*
 
 **Execution Result:**
 *[*Screenshot 17: SSIS Package 3 execution — all green checkmarks*]*
@@ -2094,7 +2094,7 @@ GO
 | 13 | SSIS Package 2 execution — all green |
 | 14 | SSMS — CATEGORY_CODE column visible in staging |
 | 15 | SSIS Package 3 Control Flow |
-| 16 | SSIS Package 3 — DimStore Data Flow |
+| 16 | SSIS Package 3 -- Execute SQL Task for dimension loading |
 | 17 | SSIS Package 3 execution — all green |
 | 18 | SSMS — DimCategory (28 rows) |
 | 19 | SSMS — DimPromotion (4 rows) |
