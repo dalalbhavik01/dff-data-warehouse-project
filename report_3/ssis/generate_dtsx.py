@@ -132,7 +132,7 @@ def generate_package1():
                 DTS:ColumnType="Delimited"
                 DTS:ColumnDelimiter="_x002C_"
                 DTS:DataType="{col_type}"
-                {"DTS:MaximumWidth=&quot;" + str(col_len) + "&quot;" if col_len > 0 else ""}
+                {f'DTS:MaximumWidth="{col_len}"' if col_len > 0 else ''}
                 DTS:ObjectName="{col_name}"
                 DTS:DTSID="{new_guid()}" />'''
         
@@ -209,7 +209,7 @@ def generate_package1():
             executables += f'''
                     <outputColumn refId="Package\\{task_name}\\FF_Source.Outputs[Flat File Source Output].Columns[{col_name}]"
                       dataType="{col_type}"
-                      {"length=&quot;" + str(col_len) + "&quot;" if col_len > 0 else ""}
+                      {f'length="{col_len}"' if col_len > 0 else ''}
                       name="{col_name}" />'''
         
         executables += f'''
@@ -258,7 +258,7 @@ def generate_package1():
             executables += f'''
                     <externalMetadataColumn refId="Package\\{task_name}\\OLE_Destination.Inputs[OLE DB Destination Input].ExternalColumns[{col_name}]"
                       dataType="{col_type}"
-                      {"length=&quot;" + str(col_len) + "&quot;" if col_len > 0 else ""}
+                      {f'length="{col_len}"' if col_len > 0 else ''}
                       name="{col_name}" />'''
         
         executables += f'''
@@ -595,35 +595,66 @@ if __name__ == "__main__":
     # Also create a README
     readme = f"""# SSIS Packages for DFF Data Warehouse ETL
 
-## Before You Open These Packages
+## Scope
 
-1. **Server:** Update the connection string server name if different from `{SERVER}`
-2. **CSV Path:** Update the flat file paths from `{CSV_BASE_PATH}\\` to your actual CSV location
-3. **Database names:** Currently set to `{STAGING_DB}` and `{DW_DB}`
+These packages implement the ETL for 4 product categories (Soft Drinks, Canned Soup,
+Toothpaste, Crackers) supporting 5 selected Business Questions (BQ2, BQ3, BQ4, BQ8, BQ9).
+There is one fact table (FactWeeklySales) and five dimensions.
 
-## Package Execution Order
+## Before You Open These Packages in SSDT
 
-1. **Run Scripts 01-03 in SSMS first** (create databases + staging tables + DW tables)
-2. Open `01_Extract_to_Staging.dtsx` in Visual Studio (SSDT) and execute
-3. Open `02_Transform_Staging.dtsx` and execute
-4. Open `03_Load_DataMart.dtsx` and execute
-5. Run Script 08 in SSMS to verify BQ queries
+You MUST update these values before running:
+
+1. **Server name** -- currently set to `{SERVER}`
+   - Edit each package's OLE DB connection manager in SSDT
+2. **CSV file paths** -- currently set to `{CSV_BASE_PATH}\\`
+   - Edit Package 1's Flat File connection managers to point to your actual CSV folder
+3. **Database names** -- currently `{STAGING_DB}` and `{DW_DB}`
+   - Change if your team uses different database names
+
+## 9 Source Files (Package 1)
+
+| # | CSV File | Staging Table |
+|---|----------|---------------|
+| 1 | wsdr.csv | stg_Movement_SDR |
+| 2 | WCSO-Done.csv | stg_Movement_CSO |
+| 3 | WTPA_done.csv | stg_Movement_TPA |
+| 4 | Done-WCRA.csv | stg_Movement_CRA |
+| 5 | UPCSDR.csv | stg_Product_SDR |
+| 6 | UPCCSO.csv | stg_Product_CSO |
+| 7 | UPCTPA.csv | stg_Product_TPA |
+| 8 | UPCCRA.csv | stg_Product_CRA |
+| 9 | DEMO.csv | stg_Store |
+
+## Execution Order
+
+1. Run `01_create_databases.sql` in SSMS
+2. Run `02_create_staging_tables.sql` in SSMS
+3. Run `03_create_dw_tables.sql` in SSMS
+4. Execute `01_Extract_to_Staging.dtsx` in SSDT (9 Data Flow Tasks)
+5. Execute `02_Transform_Staging.dtsx` in SSDT (Execute SQL Tasks)
+6. Execute `03_Load_DataMart.dtsx` in SSDT (Execute SQL Tasks)
+7. Run `08_verify_bq_queries.sql` in SSMS to validate
 
 ## Package Details
 
-| Package | Tasks | Connection | Purpose |
-|---------|-------|-----------|---------|
-| 01_Extract_to_Staging.dtsx | 9 Data Flow Tasks | Staging DB + 9 Flat File | Load CSVs into staging |
-| 02_Transform_Staging.dtsx | Execute SQL Tasks | Staging DB | Clean & transform staging data |
-| 03_Load_DataMart.dtsx | Execute SQL Tasks | Staging DB + DW DB | Load dims, fact, drop temps |
+| Package | Type of Tasks | Connections | Purpose |
+|---------|--------------|-------------|---------|
+| 01_Extract_to_Staging.dtsx | 9 Data Flow Tasks | Staging DB + 9 Flat File | Load 9 CSVs into staging |
+| 02_Transform_Staging.dtsx | Execute SQL Tasks | Staging DB | Add CATEGORY_CODE, clean SALE, create tmp_Product_All |
+| 03_Load_DataMart.dtsx | Execute SQL Tasks | Staging DB + DW DB | Load 5 dims + FactWeeklySales, drop temps |
 
-## Important Notes
+## Technical Notes
 
-- These packages target **SQL Server 2016** (PackageFormatVersion 8)
-- Flat File Sources use **Windows-1252 (CP1252)** encoding
-- Column delimiter is **comma**, row delimiter is **CRLF**
-- If packages don't open cleanly in SSDT, you can alternatively run the SQL scripts
-  directly in SSMS in order: 01 -> 02 -> 03 -> 04 -> 05 -> 06 -> 07 -> 08
+- Target: **SQL Server 2016** (PackageFormatVersion 8)
+- Flat File encoding: **Windows-1252 (CP1252)**
+- Column delimiter: **comma**, row delimiter: **CRLF**
+- Package 3 uses Execute SQL Tasks only (no Data Flow Tasks)
+
+## Fallback (No SSDT)
+
+If packages don't open in SSDT, run the SQL scripts directly in SSMS in order:
+01 -> 02 -> 03 -> 04 -> 05 -> 06 -> 07 -> 08
 """
     readme_path = os.path.join(SCRIPT_DIR, "README.md")
     with open(readme_path, "w") as f:

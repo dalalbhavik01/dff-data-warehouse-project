@@ -3,7 +3,7 @@
   DTS:refId="Package"
   DTS:CreationDate="4/6/2026 12:00:00 AM"
   DTS:CreationName="Microsoft.Package"
-  DTS:DTSID="{CF4C6AC1-F175-4CCE-8BA5-5E0D98BE9E1F}"
+  DTS:DTSID="{9A870203-4F31-4266-B2D3-14C622AF4280}"
   DTS:ExecutableType="Microsoft.Package"
   DTS:ObjectName="02_Transform_Staging"
   DTS:PackageFormatVersion="8"
@@ -14,7 +14,7 @@
     <DTS:ConnectionManager
       DTS:refId="Package.ConnectionManagers[OLE_Staging]"
       DTS:CreationName="OLEDB"
-      DTS:DTSID="{9B750667-C85F-44C0-975B-149B41327B48}"
+      DTS:DTSID="{CD851761-C67B-4019-B025-3C41D1F08E9C}"
       DTS:ObjectName="OLE_Staging">
       <DTS:ObjectData>
         <DTS:ConnectionManager
@@ -27,7 +27,7 @@
     <DTS:Executable
       DTS:refId="Package\T1_Add_CATEGORY_CODE_SDR"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{A70D6B93-975F-434C-9B8B-007FFBF81A08}"
+      DTS:DTSID="{738B2B17-7BF0-4A0C-AB96-FBA591AA889D}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:ObjectName="T1_Add_CATEGORY_CODE_SDR">
       <DTS:Variables />
@@ -48,7 +48,7 @@ USE [team1_staging_area];" />
     <DTS:Executable
       DTS:refId="Package\T1_Update_CATEGORY_CODE_SDR"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{EED19675-CA9A-46E3-B2FF-537CB95C45CD}"
+      DTS:DTSID="{16D5186F-B198-4723-95CA-3E306A7DF49F}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:ObjectName="T1_Update_CATEGORY_CODE_SDR">
       <DTS:Variables />
@@ -70,7 +70,7 @@ ALTER TABLE dbo.stg_Movement_SDR ADD CATEGORY_CODE CHAR(3);" />
     <DTS:Executable
       DTS:refId="Package\T1_Add_CATEGORY_CODE_CSO"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{F13A63CE-837B-4AE6-BA96-119C4FCF8E4F}"
+      DTS:DTSID="{7824E8E2-9E85-402D-9DB0-355FFF48D2E8}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:ObjectName="T1_Add_CATEGORY_CODE_CSO">
       <DTS:Variables />
@@ -84,7 +84,7 @@ ALTER TABLE dbo.stg_Movement_SDR ADD CATEGORY_CODE CHAR(3);" />
     <DTS:Executable
       DTS:refId="Package\T1_Update_CATEGORY_CODE_CSO"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{5C130772-4A47-4AE4-AD72-B0754153911C}"
+      DTS:DTSID="{14BA2A51-7B1D-4143-A347-74C6DC274941}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:ObjectName="T1_Update_CATEGORY_CODE_CSO">
       <DTS:Variables />
@@ -98,7 +98,7 @@ ALTER TABLE dbo.stg_Movement_SDR ADD CATEGORY_CODE CHAR(3);" />
     <DTS:Executable
       DTS:refId="Package\T1_Add_CATEGORY_CODE_TPA"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{45F3DE67-22E4-424F-A1B0-13EDFDA1A454}"
+      DTS:DTSID="{28778477-C340-4107-AC43-6F544D2855F2}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:ObjectName="T1_Add_CATEGORY_CODE_TPA">
       <DTS:Variables />
@@ -112,7 +112,7 @@ ALTER TABLE dbo.stg_Movement_SDR ADD CATEGORY_CODE CHAR(3);" />
     <DTS:Executable
       DTS:refId="Package\T1_Update_CATEGORY_CODE_TPA"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{C04E7D0F-E0B2-475F-BFD5-09584303B6B1}"
+      DTS:DTSID="{76CDEAE5-9A9C-4044-A1CE-174538C7020D}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:ObjectName="T1_Update_CATEGORY_CODE_TPA">
       <DTS:Variables />
@@ -126,7 +126,7 @@ ALTER TABLE dbo.stg_Movement_SDR ADD CATEGORY_CODE CHAR(3);" />
     <DTS:Executable
       DTS:refId="Package\T1_Add_CATEGORY_CODE_CRA"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{34B25A46-CD14-43AE-92DF-863C428941F4}"
+      DTS:DTSID="{43CF4383-C864-4800-88F1-270BD8D8DB79}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:ObjectName="T1_Add_CATEGORY_CODE_CRA">
       <DTS:Variables />
@@ -140,7 +140,7 @@ ALTER TABLE dbo.stg_Movement_SDR ADD CATEGORY_CODE CHAR(3);" />
     <DTS:Executable
       DTS:refId="Package\T1_Update_CATEGORY_CODE_CRA"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{5CA8E682-D321-4E77-AD38-1670F5BA54D9}"
+      DTS:DTSID="{88A0C7A5-CBA5-4D65-9B69-1ED23F87CCF6}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:ObjectName="T1_Update_CATEGORY_CODE_CRA">
       <DTS:Variables />
@@ -154,7 +154,7 @@ ALTER TABLE dbo.stg_Movement_SDR ADD CATEGORY_CODE CHAR(3);" />
     <DTS:Executable
       DTS:refId="Package\SQL_Step_8"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{D8A3D678-740A-4D02-A6E3-1E98714077BA}"
+      DTS:DTSID="{BE6F1958-726B-45E4-AD3E-A8A46354A734}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:ObjectName="SQL_Step_8">
       <DTS:Variables />
@@ -168,7 +168,7 @@ ALTER TABLE dbo.stg_Movement_SDR ADD CATEGORY_CODE CHAR(3);" />
     <DTS:Executable
       DTS:refId="Package\Print_Step_9"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{E4420DC2-A7E9-4CB4-B8AC-5C7B633D5B21}"
+      DTS:DTSID="{49762D1A-BCFC-480E-971D-B8FEAEBDFE03}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:ObjectName="Print_Step_9">
       <DTS:Variables />
@@ -182,7 +182,7 @@ ALTER TABLE dbo.stg_Movement_SDR ADD CATEGORY_CODE CHAR(3);" />
     <DTS:Executable
       DTS:refId="Package\T2:_Replace_NULL/blank_SALE_with_N_(No"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{2523966D-650B-4A81-96A7-DABF7FCA5CA5}"
+      DTS:DTSID="{D6474CE2-512A-4CD5-9069-7E73CCDD87FF}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:ObjectName="T2:_Replace_NULL/blank_SALE_with_N_(No">
       <DTS:Variables />
@@ -203,7 +203,7 @@ UPDATE dbo.stg_Movement_CRA SET SALE = &#x27;N&#x27; WHERE SALE IS NULL OR LTRIM
     <DTS:Executable
       DTS:refId="Package\Print_Step_11"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{BED1C939-5A3E-4912-AE3A-BE4BAAA748D6}"
+      DTS:DTSID="{E7D648F4-86D3-456B-BE6F-9C116CE593AC}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:ObjectName="Print_Step_11">
       <DTS:Variables />
@@ -217,7 +217,7 @@ UPDATE dbo.stg_Movement_CRA SET SALE = &#x27;N&#x27; WHERE SALE IS NULL OR LTRIM
     <DTS:Executable
       DTS:refId="Package\Verification:_Check_SALE_distribution_af"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{6C530A63-0703-46B4-BF20-E786661C0BF6}"
+      DTS:DTSID="{D17E6519-774D-42D4-BACC-9E3A7DF0A4C3}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:ObjectName="Verification:_Check_SALE_distribution_af">
       <DTS:Variables />
@@ -239,7 +239,7 @@ ORDER BY 1, 2;" />
     <DTS:Executable
       DTS:refId="Package\==============================="
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{51A38FFF-1CAC-4EFB-99A7-2832BA75D4B6}"
+      DTS:DTSID="{6D47F3BF-33DC-43F0-B73C-DEC6BCB5FF89}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:ObjectName="===============================">
       <DTS:Variables />
@@ -259,7 +259,7 @@ ALTER TABLE dbo.stg_Product_SDR ADD CATEGORY_CODE CHAR(3);" />
     <DTS:Executable
       DTS:refId="Package\SQL_Step_14"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{477C1D33-8EAF-42E9-A01A-D0D21FB5911B}"
+      DTS:DTSID="{586E8EC0-26E0-4629-A1CE-EB310A059A8C}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:ObjectName="SQL_Step_14">
       <DTS:Variables />
@@ -273,7 +273,7 @@ ALTER TABLE dbo.stg_Product_SDR ADD CATEGORY_CODE CHAR(3);" />
     <DTS:Executable
       DTS:refId="Package\SQL_Step_15"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{CBB31666-B203-49F5-846E-3AB738A40A8E}"
+      DTS:DTSID="{6ED34277-5468-4813-83B2-C3DBC4123D80}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:ObjectName="SQL_Step_15">
       <DTS:Variables />
@@ -287,7 +287,7 @@ ALTER TABLE dbo.stg_Product_SDR ADD CATEGORY_CODE CHAR(3);" />
     <DTS:Executable
       DTS:refId="Package\SQL_Step_16"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{98E2AF0C-4A42-4921-B478-776770616B03}"
+      DTS:DTSID="{A94F42F5-1F0D-4B57-9424-0F858B26B52C}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:ObjectName="SQL_Step_16">
       <DTS:Variables />
@@ -301,7 +301,7 @@ ALTER TABLE dbo.stg_Product_SDR ADD CATEGORY_CODE CHAR(3);" />
     <DTS:Executable
       DTS:refId="Package\SQL_Step_17"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{766B6F8C-A5F0-48A2-8217-3BAE4472E568}"
+      DTS:DTSID="{4E5B8789-AB8A-4F08-AF96-D08BB431BEE7}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:ObjectName="SQL_Step_17">
       <DTS:Variables />
@@ -315,7 +315,7 @@ ALTER TABLE dbo.stg_Product_SDR ADD CATEGORY_CODE CHAR(3);" />
     <DTS:Executable
       DTS:refId="Package\SQL_Step_18"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{91961E3E-11FC-4240-BA27-1D7DC60FDD20}"
+      DTS:DTSID="{38BFCED5-A21A-447D-B8A3-E707AEB3CC1C}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:ObjectName="SQL_Step_18">
       <DTS:Variables />
@@ -329,7 +329,7 @@ ALTER TABLE dbo.stg_Product_SDR ADD CATEGORY_CODE CHAR(3);" />
     <DTS:Executable
       DTS:refId="Package\SQL_Step_19"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{36E22F07-9697-46CE-9536-3700D4E78772}"
+      DTS:DTSID="{99202D4B-ABE2-4BD3-84A7-F71109AA1E83}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:ObjectName="SQL_Step_19">
       <DTS:Variables />
@@ -343,7 +343,7 @@ ALTER TABLE dbo.stg_Product_SDR ADD CATEGORY_CODE CHAR(3);" />
     <DTS:Executable
       DTS:refId="Package\SQL_Step_20"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{0A4C500A-2217-4035-9D4E-BE654078E6D5}"
+      DTS:DTSID="{346402CA-5A84-4164-A29B-16905A0DCA0D}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:ObjectName="SQL_Step_20">
       <DTS:Variables />
@@ -357,7 +357,7 @@ ALTER TABLE dbo.stg_Product_SDR ADD CATEGORY_CODE CHAR(3);" />
     <DTS:Executable
       DTS:refId="Package\Print_Step_21"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{4E2203D0-04B6-42AF-AF41-6D396792851B}"
+      DTS:DTSID="{4528345D-4424-44B5-B1CB-7A5451A0E196}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:ObjectName="Print_Step_21">
       <DTS:Variables />
@@ -371,7 +371,7 @@ ALTER TABLE dbo.stg_Product_SDR ADD CATEGORY_CODE CHAR(3);" />
     <DTS:Executable
       DTS:refId="Package\T4:_Clean_product_descriptions_—_strip_l"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{B8CC316E-3805-46E3-94ED-D0B2BEAAC89C}"
+      DTS:DTSID="{1BB0502C-CAFA-4F2A-AB0C-2E4E6A19A48B}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:ObjectName="T4:_Clean_product_descriptions_—_strip_l">
       <DTS:Variables />
@@ -389,7 +389,7 @@ UPDATE dbo.stg_Product_CRA SET DESCRIP = LTRIM(REPLACE(REPLACE(DESCRIP, &#x27;#&
     <DTS:Executable
       DTS:refId="Package\Print_Step_23"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{F44C1A6F-4BD4-4397-83AE-35AB8879C2A8}"
+      DTS:DTSID="{1E05A482-D0E5-4803-A632-5EAB3CADDD93}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:ObjectName="Print_Step_23">
       <DTS:Variables />
@@ -403,7 +403,7 @@ UPDATE dbo.stg_Product_CRA SET DESCRIP = LTRIM(REPLACE(REPLACE(DESCRIP, &#x27;#&
     <DTS:Executable
       DTS:refId="Package\T5:_Create_unified_tmp_Product_All_table"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{7BBB2F08-F214-4D2A-B15B-651F82A62B33}"
+      DTS:DTSID="{CD40AE69-B230-4C2C-A48A-E8C92E3AA31C}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:ObjectName="T5:_Create_unified_tmp_Product_All_table">
       <DTS:Variables />
@@ -420,7 +420,7 @@ IF OBJECT_ID(&#x27;dbo.tmp_Product_All&#x27;, &#x27;U&#x27;) IS NOT NULL
     <DTS:Executable
       DTS:refId="Package\SQL_Step_25"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{0000664D-A8DA-4610-82C5-EEA87E8DC17C}"
+      DTS:DTSID="{7E06A6C6-BCB0-4811-9696-1712C88472B5}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:ObjectName="SQL_Step_25">
       <DTS:Variables />
@@ -444,7 +444,7 @@ FROM (
     <DTS:Executable
       DTS:refId="Package\Print_Step_26"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{138CF907-F7D7-443D-BA01-5D20210E0BC1}"
+      DTS:DTSID="{B2A9C719-5360-4C66-BDAE-266B7CE31818}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:ObjectName="Print_Step_26">
       <DTS:Variables />
@@ -459,7 +459,7 @@ SELECT &#x27;tmp_Product_All&#x27; AS TableName, COUNT(*) AS RowCount FROM dbo.t
     <DTS:Executable
       DTS:refId="Package\==============================="
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{4BB63CE1-8BC2-4006-8831-FCDD9989C85E}"
+      DTS:DTSID="{D65E262A-2824-455D-AEE3-2CD92A1DB3BB}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:ObjectName="===============================">
       <DTS:Variables />
@@ -479,7 +479,7 @@ DELETE FROM dbo.stg_Store WHERE STORE = &#x27;.&#x27; OR ISNUMERIC(STORE) = 0;" 
     <DTS:Executable
       DTS:refId="Package\T7:_Replace_NULL/blank_NAME_and_CITY_wit"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{5D356A57-1AE1-4D56-9C72-CEF3507672E1}"
+      DTS:DTSID="{51B56F2B-439F-423B-9E0C-AFF52653864D}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:ObjectName="T7:_Replace_NULL/blank_NAME_and_CITY_wit">
       <DTS:Variables />
@@ -495,7 +495,7 @@ UPDATE dbo.stg_Store SET CITY = &#x27;UNKNOWN&#x27; WHERE CITY IS NULL OR LTRIM(
     <DTS:Executable
       DTS:refId="Package\Print_Step_29"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{C7EE829B-44A0-4F09-AC12-6DCC44B11960}"
+      DTS:DTSID="{3CAEE87D-224E-4275-B273-8D9ABF3AA56D}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:ObjectName="Print_Step_29">
       <DTS:Variables />
@@ -510,7 +510,7 @@ SELECT COUNT(*) AS StoreCount FROM dbo.stg_Store;" />
     <DTS:Executable
       DTS:refId="Package\==============================="
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{50175EE9-875E-4276-A3BF-9EA02C93A036}"
+      DTS:DTSID="{1208DD23-3653-434C-996A-2262BB2F9003}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:ObjectName="===============================">
       <DTS:Variables />
@@ -543,210 +543,210 @@ ORDER BY TableName;" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[T1_Add_CATEGORY_CODE_SDR_to_T1_Update_CATEGORY_CODE_SDR]"
       DTS:CreationName=""
-      DTS:DTSID="{09310359-333E-4D5D-9916-9B7AF27BBFB6}"
+      DTS:DTSID="{DA10E2AB-7A24-4228-B24E-DF604CA91513}"
       DTS:From="Package\T1_Add_CATEGORY_CODE_SDR"
       DTS:To="Package\T1_Update_CATEGORY_CODE_SDR"
       DTS:ObjectName="T1_Add_CATEGORY_CODE_SDR_to_T1_Update_CATEGORY_CODE_SDR" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[T1_Update_CATEGORY_CODE_SDR_to_T1_Add_CATEGORY_CODE_CSO]"
       DTS:CreationName=""
-      DTS:DTSID="{983B189D-753F-4B66-AEA4-C944BAA44B0F}"
+      DTS:DTSID="{B16B686E-9BB0-4D43-B8AC-1E5A7351DA43}"
       DTS:From="Package\T1_Update_CATEGORY_CODE_SDR"
       DTS:To="Package\T1_Add_CATEGORY_CODE_CSO"
       DTS:ObjectName="T1_Update_CATEGORY_CODE_SDR_to_T1_Add_CATEGORY_CODE_CSO" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[T1_Add_CATEGORY_CODE_CSO_to_T1_Update_CATEGORY_CODE_CSO]"
       DTS:CreationName=""
-      DTS:DTSID="{9E328F9D-4DED-478D-A4A7-088CFE6CC73A}"
+      DTS:DTSID="{391A0B46-DD36-47AE-8D45-9C4679E7F95A}"
       DTS:From="Package\T1_Add_CATEGORY_CODE_CSO"
       DTS:To="Package\T1_Update_CATEGORY_CODE_CSO"
       DTS:ObjectName="T1_Add_CATEGORY_CODE_CSO_to_T1_Update_CATEGORY_CODE_CSO" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[T1_Update_CATEGORY_CODE_CSO_to_T1_Add_CATEGORY_CODE_TPA]"
       DTS:CreationName=""
-      DTS:DTSID="{6ECDBF76-2AC4-418E-A3B2-68BAB43B1C5D}"
+      DTS:DTSID="{055DBC77-7F49-4443-9DFB-2246CCCD74CC}"
       DTS:From="Package\T1_Update_CATEGORY_CODE_CSO"
       DTS:To="Package\T1_Add_CATEGORY_CODE_TPA"
       DTS:ObjectName="T1_Update_CATEGORY_CODE_CSO_to_T1_Add_CATEGORY_CODE_TPA" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[T1_Add_CATEGORY_CODE_TPA_to_T1_Update_CATEGORY_CODE_TPA]"
       DTS:CreationName=""
-      DTS:DTSID="{25BA6707-FEA0-4A07-AAB5-9A39D3D91209}"
+      DTS:DTSID="{6B5C42FA-4811-4198-8184-926A2D57A521}"
       DTS:From="Package\T1_Add_CATEGORY_CODE_TPA"
       DTS:To="Package\T1_Update_CATEGORY_CODE_TPA"
       DTS:ObjectName="T1_Add_CATEGORY_CODE_TPA_to_T1_Update_CATEGORY_CODE_TPA" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[T1_Update_CATEGORY_CODE_TPA_to_T1_Add_CATEGORY_CODE_CRA]"
       DTS:CreationName=""
-      DTS:DTSID="{806E66DD-5C1E-419E-96F4-EA02A46F8208}"
+      DTS:DTSID="{C653B59C-A0DE-40E7-8353-8A2B41FB500B}"
       DTS:From="Package\T1_Update_CATEGORY_CODE_TPA"
       DTS:To="Package\T1_Add_CATEGORY_CODE_CRA"
       DTS:ObjectName="T1_Update_CATEGORY_CODE_TPA_to_T1_Add_CATEGORY_CODE_CRA" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[T1_Add_CATEGORY_CODE_CRA_to_T1_Update_CATEGORY_CODE_CRA]"
       DTS:CreationName=""
-      DTS:DTSID="{F3432521-2D48-4A46-B9B5-9870A1868A9F}"
+      DTS:DTSID="{0C513E76-FA91-4FD4-85DB-EA005423A803}"
       DTS:From="Package\T1_Add_CATEGORY_CODE_CRA"
       DTS:To="Package\T1_Update_CATEGORY_CODE_CRA"
       DTS:ObjectName="T1_Add_CATEGORY_CODE_CRA_to_T1_Update_CATEGORY_CODE_CRA" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[T1_Update_CATEGORY_CODE_CRA_to_SQL_Step_8]"
       DTS:CreationName=""
-      DTS:DTSID="{75CB1D74-6873-4380-95D2-C932954C9183}"
+      DTS:DTSID="{B3CA4FD4-CC54-49FD-A847-43294BFD62A1}"
       DTS:From="Package\T1_Update_CATEGORY_CODE_CRA"
       DTS:To="Package\SQL_Step_8"
       DTS:ObjectName="T1_Update_CATEGORY_CODE_CRA_to_SQL_Step_8" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[SQL_Step_8_to_Print_Step_9]"
       DTS:CreationName=""
-      DTS:DTSID="{7600E4CC-4193-4C7A-8370-73BB053F0614}"
+      DTS:DTSID="{9768DD06-2EC6-4D23-A731-EC5669DCC404}"
       DTS:From="Package\SQL_Step_8"
       DTS:To="Package\Print_Step_9"
       DTS:ObjectName="SQL_Step_8_to_Print_Step_9" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Print_Step_9_to_T2:_Replace_NULL/blank_SALE_with_N_(No]"
       DTS:CreationName=""
-      DTS:DTSID="{26DFDABD-45DF-4303-9FEA-30DF6D878024}"
+      DTS:DTSID="{A8C0913F-96F6-4EFC-9A3D-3D5FECF0D940}"
       DTS:From="Package\Print_Step_9"
       DTS:To="Package\T2:_Replace_NULL/blank_SALE_with_N_(No"
       DTS:ObjectName="Print_Step_9_to_T2:_Replace_NULL/blank_SALE_with_N_(No" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[T2:_Replace_NULL/blank_SALE_with_N_(No_to_Print_Step_11]"
       DTS:CreationName=""
-      DTS:DTSID="{6BFCAF4F-A2B9-4605-ACEE-8DD1BB72162C}"
+      DTS:DTSID="{CBE4196A-B2CF-483D-B817-6255EE063B66}"
       DTS:From="Package\T2:_Replace_NULL/blank_SALE_with_N_(No"
       DTS:To="Package\Print_Step_11"
       DTS:ObjectName="T2:_Replace_NULL/blank_SALE_with_N_(No_to_Print_Step_11" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Print_Step_11_to_Verification:_Check_SALE_distribution_af]"
       DTS:CreationName=""
-      DTS:DTSID="{CCB1A0DB-EFDB-44B0-91B0-0AF98080C13E}"
+      DTS:DTSID="{95221042-0E46-45A6-9027-7B11E0C87495}"
       DTS:From="Package\Print_Step_11"
       DTS:To="Package\Verification:_Check_SALE_distribution_af"
       DTS:ObjectName="Print_Step_11_to_Verification:_Check_SALE_distribution_af" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Verification:_Check_SALE_distribution_af_to_===============================]"
       DTS:CreationName=""
-      DTS:DTSID="{9BFA99FC-C2F3-4175-A2E5-62887FC5DC83}"
+      DTS:DTSID="{228B15D7-177B-4720-80F8-273F91F0D614}"
       DTS:From="Package\Verification:_Check_SALE_distribution_af"
       DTS:To="Package\==============================="
       DTS:ObjectName="Verification:_Check_SALE_distribution_af_to_===============================" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[===============================_to_SQL_Step_14]"
       DTS:CreationName=""
-      DTS:DTSID="{962AB8D9-8D04-40AF-9A29-6EC6C9E30BA6}"
+      DTS:DTSID="{4AD2DAD7-1AFE-45D9-AC17-95B3C0A622FF}"
       DTS:From="Package\==============================="
       DTS:To="Package\SQL_Step_14"
       DTS:ObjectName="===============================_to_SQL_Step_14" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[SQL_Step_14_to_SQL_Step_15]"
       DTS:CreationName=""
-      DTS:DTSID="{477F04BC-FBDA-4DA4-BA19-8EA624C8E3AA}"
+      DTS:DTSID="{C3AE7F6E-B8C8-4D0F-933E-ED49A92CC408}"
       DTS:From="Package\SQL_Step_14"
       DTS:To="Package\SQL_Step_15"
       DTS:ObjectName="SQL_Step_14_to_SQL_Step_15" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[SQL_Step_15_to_SQL_Step_16]"
       DTS:CreationName=""
-      DTS:DTSID="{E6EDF1D7-FA39-4C3B-8326-A6744E176DB6}"
+      DTS:DTSID="{363935E6-697C-432D-9C56-BE6517791ECD}"
       DTS:From="Package\SQL_Step_15"
       DTS:To="Package\SQL_Step_16"
       DTS:ObjectName="SQL_Step_15_to_SQL_Step_16" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[SQL_Step_16_to_SQL_Step_17]"
       DTS:CreationName=""
-      DTS:DTSID="{A6F0BFE1-D957-45A2-8FA6-9884BB43631A}"
+      DTS:DTSID="{584A715C-F14E-4E46-9B63-31577D147A4C}"
       DTS:From="Package\SQL_Step_16"
       DTS:To="Package\SQL_Step_17"
       DTS:ObjectName="SQL_Step_16_to_SQL_Step_17" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[SQL_Step_17_to_SQL_Step_18]"
       DTS:CreationName=""
-      DTS:DTSID="{1BCCCB66-C5A1-412E-98C4-5F8CCDC57AB7}"
+      DTS:DTSID="{A708F2F2-4E02-4DD1-8768-44C5128A7F45}"
       DTS:From="Package\SQL_Step_17"
       DTS:To="Package\SQL_Step_18"
       DTS:ObjectName="SQL_Step_17_to_SQL_Step_18" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[SQL_Step_18_to_SQL_Step_19]"
       DTS:CreationName=""
-      DTS:DTSID="{82EA0D3F-D849-45AF-B5BC-1B7F548C807F}"
+      DTS:DTSID="{12521BD4-5DB3-4787-8374-756FBCEC5766}"
       DTS:From="Package\SQL_Step_18"
       DTS:To="Package\SQL_Step_19"
       DTS:ObjectName="SQL_Step_18_to_SQL_Step_19" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[SQL_Step_19_to_SQL_Step_20]"
       DTS:CreationName=""
-      DTS:DTSID="{BF7F2A86-DAD9-4D67-9EB4-E0EA8E3386C5}"
+      DTS:DTSID="{EA7688D4-E7FB-4376-A840-21D8CDD5FD92}"
       DTS:From="Package\SQL_Step_19"
       DTS:To="Package\SQL_Step_20"
       DTS:ObjectName="SQL_Step_19_to_SQL_Step_20" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[SQL_Step_20_to_Print_Step_21]"
       DTS:CreationName=""
-      DTS:DTSID="{97577A97-AC9C-4383-A108-117E289EB8D7}"
+      DTS:DTSID="{ECA98AB3-BA8A-4132-BB1F-8AA26C2F03BD}"
       DTS:From="Package\SQL_Step_20"
       DTS:To="Package\Print_Step_21"
       DTS:ObjectName="SQL_Step_20_to_Print_Step_21" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Print_Step_21_to_T4:_Clean_product_descriptions_—_strip_l]"
       DTS:CreationName=""
-      DTS:DTSID="{DDE9BF67-6B44-45D0-AE0A-6A44A134AD03}"
+      DTS:DTSID="{61B80A7B-0BCD-44B3-BB5F-FBE4F293D87B}"
       DTS:From="Package\Print_Step_21"
       DTS:To="Package\T4:_Clean_product_descriptions_—_strip_l"
       DTS:ObjectName="Print_Step_21_to_T4:_Clean_product_descriptions_—_strip_l" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[T4:_Clean_product_descriptions_—_strip_l_to_Print_Step_23]"
       DTS:CreationName=""
-      DTS:DTSID="{35583F2C-8A80-4BAD-8004-83F130D07B7D}"
+      DTS:DTSID="{B68ECECC-96BE-44DE-B704-FA9C6CAD9A17}"
       DTS:From="Package\T4:_Clean_product_descriptions_—_strip_l"
       DTS:To="Package\Print_Step_23"
       DTS:ObjectName="T4:_Clean_product_descriptions_—_strip_l_to_Print_Step_23" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Print_Step_23_to_T5:_Create_unified_tmp_Product_All_table]"
       DTS:CreationName=""
-      DTS:DTSID="{22497190-5227-423F-B2F7-CE10F35EEE0C}"
+      DTS:DTSID="{3D5643D1-D104-4519-839F-1B97E7E19DF8}"
       DTS:From="Package\Print_Step_23"
       DTS:To="Package\T5:_Create_unified_tmp_Product_All_table"
       DTS:ObjectName="Print_Step_23_to_T5:_Create_unified_tmp_Product_All_table" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[T5:_Create_unified_tmp_Product_All_table_to_SQL_Step_25]"
       DTS:CreationName=""
-      DTS:DTSID="{1172B846-DCB9-45BA-946F-C119CE4EAAFC}"
+      DTS:DTSID="{AD3B5D37-F785-4C2E-97CB-E3DEB794BCC0}"
       DTS:From="Package\T5:_Create_unified_tmp_Product_All_table"
       DTS:To="Package\SQL_Step_25"
       DTS:ObjectName="T5:_Create_unified_tmp_Product_All_table_to_SQL_Step_25" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[SQL_Step_25_to_Print_Step_26]"
       DTS:CreationName=""
-      DTS:DTSID="{656F16DC-D33D-4ECB-AB4B-09C7BB6F3C0C}"
+      DTS:DTSID="{0AC6FE0C-B551-43CC-A245-EBBE1F6829BD}"
       DTS:From="Package\SQL_Step_25"
       DTS:To="Package\Print_Step_26"
       DTS:ObjectName="SQL_Step_25_to_Print_Step_26" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Print_Step_26_to_===============================]"
       DTS:CreationName=""
-      DTS:DTSID="{02C39EDA-8CDA-436C-97ED-11BA7D2E8197}"
+      DTS:DTSID="{AF807055-3BC2-4630-8B05-5D171E3FE7E7}"
       DTS:From="Package\Print_Step_26"
       DTS:To="Package\==============================="
       DTS:ObjectName="Print_Step_26_to_===============================" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[===============================_to_T7:_Replace_NULL/blank_NAME_and_CITY_wit]"
       DTS:CreationName=""
-      DTS:DTSID="{CA0EF43D-E2FC-4E0C-8DD2-7FEF0D5B2EC9}"
+      DTS:DTSID="{A2241427-51AE-4695-BBB1-FB68441BBCDB}"
       DTS:From="Package\==============================="
       DTS:To="Package\T7:_Replace_NULL/blank_NAME_and_CITY_wit"
       DTS:ObjectName="===============================_to_T7:_Replace_NULL/blank_NAME_and_CITY_wit" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[T7:_Replace_NULL/blank_NAME_and_CITY_wit_to_Print_Step_29]"
       DTS:CreationName=""
-      DTS:DTSID="{7D4D0DB1-AE59-4349-85A8-F1DF1878031B}"
+      DTS:DTSID="{C2232A2D-829E-4DD8-B09C-D7CC852FC00F}"
       DTS:From="Package\T7:_Replace_NULL/blank_NAME_and_CITY_wit"
       DTS:To="Package\Print_Step_29"
       DTS:ObjectName="T7:_Replace_NULL/blank_NAME_and_CITY_wit_to_Print_Step_29" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Print_Step_29_to_===============================]"
       DTS:CreationName=""
-      DTS:DTSID="{4794F218-3C44-4494-8DFC-CEF37C854F55}"
+      DTS:DTSID="{C5FE6303-AB7B-48A9-BF1E-2DE14F2D3B20}"
       DTS:From="Package\Print_Step_29"
       DTS:To="Package\==============================="
       DTS:ObjectName="Print_Step_29_to_===============================" />

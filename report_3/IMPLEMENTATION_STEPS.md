@@ -52,6 +52,71 @@
 - SQL Server Data Tools (SSDT) or Visual Studio 2022 with SSIS extension
 - CSV data files accessible from the server
 
+### Before Your Friend Uses the `.dtsx` Files
+
+Ask your friend to review and update these items before opening or executing the packages:
+
+1. **Server connection names**
+   - The packages currently point to `infodata16.mbs.tamu.edu`
+   - If a different SQL Server instance is being used, update the OLE DB connection managers in all 3 packages
+
+2. **Database names**
+   - The packages currently use:
+     - `team1_staging_area`
+     - `team1_dw_area`
+   - If your friend uses different database names, update the connection managers and any package-level SQL that references those names
+
+3. **CSV file paths**
+   - Package 1 currently uses hardcoded paths like `C:\DFF_Data\wsdr.csv`
+   - Your friend must change every flat file connection to the actual local folder where the 9 source CSV files are stored
+
+4. **Provider availability**
+   - The packages currently reference `SQLNCLI11.1`
+   - If that provider is not installed on your friend's machine, they should recreate the OLE DB connections using the SQL Server provider available in SSDT
+
+5. **Execution order**
+   - Run SQL scripts first in SSMS:
+     - `01_create_databases.sql`
+     - `02_create_staging_tables.sql`
+     - `03_create_dw_tables.sql`
+   - Then execute SSIS packages in this order:
+     - `01_Extract_to_Staging.dtsx`
+     - `02_Transform_Staging.dtsx`
+     - `03_Load_DataMart.dtsx`
+   - Finally run:
+     - `08_verify_bq_queries.sql`
+
+### Important Note About Package 1
+
+The current `01_Extract_to_Staging.dtsx` file may not open cleanly in SSDT because it contains malformed XML in some flat-file column width attributes. If your friend cannot open it directly, the safest solution is to **rebuild Package 1 in SSDT** using the same 9 Data Flow Tasks and the same source-to-staging mappings listed in the report.
+
+Package rebuild scope for `01_Extract_to_Staging.dtsx`:
+- 4 Movement files:
+  - `wsdr.csv`
+  - `WCSO-Done.csv`
+  - `WTPA_done.csv`
+  - `Done-WCRA.csv`
+- 4 UPC files:
+  - `UPCSDR.csv`
+  - `UPCCSO.csv`
+  - `UPCTPA.csv`
+  - `UPCCRA.csv`
+- 1 DEMO file:
+  - `DEMO.csv`
+
+Target staging tables:
+- `stg_Movement_SDR`
+- `stg_Movement_CSO`
+- `stg_Movement_TPA`
+- `stg_Movement_CRA`
+- `stg_Product_SDR`
+- `stg_Product_CSO`
+- `stg_Product_TPA`
+- `stg_Product_CRA`
+- `stg_Store`
+
+Package 2 and Package 3 are still useful as references for the transform and load flow, but your friend should still verify all connection managers before running them.
+
 **⚠️ CRITICAL: Connecting From Home**
 If you are doing this project from home instead of the Mays lab, you MUST do the following to connect to the database and use SSIS:
 1. Turn on the **Cisco Secure Client VPN** (`connect.tamu.edu`).
@@ -83,6 +148,8 @@ If you are doing this project from home instead of the Mays lab, you MUST do the
    - `01_Extract_to_Staging.dtsx`
    - `02_Transform_Staging.dtsx`
    - `03_Load_DataMart.dtsx`
+5. If your friend is using the generated package files from `report_3/ssis/`, import them only after updating the connection managers and flat file paths.
+6. If `01_Extract_to_Staging.dtsx` does not open, rebuild Package 1 manually in SSDT using the mapping rules in Section 4.5 of the report and the package instructions below.
 
 ### Step 3: Build Package 1 — Extract to Staging
 
@@ -103,7 +170,7 @@ If you are doing this project from home instead of the Mays lab, you MUST do the
      - PRICE, PROFIT: float [DT_R8]
      - SALE: string [DT_STR] length 5
 
-2. Repeat for each CSV file (WCSO-Done.csv, WTPA_done.csv, Done-WCRA.csv, UPCSDR.csv, UPCCSO.csv, UPCTPA.csv, UPCCRA.csv, DEMO.csv, CCOUNT.csv)
+2. Repeat for each CSV file (WCSO-Done.csv, WTPA_done.csv, Done-WCRA.csv, UPCSDR.csv, UPCCSO.csv, UPCTPA.csv, UPCCRA.csv, DEMO.csv)
 
 3. Right-click Connection Managers → **New OLE DB Connection**
    - Server: `infodata16.mbs.tamu.edu`
@@ -112,12 +179,12 @@ If you are doing this project from home instead of the Mays lab, you MUST do the
 
 **Control Flow (drag from Toolbox):**
 
-4. Drag 10 **Data Flow Tasks** onto the Control Flow canvas:
+4. Drag 9 **Data Flow Tasks** onto the Control Flow canvas:
    - DFT_Movement_SDR, DFT_Movement_CSO, DFT_Movement_TPA, DFT_Movement_CRA
    - DFT_Product_SDR, DFT_Product_CSO, DFT_Product_TPA, DFT_Product_CRA
-   - DFT_Store, DFT_CustomerTraffic
+   - DFT_Store
 
-5. **📸 Screenshot 4:** Control Flow showing all 10 tasks
+5. **📸 Screenshot 4:** Control Flow showing all 9 tasks
 
 **Data Flow (for each task):**
 
@@ -131,7 +198,7 @@ If you are doing this project from home instead of the Mays lab, you MUST do the
 10. **📸 Screenshot 5:** Data Flow showing Source → Destination
 11. **📸 Screenshot 6:** Flat File Connection Manager properties
 
-12. Repeat Steps 6-9 for all 10 Data Flow Tasks
+12. Repeat Steps 6-9 for all 9 Data Flow Tasks
 
 **Execute Package 1:**
 
