@@ -22,7 +22,8 @@ CREATE TABLE dbo.stg_Movement_SDR (
     PRICE         FLOAT,
     SALE          VARCHAR(5),
     PROFIT        FLOAT,
-    OK            INT
+    OK            INT,
+    CATEGORY_CODE CHAR(3)
 );
 GO
 
@@ -36,7 +37,8 @@ CREATE TABLE dbo.stg_Movement_CSO (
     PRICE         FLOAT,
     SALE          VARCHAR(5),
     PROFIT        FLOAT,
-    OK            INT
+    OK            INT,
+    CATEGORY_CODE CHAR(3)
 );
 GO
 
@@ -50,7 +52,8 @@ CREATE TABLE dbo.stg_Movement_TPA (
     PRICE         FLOAT,
     SALE          VARCHAR(5),
     PROFIT        FLOAT,
-    OK            INT
+    OK            INT,
+    CATEGORY_CODE CHAR(3)
 );
 GO
 
@@ -64,7 +67,8 @@ CREATE TABLE dbo.stg_Movement_CRA (
     PRICE         FLOAT,
     SALE          VARCHAR(5),
     PROFIT        FLOAT,
-    OK            INT
+    OK            INT,
+    CATEGORY_CODE CHAR(3)
 );
 GO
 
@@ -80,7 +84,8 @@ CREATE TABLE dbo.stg_Product_SDR (
     DESCRIP       VARCHAR(100),
     SIZE          VARCHAR(30),
     CASE_PACK     INT,
-    NITEM         BIGINT
+    NITEM         BIGINT,
+    CATEGORY_CODE CHAR(3)
 );
 GO
 
@@ -91,7 +96,8 @@ CREATE TABLE dbo.stg_Product_CSO (
     DESCRIP       VARCHAR(100),
     SIZE          VARCHAR(30),
     CASE_PACK     INT,
-    NITEM         BIGINT
+    NITEM         BIGINT,
+    CATEGORY_CODE CHAR(3)
 );
 GO
 
@@ -102,7 +108,8 @@ CREATE TABLE dbo.stg_Product_TPA (
     DESCRIP       VARCHAR(100),
     SIZE          VARCHAR(30),
     CASE_PACK     INT,
-    NITEM         BIGINT
+    NITEM         BIGINT,
+    CATEGORY_CODE CHAR(3)
 );
 GO
 
@@ -113,7 +120,8 @@ CREATE TABLE dbo.stg_Product_CRA (
     DESCRIP       VARCHAR(100),
     SIZE          VARCHAR(30),
     CASE_PACK     INT,
-    NITEM         BIGINT
+    NITEM         BIGINT,
+    CATEGORY_CODE CHAR(3)
 );
 GO
 

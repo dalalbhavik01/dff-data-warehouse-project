@@ -184,10 +184,10 @@ data2 = [
     ("stg_Store", "WORKWOM", "Copy (CAST to DECIMAL)", "Dimension", "DimStore", "working_women_pct"),
     ("stg_Store", "PRICLOW, PRICMED, PRICHIGH", "Transform: CASE WHEN", "Dimension", "DimStore", "price_tier"),
 
-    # Generated/Hardcoded
-    ("(generated)", "week_id 1-400", "Transform: DATEADD", "Dimension", "DimTime", "week_start_date, month, quarter..."),
-    ("(hardcoded)", "28 category codes", "Direct INSERT", "Dimension", "DimCategory", "category_code, category_name..."),
-    ("(hardcoded)", "4 deal types", "Direct INSERT", "Dimension", "DimPromotion", "deal_code, deal_type, is_promoted"),
+    # Generated/Hardcoded — these dimensions have no staging source
+    ("N/A — Generated via CTE", "week_id 1–400", "Transform: DATEADD from base date 1989-09-14", "Dimension", "DimTime", "time_key, week_id, week_start_date, week_end_date, month, month_name, quarter, year, fiscal_year, is_holiday_week"),
+    ("N/A — DFF Codebook", "28 category codes", "Direct INSERT (hardcoded from DFF codebook)", "Dimension", "DimCategory", "category_key, category_code, category_name, department"),
+    ("N/A — DFF Codebook", "4 deal types (N, B, C, S)", "Direct INSERT (hardcoded from DFF codebook)", "Dimension", "DimPromotion", "promotion_key, deal_code, deal_type, is_promoted"),
 ]
 
 for row in data2:
