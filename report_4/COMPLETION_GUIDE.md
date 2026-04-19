@@ -95,13 +95,13 @@ Expected minimums: FactWeeklySales ≥ 14,000,000 | DimStore = 107 | DimCategory
    - Map columns: `week_id`, `week_start_date`, `total_units_sold`
    - Bold the header row
 
-5. **📸 Take Screenshot 30:**
+5. **Take Screenshot 30:**
    - Stay on the **Design tab** (not Preview)
    - Make sure Solution Explorer is visible on the right (View → Solution Explorer if hidden)
    - Press **Windows + Shift + S** (or use Snipping Tool) to capture the full Visual Studio window
    - Save as: `report_4/screenshots/screenshot_30.png`
 
-6. **📸 Take Screenshot 31:**
+6. **Take Screenshot 31:**
    - Click the **Preview tab** at the top of the report designer
    - Wait for the report to render (may take 10–30 seconds)
    - Capture the fully rendered page showing the line chart with data and the table below
@@ -175,13 +175,13 @@ Expected minimums: FactWeeklySales ≥ 14,000,000 | DimStore = 107 | DimCategory
      IIF(Fields!wow_change.Value < 0, "Red", "Black"))
    ```
 
-7. **📸 Take Screenshot 32:**
+7. **Take Screenshot 32:**
    - Stay on the **Design tab**
    - Make sure both the parameter field and the table layout with all 6 columns are fully visible
    - Solution Explorer visible on right
    - Save as: `report_4/screenshots/screenshot_32.png`
 
-8. **📸 Take Screenshot 33:**
+8. **Take Screenshot 33:**
    - Click the **Preview tab**
    - In the `Select Week Number` dropdown, choose week **100** (or any week with data)
    - Click **View Report**
@@ -256,18 +256,18 @@ Expected minimums: FactWeeklySales ≥ 14,000,000 | DimStore = 107 | DimCategory
 - In the **Values/Data** area → drag `[Measures].[units_sold]`
 - You should see 4 rows: `No Promotion`, `Bonus Buy (B)`, `Coupon (C)`, `Sale/Discount (S)` with their average units sold
 
-3. **📸 Take Screenshot 34:**
+3. **Take Screenshot 34:**
    - Switch to the **Cube Structure tab** (first tab)
    - Expand the Solution Explorer to show: Data Sources, Data Source Views, Cubes, Dimensions
    - Show the Measures pane (units_sold, revenue) and Dimensions pane
    - Save as: `report_4/screenshots/screenshot_34.png`
 
-4. **📸 Take Screenshot 35:**
+4. **Take Screenshot 35:**
    - Switch back to the **Browser tab**
    - With the filter `SDR` and deal_type in rows, units_sold in values — this is the BQ3 pivot
    - Save as: `report_4/screenshots/screenshot_35.png`
 
-5. **📸 Take Screenshot 36 (Drill-down):**
+5. **Take Screenshot 36 (Drill-down):**
    - In the **Columns** drop zone → drag `[DimTime].[FiscalYear].[year]` (or `[DimTime].[year]`)
    - You should now see a matrix: deal_type rows × year columns × avg units_sold values
    - Save as: `report_4/screenshots/screenshot_36.png`
@@ -366,12 +366,12 @@ ORDER BY incremental_lift DESC;
 
 ### 3.4 Take the Screenshots
 
-**📸 Screenshot 37:**
+**Take Screenshot 37:**
 - Paste the SQL but **do NOT click Run yet**
 - Capture the editor with the full query visible and the Run button highlighted
 - Save as: `report_4/screenshots/screenshot_37.png`
 
-**📸 Screenshot 38:**
+**Take Screenshot 38:**
 - Click **Run**
 - Wait for results (should complete in seconds)
 - Capture the **Results tab** showing the full output table with all 6 columns and 3 rows
@@ -485,19 +485,19 @@ SWITCH(TRUE(),
 
 ### 4.5 Take the Screenshots
 
-**📸 Screenshot 39:**
+**Take Screenshot 39:**
 - Click the **Model view** icon (third in left sidebar) — NOT Report view
 - The canvas should show the star schema with all 6 tables connected
 - Make sure FactWeeklySales is visible in the center with all relationship lines
 - Save as: `report_4/screenshots/screenshot_39.png`
 
-**📸 Screenshot 40:**
+**Take Screenshot 40:**
 - Go back to **Report view** → click the `BQ8 Dashboard` page tab
 - Both visuals (bar chart + table) should be visible with data
 - The Filters pane should show `category_code is TPA` applied
 - Save as: `report_4/screenshots/screenshot_40.png`
 
-**📸 Screenshot 41:**
+**Take Screenshot 41:**
 - Click the `BQ8 Map` page tab
 - The map of Chicago metro area should show store bubbles
 - The two Card visuals (Total Stores, Total Revenue) should be visible below
@@ -522,7 +522,7 @@ screenshot_32.png  screenshot_35.png  screenshot_38.png  screenshot_41.png
 
 ### 5.2 Replace Placeholders in the Markdown
 
-The `generate_docx.py` script auto-detects the `> 📸 **[Screenshot N — INSERT HERE]**` lines and renders them as clean bordered placeholder boxes.
+The `generate_docx.py` script auto-detects the `> **[Screenshot N Placeholder]**` lines and renders them as clean bordered placeholder boxes.
 
 Once you save the screenshots to the `screenshots/` folder, edit `Integrated_Report_4.md` to replace each placeholder line with an image embed using this exact format:
 
@@ -556,7 +556,7 @@ with open("Integrated_Report_4.md", "r") as f:
     content = f.read()
 
 for n, caption in replacements.items():
-    placeholder = rf'> 📸 \*\*\[Screenshot {n} — INSERT HERE\]\*\*.*'
+    placeholder = rf'> \*\*\[Screenshot {n} Placeholder\]\*\*.*'
     embed = f'![Screenshot {n}: {caption}](screenshots/screenshot_{n:02d}.png)'
     content = re.sub(placeholder, embed, content)
 
