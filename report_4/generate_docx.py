@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """
-Generate a formatted DOCX from Integrated_Report_4.md
-with embedded images and yellow placeholder boxes for missing screenshots.
+Generate a formatted DOCX from Integrated_Report_4.md.
+Screenshots from ETL phases are embedded directly.
+BI tool screenshots (30-41) render as clean bordered placeholder boxes
+waiting for the real screenshots to be inserted by the student.
 """
 
 import re
@@ -26,28 +28,60 @@ def set_cell_shading(cell, color):
     cell._tc.get_or_add_tcPr().append(shading)
 
 
-def add_placeholder_box(doc, text):
-    """Add a yellow placeholder box for screenshots/ERDs."""
-    table = doc.add_table(rows=1, cols=1)
+def add_placeholder_box(doc, label, instruction=""):
+    """Add a clean bordered placeholder box (white bg, gray border) for missing screenshots."""
+    table = doc.add_table(rows=2 if instruction else 1, cols=1)
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
-    cell = table.cell(0, 0)
-    cell.text = ""
-    p = cell.paragraphs[0]
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = p.add_run(text)
-    run.font.size = Pt(11)
-    run.font.color.rgb = RGBColor(0x66, 0x33, 0x00)
-    run.font.italic = True
-    # Yellow background
-    set_cell_shading(cell, "FFFFCC")
-    # Set cell height
-    tr = table.rows[0]._tr
-    trPr = tr.get_or_add_trPr()
-    trHeight = OxmlElement("w:trHeight")
-    trHeight.set(qn("w:val"), "1200")
-    trHeight.set(qn("w:hRule"), "atLeast")
-    trPr.append(trHeight)
-    doc.add_paragraph("")  # spacing
+
+    # Row 0: label
+    cell0 = table.cell(0, 0)
+    cell0.text = ""
+    p0 = cell0.paragraphs[0]
+    p0.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    run0 = p0.add_run(label)
+    run0.font.size = Pt(11)
+    run0.font.bold = True
+    run0.font.color.rgb = RGBColor(0x44, 0x44, 0x44)
+    set_cell_shading(cell0, "F2F2F2")
+
+    # Row 1: instruction (if provided)
+    if instruction:
+        cell1 = table.cell(1, 0)
+        cell1.text = ""
+        p1 = cell1.paragraphs[0]
+        p1.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        run1 = p1.add_run(instruction)
+        run1.font.size = Pt(9)
+        run1.font.italic = True
+        run1.font.color.rgb = RGBColor(0x66, 0x66, 0x66)
+        set_cell_shading(cell1, "FAFAFA")
+
+    # Set minimum row height for visibility
+    for row in table.rows:
+        tr = row._tr
+        trPr = tr.get_or_add_trPr()
+        trHeight = OxmlElement("w:trHeight")
+        trHeight.set(qn("w:val"), "800")
+        trHeight.set(qn("w:hRule"), "atLeast")
+        trPr.append(trHeight)
+
+    # Add thin gray border around the whole table
+    tbl = table._tbl
+    tblPr = tbl.find(qn('w:tblPr'))
+    if tblPr is None:
+        tblPr = OxmlElement('w:tblPr')
+        tbl.insert(0, tblPr)
+    tblBorders = OxmlElement('w:tblBorders')
+    for border_name in ['top', 'left', 'bottom', 'right', 'insideH', 'insideV']:
+        border = OxmlElement(f'w:{border_name}')
+        border.set(qn('w:val'), 'single')
+        border.set(qn('w:sz'), '6')
+        border.set(qn('w:space'), '0')
+        border.set(qn('w:color'), 'BBBBBB')
+        tblBorders.append(border)
+    tblPr.append(tblBorders)
+
+    doc.add_paragraph("")  # spacing after
 
 
 def add_image(doc, image_path, caption=""):
@@ -266,6 +300,25 @@ def main():
         placeholder_text = is_screenshot_placeholder(line)
         if placeholder_text:
             add_placeholder_box(doc, placeholder_text)
+            i += 1
+            continue
+
+        # --- Blockquote lines: > 📸 **[Screenshot N — INSERT HERE]** instruction... ---
+        if line.strip().startswith("> "):
+            content = line.strip()[2:].strip()
+            # Check if this is a screenshot INSERT placeholder
+            insert_match = re.match(r'📸 \*\*(\[Screenshot \d+ — INSERT HERE\])\*\* (.*)', content)
+            if insert_match:
+                label = insert_match.group(1)
+                instruction = insert_match.group(2).strip()
+                add_placeholder_box(doc, f"📸 {label}", instruction)
+            else:
+                # Regular blockquote — render as indented italic paragraph
+                p = doc.add_paragraph()
+                p.paragraph_format.left_indent = Cm(1)
+                run = p.add_run(content)
+                run.font.italic = True
+                run.font.color.rgb = RGBColor(0x44, 0x44, 0x44)
             i += 1
             continue
 
