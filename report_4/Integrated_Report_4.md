@@ -1164,7 +1164,7 @@ The complete SQL logic for the implementation is provided below.
 ```sql
 -- ============================================================
 -- Script 01: Create Databases
--- DFF Data Warehouse Project — Report 3 (ISTM 637, Spring 2026)
+-- DFF Data Warehouse Project — Integrated Report (Final) (ISTM 637, Spring 2026)
 -- Run this in SSMS connected to SQL Server 2016
 -- ============================================================
 
@@ -1203,7 +1203,7 @@ GO
 ```sql
 -- ============================================================
 -- Script 02: Create Staging Tables
--- DFF Data Warehouse Project — Report 3
+-- DFF Data Warehouse Project — Integrated Report (Final)
 -- Run in SSMS after Script 01. These tables receive raw CSV data.
 -- ============================================================
 USE [team1_staging_area];
@@ -1366,7 +1366,7 @@ GO
 ```sql
 -- ============================================================
 -- Script 03: Create Data Warehouse (Data Mart) Tables
--- DFF Data Warehouse Project — Report 3
+-- DFF Data Warehouse Project — Integrated Report (Final)
 -- Run in SSMS after Script 02. Creates the star schema tables.
 -- IMPORTANT: Create DIMENSION tables first, then FACT tables
 --            (fact tables have FK references to dimensions).
@@ -1528,7 +1528,7 @@ GO
 ```sql
 -- ============================================================
 -- Script 04: Transform and Clean Staging Data
--- DFF Data Warehouse Project — Report 3
+-- DFF Data Warehouse Project — Integrated Report (Final)
 -- Run in SSMS AFTER Package 1 (Extract) has loaded CSV data
 -- into staging tables. These transformations prepare the data
 -- for loading into the data mart.
@@ -1696,7 +1696,7 @@ GO
 ```sql
 -- ============================================================
 -- Script 05: Load Dimension Tables
--- DFF Data Warehouse Project — Report 3
+-- DFF Data Warehouse Project — Integrated Report (Final)
 -- Run AFTER Script 04 (Transform). Loads dimensions BEFORE facts.
 -- Order: DimCategory → DimPromotion → DimTime → DimStore → DimProduct
 -- ============================================================
@@ -1891,7 +1891,7 @@ GO
 ```sql
 -- ============================================================
 -- Script 06: Load Fact Tables
--- DFF Data Warehouse Project — Report 3
+-- DFF Data Warehouse Project — Integrated Report (Final)
 -- Run AFTER Script 05 (Load Dimensions).
 -- Dimensions must be populated first because fact tables
 -- reference dimension surrogate keys via foreign keys.
@@ -2008,7 +2008,7 @@ GO
 ```sql
 -- ============================================================
 -- Script 07: Drop Temporary Tables from Staging Area
--- DFF Data Warehouse Project — Report 3
+-- DFF Data Warehouse Project — Integrated Report (Final)
 -- Run AFTER all dimension and fact tables have been loaded.
 -- The assignment requires: "Once loading of each table is done,
 -- remove all temp tables from the staging area."
@@ -2064,7 +2064,7 @@ GO
 ```sql
 -- ============================================================
 -- Script 08: Verify Business Questions Against Loaded DW
--- DFF Data Warehouse Project — Report 3
+-- DFF Data Warehouse Project — Integrated Report (Final)
 -- Run AFTER all tables are loaded to validate the ETL.
 -- Each query corresponds to one of the 5 selected BQs.
 -- ============================================================
@@ -2285,7 +2285,9 @@ The complete mapping tables documenting the data lineage from source files throu
 | (Hardcoded) 28 category codes | Direct INSERT | DimCategory.* | Static Data |
 | (Hardcoded) 4 deal types | Direct INSERT | DimPromotion.* | Static Data |
 
-### Appendix C: SSIS Screenshot Index
+### Appendix C: Complete Screenshot Index
+
+**Section 4 — ETL Implementation Evidence (Screenshots 1–29)**
 
 | # | Description |
 |:--|:--|
@@ -2319,3 +2321,19 @@ The complete mapping tables documenting the data lineage from source files throu
 | 28 | SSMS — BQ8 verification query results |
 | 29 | SSMS — BQ9 verification query results |
 
+**Section 5 — BI Reporting Evidence (Screenshots 30–41)**
+
+| # | Tool | BQ | Description |
+|:--|:--|:--|:--|
+| 30 | SSRS | BQ2 | SSRS Report Designer — BQ2 Weekly SDR Sales trend report layout |
+| 31 | SSRS | BQ2 | SSRS Report Preview — BQ2 line chart showing weekly Soft Drink unit sales |
+| 32 | SSRS | BQ9 | SSRS Report Designer — BQ9 parameterized Cracker ranking report layout |
+| 33 | SSRS | BQ9 | SSRS Report Preview — BQ9 table showing top 10 products for selected week |
+| 34 | SSAS | BQ3 | Visual Studio — SSAS Cube structure in Solution Explorer |
+| 35 | SSAS | BQ3 | SSAS Cube Browser — BQ3 pivot: deal_type vs AVG(units_sold) |
+| 36 | SSAS | BQ3 | SSAS Cube Browser — drill-down by year and quarter |
+| 37 | Redshift | BQ4 | Redshift Query v.2 — query editor showing BQ4 promotion lift SQL |
+| 38 | Redshift | BQ4 | Redshift Query v.2 — BQ4 results: lift by deal type |
+| 39 | Power BI | BQ8 | Power BI — Data model view showing star schema connections |
+| 40 | Power BI | BQ8 | Power BI — BQ8 dashboard: store quartile bar chart + demographic table |
+| 41 | Power BI | BQ8 | Power BI — BQ8 dashboard: map view of stores by revenue tier |
