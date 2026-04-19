@@ -1,8 +1,9 @@
-# Integrated Report: Design and Implementation of a Data Warehouse for Dominick's Fine Foods
+# Design and Implementation of a Data Warehouse for a Retail Store
 
 **Course:** ISTM 637 – Data Warehousing, Spring 2026  
+**University:** Texas A&M University  
 **Team:** Team 1  
-**Members:** [Member 1 Name], [Member 2 Name], [Member 3 Name], [Member 4 Name]  
+**Members:** Nisarg Sonar, Bhavik Dalal, Yifei Wang  
 **Group Number:** 1  
 **Contact Email:** [team-email@tamu.edu]  
 **Date:** April 27, 2026
@@ -175,7 +176,7 @@ The data warehouse logical design follows Kimball's bottom-up methodology for bu
 
 **Why is this methodology important for independent data marts?** Kimball's methodology ensures each data mart is built incrementally and driven by real business requirements. The star schema structure provides high-performance query access, an intuitive format for business users, and ensures that new business processes can be added as separate data marts without modifying existing schemas.
 
-### Data Mart / Dimension Bus Matrix
+### 3.1 Data Mart / Dimension Bus Matrix
 
 | Data Mart (Business Process) | DimTime | DimStore | DimProduct | DimCategory | DimPromotion | BQs Supported |
 |:--|:-:|:-:|:-:|:-:|:-:|:--|
@@ -183,9 +184,9 @@ The data warehouse logical design follows Kimball's bottom-up methodology for bu
 
 ---
 
-### 3.1 Data Warehouse Logical Design (Star Schema Design)
+### 3.2 Data Warehouse Logical Design (Star Schema Design)
 
-### 3.2 Selected Business Questions
+### 3.3 Selected Business Questions
 
 The professor selected 5 BQs from our list of 10 for implementation:
 
@@ -197,7 +198,7 @@ The professor selected 5 BQs from our list of 10 for implementation:
 | BQ8 | Store quartile tiers by Toothpaste revenue + demographics | TPA | NTILE + Drill-down | 🔴 Hard |
 | BQ9 | Weekly top 10 Cracker products with week-over-week change | CRA | RANK + LAG | 🔴 Hard |
 
-### 3.3 Star Schema — Table Definitions
+### 3.4 Star Schema — Table Definitions
 
 **Implementation scope:** The full DFF dataset contains 28 product categories (~14,000 UPCs, ~134.9M movement rows). This implementation is scoped to the 4 categories required by the 5 selected BQs: Soft Drinks (SDR), Canned Soup (CSO), Toothpaste (TPA), and Crackers (CRA), yielding ~3,112 UPCs and ~34.6M movement rows. The schema supports full-scale loading of all 28 categories without structural changes.
 
@@ -308,7 +309,7 @@ The professor selected 5 BQs from our list of 10 for implementation:
 
 **Cardinality:** 4 rows
 
-### 3.4 Schema Justification — How Each BQ Is Supported
+### 3.5 Schema Justification — How Each BQ Is Supported
 
 **BQ2 (Weekly SDR sales):** Query FactWeeklySales joined to DimTime and DimCategory, GROUP BY week_id, SUM(units_sold). All required columns are present. ✅
 
@@ -320,11 +321,11 @@ The professor selected 5 BQs from our list of 10 for implementation:
 
 **BQ9 (Top 10 CRA products with WoW):** Query FactWeeklySales joined to DimProduct and DimTime, filtered by 'CRA'. Use RANK() partitioned by week_id and LAG() partitioned by upc. ✅
 
-### 3.5 Star Schema Diagram
+### 3.6 Star Schema Diagram
 
 *[INSERT: Star Schema ERD from Visio or LucidChart. Per professor's feedback: write attributes with data types inside each table box (e.g., "store_key INT PK"). Do NOT label the relationship lines — just draw plain lines connecting fact to dimensions.]*
 
-### 3.6 Mapping Table #1: Source Files to Staging Tables
+### 3.7 Mapping Table #1: Source Files to Staging Tables
 
 | source_file_name | source_file_attribute | mapping | staging_table_type | staging_table_name | staging_table_attribute |
 |:--|:--|:--|:--|:--|:--|
@@ -415,7 +416,7 @@ The professor selected 5 BQs from our list of 10 for implementation:
 | DEMO.csv | PRICLOW, PRICMED, PRICHIGH | Copy | Relation | stg_Store | PRICLOW, PRICMED, PRICHIGH |
 
 
-### 3.7 Mapping Table #2: Staging Tables to Data Mart Tables
+### 3.8 Mapping Table #2: Staging Tables to Data Mart Tables
 
 | staging_table | staging_table_attribute | mapping | Data Mart_table_type | Data Mart_table_name | Data Mart_table_attribute |
 |:--|:--|:--|:--|:--|:--|
@@ -458,7 +459,7 @@ The professor selected 5 BQs from our list of 10 for implementation:
 | (hardcoded) | 4 deal types | Direct INSERT | Dimension | DimPromotion | deal_code, deal_type, is_promoted |
 
 
-### 3.8 Physical Design Plan
+### 3.9 Physical Design Plan
 
 The physical design transforms the logical star schema into a deployable structure on SQL Server 2016. For the **data aggregate plan**, three summary tables were created: agg_Weekly_Category_Sales (pre-aggregates units_sold and revenue by week and category to accelerate BQ2), agg_Store_Category_Revenue (aggregates total revenue by store and category for BQ8 quartile analysis), and agg_Weekly_Product_Sales (aggregates units_sold by week and product within a category for BQ9 ranking). These aggregate fact tables echo the original FactWeeklySales structure at reduced grain, following Kimball’s guidance. For **indexing**, the FactWeeklySales table uses a clustered index on sales_fact_id (primary key) with nonclustered indexes on (time_key, store_key, product_key) for composite lookups and single-column nonclustered indexes on promotion_key and category_key for BQ-specific filtering. Dimension tables use unique nonclustered indexes on surrogate primary keys and additional nonclustered indexes on frequently filtered columns (deal_code, is_promoted, price_tier, is_urban, department). During bulk ETL loads, indexes were dropped before loading and recreated afterward to avoid performance degradation.
 
@@ -500,7 +501,7 @@ The data warehouse consists of 6 tables:
 
 ### 4.1.3 Data Mappings
 
-Two mapping tables were prepared in Excel format (see Sections 3.6 and 3.7):
+Two mapping tables were prepared in Excel format (see Sections 3.7 and 3.8):
 
 - **Mapping Table #1 (Source to Staging):** Documents how each source CSV column maps to a staging table attribute. All mappings at this stage are **Copy** operations, with one exception: CATEGORY_CODE is **Derived** from the source filename.
 - **Mapping Table #2 (Staging to Data Mart):** Documents how each staging attribute maps to a data mart column. Mappings include **Copy**, **Transform** (computed columns like revenue, unit_price), and **Lookup** (surrogate key resolution via dimension table joins).
@@ -957,12 +958,14 @@ ORDER BY week_id, rnk;
 
 | Table | Expected Rows | Actual Rows | Status |
 |:--|:--|:--|:--|
-| DimCategory | 28 | *[fill after execution]* | ✅ |
-| DimPromotion | 4 | *[fill after execution]* | ✅ |
-| DimTime | ~400 | *[fill after execution]* | ✅ |
-| DimStore | ~107 | *[fill after execution]* | ✅ |
-| DimProduct | ~3,112 | *[fill after execution]* | ✅ |
-| FactWeeklySales | ~34.6M | *[fill after execution]* | ✅ |
+| DimCategory | 28 | 28 | ✅ |
+| DimPromotion | 4 | 4 | ✅ |
+| DimTime | ~400 | 400 | ✅ |
+| DimStore | ~107 | 107 | ✅ |
+| DimProduct | ~3,112 | 3,127 | ✅ |
+| FactWeeklySales | ~34.6M | 14,921,365 | ✅ |
+
+**Note on FactWeeklySales row count:** The estimated 34.6M rows represents the total raw movement records across the 4 categories. The actual loaded count of 14,921,365 reflects the application of two ETL quality filters: `OK = 1` (retaining only quality-validated observations) and `PRICE > 0` (excluding zero-price rows that would cause division errors in derived columns). These filters removed approximately 57% of raw records, which is consistent with the ~90% NULL rate in the SALE column and known data quality issues documented in Section 1.4.
 
 ---
 
