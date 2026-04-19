@@ -977,7 +977,7 @@ ORDER BY week_id, rnk;
 
 ## Section 5: BI Reporting
 
-This section presents the final phase of the data warehousing lifecycle: delivering BI reports to end users. Using four distinct reporting tools — SSRS, SSAS, Redshift Query v.2, and Power BI — we built decision-support reports that answer the five professor-approved Business Questions (BQ2, BQ3, BQ4, BQ8, BQ9). Each report draws directly from the `team1_dw_area` data mart on SQL Server 2016.
+This section presents the final phase of the data warehousing lifecycle: delivering BI reports to end users. Using four distinct reporting tools — SSRS, SSAS, Redshift Query v.2, and Power BI — we built decision-support reports that answer the five professor-approved Business Questions (BQ2, BQ3, BQ4, BQ8, BQ9). Reports for BQ2, BQ3, BQ8, and BQ9 draw directly from the `team1_dw_area` data mart on SQL Server 2016. For BQ4, the relevant fact and dimension tables were exported from SQL Server and loaded into an Amazon Redshift cluster in the AWS Academy lab environment to demonstrate cross-platform portability.
 
 ### 5.1 Reporting Plan
 
@@ -1011,7 +1011,7 @@ All four tools required by the professor are used at least once:
 
 1. **SSRS (SQL Server Reporting Services):** Used for BQ2 and BQ9. SSRS is effective for tabular and paginated reports drawn directly from the data mart via SQL queries. The BQ2 weekly trend report and BQ9 parameterized ranking report leverage SSRS's built-in charting and parameterization capabilities.
 2. **SSAS (SQL Server Analysis Services):** Used for BQ3. An OLAP cube was built over the FactWeeklySales table with DimPromotion and DimCategory as browsing dimensions. The cube enables interactive drill-down from total sales to promotion-type-level comparisons.
-3. **Redshift Query v.2:** Used for BQ4. The promotion lift calculation was executed as a cloud-based analytical query, demonstrating that the same star schema logic is portable to Redshift's columnar engine.
+3. **Redshift Query v.2:** Used for BQ4. The FactWeeklySales, DimPromotion, and DimCategory tables were exported from SQL Server as CSV files and loaded into a Redshift cluster in the AWS Academy environment. The promotion lift calculation was then executed as a cloud-based analytical query, demonstrating that the same star schema logic is portable to Redshift’s columnar engine.
 4. **Power BI:** Used for BQ8. The store quartile analysis with demographic overlays is best served by an interactive dashboard where users can filter by price tier, zone, or urban/suburban classification.
 
 ### 5.2 Report Implementation
@@ -1056,7 +1056,7 @@ The cube was processed and browsed in the SSAS Cube Browser. Slicing by DimCateg
 
 **BQ4 — Promotion Lift by Deal Type in Canned Soup (Redshift Query v.2)**
 
-The BQ4 analysis was executed in Redshift Query v.2. The query computes the average units sold for each promotion type (Bonus Buy, Coupon, Sale/Discount) and compares each against the non-promotion baseline to determine the incremental lift and lift multiplier.
+The BQ4 analysis was executed in Redshift Query v.2. To prepare for this, the FactWeeklySales, DimPromotion, and DimCategory tables were exported from `team1_dw_area` on SQL Server as CSV files and loaded into the Redshift cluster using the COPY command in the AWS Academy lab environment. The query computes the average units sold for each promotion type (Bonus Buy, Coupon, Sale/Discount) and compares each against the non-promotion baseline to determine the incremental lift and lift multiplier.
 
 ```sql
 -- BQ4: Promotion Lift by Deal Type — Canned Soup (Redshift Query v.2)
@@ -2248,7 +2248,7 @@ GO
 
 ### Appendix B: Mapping Tables
 
-The complete mapping tables documenting the data lineage from source files through staging to the data mart are provided below. The Excel version of these tables (`MappingTables.xlsx`) is included as a separate attachment.
+The complete mapping tables documenting the data lineage from source files through staging to the data mart are provided below.
 
 #### Mapping Table #1: Source Files to Staging Tables (Summary)
 
