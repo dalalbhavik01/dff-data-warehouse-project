@@ -89,7 +89,7 @@ def add_placeholder_box(doc, label, instruction=""):
     p0.alignment = WD_ALIGN_PARAGRAPH.CENTER
     r0 = p0.add_run(label)
     r0.bold = True
-    r0.font.size = Pt(10)
+    r0.font.size = Pt(12)
     r0.font.color.rgb = RGBColor(0x33, 0x33, 0x33)
     set_cell_bg(c0, "EEEEEE")
     set_row_min_height(table.rows[0], 700)
@@ -102,7 +102,7 @@ def add_placeholder_box(doc, label, instruction=""):
         p1.alignment = WD_ALIGN_PARAGRAPH.CENTER
         r1 = p1.add_run(instruction)
         r1.italic = True
-        r1.font.size = Pt(9)
+        r1.font.size = Pt(12)
         r1.font.color.rgb = RGBColor(0x55, 0x55, 0x55)
         set_cell_bg(c1, "FAFAFA")
         set_row_min_height(table.rows[1], 500)
@@ -121,7 +121,7 @@ def add_image(doc, image_path, caption=""):
             cp.alignment = WD_ALIGN_PARAGRAPH.CENTER
             cr = cp.add_run(caption)
             cr.italic = True
-            cr.font.size = Pt(10)
+            cr.font.size = Pt(12)
             cr.font.name = "Times New Roman"
             cr.font.color.rgb = RGBColor(0x55, 0x55, 0x55)
         doc.add_paragraph("")
@@ -146,7 +146,7 @@ def add_code_block(doc, code_text):
     p.paragraph_format.space_after  = Pt(4)
     run = p.add_run(code_text)
     run.font.name  = "Courier New"
-    run.font.size  = Pt(9)
+    run.font.size  = Pt(12)
     run.font.color.rgb = RGBColor(0x22, 0x22, 0x22)
     doc.add_paragraph("")
 
@@ -170,7 +170,7 @@ def add_md_table(doc, header_line, data_lines):
         run = cell.paragraphs[0].add_run(h)
         run.bold = True
         run.font.name = "Times New Roman"
-        run.font.size = Pt(10)
+        run.font.size = Pt(12)
         set_cell_bg(cell, "D9E2F3")
 
     for r_idx, row_data in enumerate(rows_data):
@@ -179,7 +179,7 @@ def add_md_table(doc, header_line, data_lines):
             cell.text = ""
             run = cell.paragraphs[0].add_run(row_data[c_idx])
             run.font.name = "Times New Roman"
-            run.font.size = Pt(10)
+            run.font.size = Pt(12)
 
     doc.add_paragraph("")
 
@@ -199,7 +199,7 @@ def process_inline(paragraph, text):
         elif part.startswith("`") and part.endswith("`"):
             r = paragraph.add_run(part[1:-1])
             r.font.name  = "Courier New"
-            r.font.size  = Pt(10)
+            r.font.size  = Pt(12)
             r.font.color.rgb = RGBColor(0xC0, 0x39, 0x2B)
         else:
             r = paragraph.add_run(part)
