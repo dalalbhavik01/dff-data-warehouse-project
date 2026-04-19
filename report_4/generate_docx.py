@@ -4,7 +4,7 @@ Generate a formatted DOCX from Integrated_Report_4.md.
 
 Design goals:
   - Clean, Google Docs-compatible output (no hard page breaks, no complex XML)
-  - Standard fonts (Arial body, standard heading styles)
+  - Times New Roman 12pt body, black text throughout
   - Minimal formatting that survives a round-trip through Google Docs
   - Placeholder boxes for BI screenshots 30-41 (clean gray-bordered tables)
   - All ETL screenshots (1-29) and diagrams embedded directly
@@ -73,9 +73,9 @@ def set_row_min_height(row, twips=800):
 def add_placeholder_box(doc, label, instruction=""):
     """
     Render a clean gray-bordered 1-column table as a screenshot placeholder.
-    Row 0 (gray bg):  bold label e.g.  '📸 [Screenshot 30 — INSERT HERE]'
+    Row 0 (gray bg):  bold label e.g.  '[Screenshot 30 Placeholder]'
     Row 1 (white bg): italic instruction describing exactly what to capture.
-    Google Docs renders simple table borders perfectly — no XML quirks.
+    Google Docs renders simple table borders perfectly.
     """
     rows  = 2 if instruction else 1
     table = doc.add_table(rows=rows, cols=1)
