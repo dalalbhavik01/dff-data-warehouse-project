@@ -1,369 +1,134 @@
-# Report 4 — Final Completion Guide
-## What You Need To Do Before Submission
+# Report 4 — Completion Guide (FINAL)
 
-> **Status**: Report text is 100% complete. The ONLY remaining work is generating
-> 12 BI tool screenshots on the TAMU lab machine and embedding them.
-> This guide walks you through every step in exact order.
-
----
-
-## Prerequisites
-
-Before starting, make sure you have access to:
-
-- [ ] **SQL Server 2016** with `team1_dw_area` database populated (from Report 3)
-- [ ] **Visual Studio 2015** (SSDT) with SSRS and SSAS project templates
-- [ ] **Power BI Desktop** (free download from Microsoft)
-- [ ] **AWS Academy Lab** with Redshift access
-- [ ] The `report_4/` folder from this project on your machine
+> **Status: ✅ COMPLETE — All rubric requirements satisfied. Report is submission-ready.**
+>
+> Last updated: April 19, 2026
 
 ---
 
-## Part 1: SSRS Reports (Screenshots 30–33)
+## What Was Done
 
-### BQ2 — Weekly Soft Drink Unit Sales Trend Report
+All content from Reports 1–4 has been integrated into a single unified document
+(`Integrated_Report_4.docx`, 17.3 MB) following the professor's exact section structure.
 
-**Step 1: Create the SSRS project**
-1. Open Visual Studio 2015 → File → New Project → Report Server Project
-2. Name it `DFF_BI_Reports`
+### Content Integration Summary
 
-**Step 2: Create the data source**
-1. In Solution Explorer, right-click `Shared Data Sources` → Add New
-2. Connection string: `Data Source=ISTM637-PC\SQLEXPRESS;Initial Catalog=team1_dw_area`
-3. Use Windows Authentication
+| Source Report | Content | Integrated Into |
+|:--|:--|:--|
+| Report 1 | Intro, EDA, Literature Review, 10 BQs, Prioritization, Data Evidence | Sections 1 + 2 |
+| Report 2 | Kimball methodology, Bus Matrix, Star Schema, ERD, Mapping Tables, Physical Design | Section 3 |
+| Report 3 | Data Quality, ETL Plan, SSIS Implementation, SQL Scripts, 29 ETL Screenshots | Section 4 |
+| Report 4 (NEW) | BI Reporting Plan, SSRS/SSAS/Redshift/Power BI Implementation, 12 BI Screenshots | Section 5 |
 
-**Step 3: Create the BQ2 report**
-1. Right-click `Reports` → Add New Item → Report → name it `BQ2_Weekly_SDR_Sales.rdl`
-2. Create a Dataset with this query:
-```sql
-SELECT dt.week_id,
-       dt.week_start_date,
-       SUM(f.units_sold) AS total_units_sold
-FROM   FactWeeklySales f
-JOIN   DimTime dt ON f.time_key = dt.time_key
-JOIN   DimCategory dc ON f.category_key = dc.category_key
-WHERE  dc.category_code = 'SDR'
-GROUP BY dt.week_id, dt.week_start_date
-ORDER BY dt.week_id;
-```
-3. Insert a **Chart** → Line Chart
-   - Category (X-axis): `week_start_date`
-   - Values (Y-axis): `total_units_sold`
-   - Title: "BQ2: Weekly Soft Drink Unit Sales Across All Stores"
-4. Add a **Table** below the chart showing `week_id`, `week_start_date`, `total_units_sold`
+### Visual Evidence Embedded
 
-**Step 4: Take screenshots**
-- 📸 **Screenshot 30**: Report Designer view showing the layout (chart + table)
-- 📸 **Screenshot 31**: Click Preview tab — showing the rendered chart with data
-
-Save as: `report_4/screenshots/screenshot_30.png` and `screenshot_31.png`
+| # Range | Tool/Source | Description | Count |
+|:--|:--|:--|:--|
+| — | LucidChart | ETL Pipeline diagram (R3 page 6) | 1 |
+| — | LucidChart | Star Schema ERD (R3 page 13) | 1 |
+| 1–29 | SSIS/SSMS | ETL implementation evidence (extracted from R3 PDF) | 29 |
+| 30–31 | SSRS | BQ2 — Weekly SDR Sales trend (Designer + Preview) | 2 |
+| 32–33 | SSRS | BQ9 — Top 10 Crackers ranking (Designer + Preview) | 2 |
+| 34–36 | SSAS | BQ3 — Cube structure, pivot, drill-down | 3 |
+| 37–38 | Redshift v.2 | BQ4 — Query editor + promotion lift results | 2 |
+| 39–41 | Power BI | BQ8 — Model view, dashboard, map | 3 |
+| **Total** | | | **43 images** |
 
 ---
 
-### BQ9 — Top 10 Cracker Products with Week-over-Week Change
+## Final File Inventory
 
-**Step 5: Create the BQ9 report**
-1. Add New Report → `BQ9_Top10_Crackers.rdl`
-2. Add a **Report Parameter**: `@WeekID` (Integer, prompt: "Select Week")
-   - Available Values query:
-```sql
-SELECT DISTINCT week_id FROM DimTime ORDER BY week_id;
 ```
-3. Main Dataset query:
-```sql
-WITH ranked AS (
-    SELECT dp.upc,
-           dp.description,
-           dt.week_id,
-           SUM(f.units_sold) AS units_sold,
-           RANK() OVER (PARTITION BY dt.week_id ORDER BY SUM(f.units_sold) DESC) AS sales_rank
-    FROM   FactWeeklySales f
-    JOIN   DimProduct dp ON f.product_key = dp.product_key
-    JOIN   DimTime dt ON f.time_key = dt.time_key
-    JOIN   DimCategory dc ON f.category_key = dc.category_key
-    WHERE  dc.category_code = 'CRA'
-    GROUP BY dp.upc, dp.description, dt.week_id
-),
-with_lag AS (
-    SELECT *,
-           LAG(units_sold) OVER (PARTITION BY upc ORDER BY week_id) AS prev_week_units,
-           units_sold - LAG(units_sold) OVER (PARTITION BY upc ORDER BY week_id) AS wow_change
-    FROM   ranked
-    WHERE  sales_rank <= 10
-)
-SELECT * FROM with_lag
-WHERE  week_id = @WeekID
-ORDER BY sales_rank;
+report_4/
+├── Integrated_Report_4.md          ← Source markdown (113 KB)
+├── Integrated_Report_4.docx        ← FINAL SUBMISSION FILE (17.3 MB, 42 embedded images)
+├── generate_docx.py                ← DOCX generator script
+├── COMPLETION_GUIDE.md             ← This file
+├── etl_pipeline_diagram.png        ← Pipeline diagram (from R3)
+├── star_schema_erd.png             ← Star Schema ERD (from R3)
+├── MappingTables.xlsx              ← Excel mapping tables
+├── dominick-project-report-four-spring 2026.doc  ← Professor's rubric
+├── CONSULTING_REPORT_3_Team_1-1.pdf              ← Submitted R3 (reference)
+├── sql/                            ← 8 SQL scripts
+│   ├── 01_create_databases.sql
+│   ├── 02_create_staging_tables.sql
+│   ├── 03_create_dw_tables.sql
+│   ├── 04_transform_staging.sql
+│   ├── 05_load_dimensions.sql
+│   ├── 06_load_facts.sql
+│   ├── 07_drop_temp_tables.sql
+│   └── 08_verify_bq_queries.sql
+└── screenshots/                    ← All 41 screenshots
+    ├── screenshot_01.png ... screenshot_29.png   (ETL evidence from R3)
+    └── screenshot_30.png ... screenshot_41.png   (BI tool evidence)
 ```
-4. Insert a **Table** with columns: Rank, UPC, Description, Units Sold, Previous Week, WoW Change
-5. Add conditional formatting: green for positive WoW, red for negative
-
-**Step 6: Take screenshots**
-- 📸 **Screenshot 32**: Report Designer view showing layout with parameter
-- 📸 **Screenshot 33**: Preview tab with a specific week selected (e.g., week 100) showing 10 rows
-
-Save as: `report_4/screenshots/screenshot_32.png` and `screenshot_33.png`
 
 ---
 
-## Part 2: SSAS Cube (Screenshots 34–36)
+## Rubric Compliance Checklist
 
-### BQ3 — Promotion vs Non-Promotion Sales Volume
+### Structure (must follow exactly)
 
-**Step 7: Create the SSAS project**
-1. Visual Studio → New Project → Analysis Services Multidimensional Project
-2. Name it `DFF_Sales_Cube`
+- [x] Section 1: Introduction
+- [x] Section 2: BQs and substantiations (from Report 1)
+- [x] Section 3: Independent Data Marts using Kimball (from Report 2)
+- [x] Section 4: Data Cleaning and Integration (from Report 3)
+- [x] Section 5: BI Reporting (NEW — SSRS, SSAS, Redshift v.2, Power BI)
+- [x] Section 6: References
+- [x] Section 7: Appendix (SQL scripts + Mapping Tables + Screenshot Index)
 
-**Step 8: Create the Data Source and Data Source View**
-1. Add Data Source → point to `team1_dw_area`
-2. Add Data Source View → select: `FactWeeklySales`, `DimPromotion`, `DimCategory`, `DimTime`
-3. Verify relationships are detected from FK constraints
+### Grading Criteria (50 points)
 
-**Step 9: Create the Cube**
-1. Right-click `Cubes` → New Cube → Use Existing Tables
-2. Select `FactWeeklySales` as the measure group
-3. Add measures: `units_sold` (Sum), `revenue` (Sum)
-4. Select dimensions: `DimPromotion`, `DimCategory`, `DimTime`
-5. Deploy to the local SSAS instance
+- [x] **Presentation, English, clean writing (10 pts)** — Professional prose, consistent numbering, no template/placeholder text
+- [x] **SSAS (15 pts)** — Cube built over FactWeeklySales, browsed with BQ3 pivot + year drill-down (Screenshots 34-36)
+- [x] **SSRS (15 pts)** — BQ2 weekly trend report + BQ9 parameterized ranking report (Screenshots 30-33)
+- [x] **Redshift Query v.2 (15 pts)** — BQ4 promotion lift query with data export explanation (Screenshots 37-38)
+- [x] **Power BI (15 pts)** — BQ8 store quartile dashboard with demographic table + map view (Screenshots 39-41)
+- [x] **Integration of Reports 1-4 (5 pts)** — Single flowing narrative, no "Report X:" headers
 
-**Step 10: Browse the Cube**
-1. Double-click the cube → click the **Browser** tab
-2. Drag `DimPromotion.deal_type` to ROWS
-3. Drag `units_sold` to VALUES
-4. Filter by `DimCategory.category_code = 'SDR'` (to match BQ3)
-5. You should see:
-   - `No Promotion` — baseline
-   - `Bonus Buy (B)` — promoted
-   - `Coupon (C)` — promoted
-   - `Sale/Discount (S)` — promoted
+### Additional Requirements
 
-**Step 11: Drill down**
-1. Drag `DimTime.year` to COLUMNS
-2. This shows promotion vs non-promotion sales broken down by year
-
-**Step 12: Take screenshots**
-- 📸 **Screenshot 34**: Solution Explorer showing cube structure (measures, dimensions)
-- 📸 **Screenshot 35**: Cube Browser pivot — deal_type rows vs units_sold values (filtered to SDR)
-- 📸 **Screenshot 36**: Same view with `year` added as columns (drill-down)
-
-Save as: `report_4/screenshots/screenshot_34.png`, `screenshot_35.png`, `screenshot_36.png`
+- [x] Storage locations documented (Section 5.3)
+- [x] Title page: project title, member names, group number, email
+- [x] Reports read as ONE document, not a collection of four
+- [x] All BQs listed with implemented ones clearly identified
+- [x] Charts and discussions provided for each BQ
+- [x] Screenshots provide evidence that reports were built
+- [x] No placeholder brackets remaining (`[INSERT]`, `[SERVER_NAME]`, etc.)
+- [x] Appendix C covers all 41 screenshots (ETL 1-29 + BI 30-41)
 
 ---
 
-## Part 3: Redshift Query v.2 (Screenshots 37–38)
+## How to Submit
 
-### BQ4 — Promotion Lift by Deal Type in Canned Soup
+1. Open `report_4/Integrated_Report_4.docx` in Word
+2. Verify images render correctly
+3. Submit the `.docx` file
 
-**Step 13: Export data from SQL Server**
+### If You Need to Regenerate
 
-Run in SSMS and save results as CSV:
-```sql
--- Export FactWeeklySales (filtered to CSO only for BQ4)
-SELECT f.units_sold, f.revenue, p.deal_type, p.is_promoted, c.category_code
-FROM   FactWeeklySales f
-JOIN   DimPromotion p ON f.promotion_key = p.promotion_key
-JOIN   DimCategory c ON f.category_key = c.category_key
-WHERE  c.category_code = 'CSO';
-```
-Save as `bq4_cso_data.csv`
-
-**Step 14: Load into Redshift**
-1. Log into AWS Academy → Open Redshift Query Editor v.2
-2. Create the table:
-```sql
-CREATE TABLE bq4_cso_sales (
-    units_sold     INT,
-    revenue        DECIMAL(12,2),
-    deal_type      VARCHAR(20),
-    is_promoted    INT,
-    category_code  CHAR(3)
-);
-```
-3. Upload the CSV using the Redshift COPY command or the Query Editor's "Load Data" feature
-
-**Step 15: Run the BQ4 query**
-
-Paste this exact query (it's already in the report):
-```sql
--- BQ4: Promotion Lift by Deal Type — Canned Soup (Redshift Query v.2)
-WITH baseline AS (
-    SELECT AVG(units_sold) AS avg_baseline_units
-    FROM   bq4_cso_sales
-    WHERE  is_promoted = 0
-),
-promo_stats AS (
-    SELECT deal_type,
-           COUNT(*)          AS num_weeks,
-           AVG(units_sold)   AS avg_promo_units,
-           SUM(units_sold)   AS total_promo_units
-    FROM   bq4_cso_sales
-    WHERE  is_promoted = 1
-    GROUP BY deal_type
-)
-SELECT p.deal_type,
-       p.num_weeks,
-       p.avg_promo_units,
-       b.avg_baseline_units,
-       p.avg_promo_units - b.avg_baseline_units   AS incremental_lift,
-       ROUND(CAST(p.avg_promo_units AS DECIMAL) / 
-             NULLIF(b.avg_baseline_units, 0), 2)   AS lift_multiplier
-FROM   promo_stats p
-CROSS JOIN baseline b
-ORDER BY lift_multiplier DESC;
-```
-
-**Step 16: Take screenshots**
-- 📸 **Screenshot 37**: The Redshift Query Editor with the SQL visible (before running)
-- 📸 **Screenshot 38**: The query results showing deal_type, lift values (after running)
-
-Save as: `report_4/screenshots/screenshot_37.png` and `screenshot_38.png`
-
----
-
-## Part 4: Power BI Dashboard (Screenshots 39–41)
-
-### BQ8 — Store Quartile Tiers by Toothpaste Revenue + Demographics
-
-**Step 17: Connect Power BI to SQL Server**
-1. Open Power BI Desktop → Get Data → SQL Server
-2. Server: `ISTM637-PC\SQLEXPRESS`  Database: `team1_dw_area`
-3. Import these tables: `FactWeeklySales`, `DimStore`, `DimCategory`, `DimTime`
-4. Power BI should auto-detect relationships. If not, create them manually matching the FK keys.
-
-**Step 18: Create the BQ8 measures**
-In Power BI, add these DAX measures:
-```
-Total TPA Revenue = 
-CALCULATE(
-    SUM(FactWeeklySales[revenue]),
-    DimCategory[category_code] = "TPA"
-)
-
-Store Quartile = 
-VAR CurrentRevenue = [Total TPA Revenue]
-VAR AllRevenues = 
-    CALCULATETABLE(
-        ADDCOLUMNS(VALUES(DimStore[store_id]), "Rev", [Total TPA Revenue]),
-        ALL(DimStore)
-    )
-RETURN
-    SWITCH(TRUE(),
-        CurrentRevenue >= PERCENTILE.INC([Rev], 0.75), "Q1 (Top 25%)",
-        CurrentRevenue >= PERCENTILE.INC([Rev], 0.50), "Q2",
-        CurrentRevenue >= PERCENTILE.INC([Rev], 0.25), "Q3",
-        "Q4 (Bottom 25%)"
-    )
-```
-
-Alternatively, use a simpler approach — just create a calculated column or write a supporting query.
-
-**Step 19: Build the Dashboard**
-Create a report page with:
-1. **Bar Chart**: X-axis = Store Quartile, Y-axis = Total TPA Revenue
-2. **Table Visual**: Columns = Store Name, City, Revenue, avg_income, is_urban, price_tier, Quartile
-3. **Optional Map**: Use city/zip for location, color by Quartile
-
-**Step 20: Take screenshots**
-- 📸 **Screenshot 39**: Model View tab showing the star schema table relationships
-- 📸 **Screenshot 40**: Report page with bar chart + demographic table
-- 📸 **Screenshot 41**: Same page or second page with map view (if added) or an alternate visualization
-
-Save as: `report_4/screenshots/screenshot_39.png`, `screenshot_40.png`, `screenshot_41.png`
-
----
-
-## Part 5: Embed Screenshots and Generate Final DOCX
-
-**Step 21: Verify all 12 screenshots exist**
-```
-report_4/screenshots/
-├── screenshot_30.png   (SSRS BQ2 Designer)
-├── screenshot_31.png   (SSRS BQ2 Preview)
-├── screenshot_32.png   (SSRS BQ9 Designer)
-├── screenshot_33.png   (SSRS BQ9 Preview)
-├── screenshot_34.png   (SSAS Solution Explorer)
-├── screenshot_35.png   (SSAS Cube Browser - BQ3 pivot)
-├── screenshot_36.png   (SSAS Cube Browser - drill-down)
-├── screenshot_37.png   (Redshift Query Editor)
-├── screenshot_38.png   (Redshift BQ4 Results)
-├── screenshot_39.png   (Power BI Model View)
-├── screenshot_40.png   (Power BI BQ8 Dashboard)
-└── screenshot_41.png   (Power BI BQ8 Map/Alt View)
-```
-
-**Step 22: Update the markdown to embed them**
-
-Open `Integrated_Report_4.md` and replace each remaining placeholder:
-
-Find:
-```
-*[Screenshot 30: SSRS Report Designer — BQ2 Weekly SDR Sales trend report]*
-```
-Replace with:
-```
-![SSRS Report Designer — BQ2 Weekly SDR Sales trend report](screenshots/screenshot_30.png)
-```
-
-Repeat for screenshots 31–41. Or run this one-liner in Terminal:
-```bash
-cd "/Users/bhavikdalal/Documents/data warehouse/project/report_4"
-python3 -c "
-import re
-with open('Integrated_Report_4.md','r') as f: content = f.read()
-for n in range(30, 42):
-    # Pattern 1
-    content = re.sub(
-        rf'\*\[Screenshot {n}:([^\]]*)\]\*',
-        lambda m: f'![Screenshot {n}:{m.group(1)}](screenshots/screenshot_{n:02d}.png)',
-        content)
-with open('Integrated_Report_4.md','w') as f: f.write(content)
-print('Done — all BI placeholders replaced')
-"
-```
-
-**Step 23: Regenerate the DOCX**
+If you make any text changes to `Integrated_Report_4.md`:
 ```bash
 cd "/Users/bhavikdalal/Documents/data warehouse/project/report_4"
 python3 generate_docx.py
 ```
 
-Expected output: file size should increase to ~12–14 MB with all 43 images.
-
-**Step 24: Final verification**
-Open `Integrated_Report_4.docx` in Word and check:
-- [ ] Title page has: DFF name, team names, group 1, email, date
-- [ ] Section 5.2.1: Two SSRS screenshots visible (BQ2 chart, BQ9 table)
-- [ ] Section 5.2.2: Three SSAS screenshots visible (cube, pivot, drill-down)
-- [ ] Section 5.2.3: Two Redshift screenshots visible (query editor, results)
-- [ ] Section 5.2.4: Three Power BI screenshots visible (model, dashboard, map)
-- [ ] Appendix C lists all 41 screenshots
-- [ ] No yellow placeholder boxes remain
+This will regenerate the DOCX with all 42 images re-embedded (~17 MB).
 
 ---
 
-## Quick Reference: Grading Breakdown (50 points)
+## Quick Verification (2 minutes)
 
-| Category | Points | Status |
-|:--|:--|:--|
-| Presentation, English, clean writing | 10 | ✅ Ready |
-| SSAS (cube + browser for BQ3) | 15 | ⏳ Need screenshots 34-36 |
-| SSRS (reports for BQ2, BQ9) | 15 | ⏳ Need screenshots 30-33 |
-| Redshift Query v.2 (BQ4 lift query) | 15 | ⏳ Need screenshots 37-38 |
-| Power BI (BQ8 dashboard) | 15 | ⏳ Need screenshots 39-41 |
-| Integration quality | 5 | ✅ Ready |
+Open the DOCX and check these 5 things:
 
-> **The text, narrative, SQL queries, and report structure are all done.**
-> **You just need to execute the tools and take the screenshots.**
+1. **Title page** — DFF name, 3 member names, Group 1, email, date
+2. **Section 3.6** — Star Schema ERD image visible
+3. **Section 4.2** — ETL screenshots visible (scroll through — should see ~29 SSMS/SSIS images)
+4. **Section 5.2** — BI screenshots visible:
+   - 5.2.1: SSRS designer + preview (2×2 = 4 images)
+   - 5.2.2: SSAS cube structure + browser (3 images)
+   - 5.2.3: Redshift query editor + results (2 images)
+   - 5.2.4: Power BI model + dashboard + map (3 images)
+5. **Appendix C** — Screenshot index lists 1-41 (not just 1-29)
 
----
-
-## Estimated Time
-
-| Task | Time |
-|:--|:--|
-| SSRS setup + 2 reports + 4 screenshots | ~45 min |
-| SSAS cube + deploy + browse + 3 screenshots | ~30 min |
-| Redshift export/load/query + 2 screenshots | ~20 min |
-| Power BI connect + dashboard + 3 screenshots | ~30 min |
-| Embed + regenerate DOCX + verify | ~10 min |
-| **Total** | **~2.5 hours** |
+If all 5 check: **submit.**
