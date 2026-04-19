@@ -229,14 +229,14 @@ def detect_image_line(line):
 
 def detect_blockquote_placeholder(line):
     """
-    '> 📸 **[Screenshot N — INSERT HERE]** instruction...'
+    '> **[Screenshot N Placeholder]** instruction...'
     Returns (label, instruction) or None.
     """
     s = line.strip()
     if not s.startswith("> "):
         return None
     content = s[2:].strip()
-    m = re.match(r"📸 \*\*(\[Screenshot \d+ [—\-] INSERT HERE\])\*\* (.*)", content)
+    m = re.match(r"\*\*(\[Screenshot \d+ Placeholder\])\*\* (.*)", content)
     if m:
         return m.group(1), m.group(2).strip()
     return None
@@ -400,13 +400,13 @@ def main():
             i += 1
             continue
 
-        # ── Blockquote  >  (inc. 📸 INSERT HERE placeholders) ─────────────
+        # ── Blockquote  >  (inc. placeholder instructions) ─────────────
         if line.strip().startswith("> "):
             bq = detect_blockquote_placeholder(line)
             if bq:
                 label, instruction = bq
-                clean_label = label.replace("[", "").replace("]", "")
-                add_placeholder_box(doc, f"[Screenshot Placeholder: {clean_label}]", instruction)
+                # label already contains brackets, e.g. "[Screenshot 30 Placeholder]"
+                add_placeholder_box(doc, f"{label}", instruction)
             else:
                 content = line.strip()[2:].strip()
                 p = doc.add_paragraph()

@@ -1022,17 +1022,17 @@ All four tools required by the professor are used at least once:
 
 The SSRS report connects to `team1_dw_area` and executes the BQ2 verification query (see Section 4.2.9). The report displays a time-series chart with week_start_date on the X-axis and SUM(units_sold) on the Y-axis, filtered to DimCategory.category_code = 'SDR'.
 
-> 📸 **[Screenshot 30 — INSERT HERE]** SSRS Report Designer view: open `BQ2_Weekly_SDR_Sales.rdl` in Visual Studio. Capture the Design tab showing the line chart and data table layout with Solution Explorer visible on the right.
+> **[Screenshot 30 Placeholder]** SSRS Report Designer view: open `BQ2_Weekly_SDR_Sales.rdl` in Visual Studio. Capture the Design tab showing the line chart and data table layout with Solution Explorer visible on the right.
 
-> 📸 **[Screenshot 31 — INSERT HERE]** SSRS Report Preview tab: click Preview after building the report. Capture the rendered line chart showing weekly Soft Drink unit sales from 1989–1997 with the data table rows below it.
+> **[Screenshot 31 Placeholder]** SSRS Report Preview tab: click Preview after building the report. Capture the rendered line chart showing weekly Soft Drink unit sales from 1989–1997 with the data table rows below it.
 
 **BQ9 — Weekly Top 10 Cracker Products (SSRS Parameterized Report)**
 
 This parameterized SSRS report allows the user to select a week_id and see the top 10 Cracker products by units sold, along with the previous week's units and the week-over-week change (computed via LAG). The report uses the RANK + LAG query from Section 4.2.9.
 
-> 📸 **[Screenshot 32 — INSERT HERE]** SSRS Report Designer view: open `BQ9_Top10_Crackers.rdl`. Capture the Design tab showing the `@WeekID` parameter dropdown and the table layout with Sales Rank, UPC, Description, Units Sold, Prev Week, WoW Change columns.
+> **[Screenshot 32 Placeholder]** SSRS Report Designer view: open `BQ9_Top10_Crackers.rdl`. Capture the Design tab showing the `@WeekID` parameter dropdown and the table layout with Sales Rank, UPC, Description, Units Sold, Prev Week, WoW Change columns.
 
-> 📸 **[Screenshot 33 — INSERT HERE]** SSRS Report Preview tab: select a specific week (e.g., Week 100) from the `@WeekID` dropdown and click View Report. Capture the rendered table showing 10 rows of Cracker products with green/red WoW Change highlighting.
+> **[Screenshot 33 Placeholder]** SSRS Report Preview tab: select a specific week (e.g., Week 100) from the `@WeekID` dropdown and click View Report. Capture the rendered table showing 10 rows of Cracker products with green/red WoW Change highlighting.
 
 #### 5.2.2 Report from Cubes Using SSAS
 
@@ -1046,11 +1046,11 @@ An SSAS multidimensional project was created in Visual Studio with the following
 
 The cube was processed and browsed in the SSAS Cube Browser. Slicing by DimCategory.category_code = 'SDR' and pivoting on DimPromotion.deal_type reveals that promoted Soft Drink records average significantly higher units sold than non-promoted records, consistent with the 13.6× lift observed in our exploratory analysis.
 
-> 📸 **[Screenshot 34 — INSERT HERE]** Visual Studio Solution Explorer: expand the `DFF_Sales_Cube` project and show the Cubes, Dimensions, and Data Sources folders. On the main canvas, show the Cube Structure tab with Measures (units_sold, revenue) and Dimensions (DimPromotion, DimCategory, DimTime) visible.
+> **[Screenshot 34 Placeholder]** Visual Studio Solution Explorer: expand the `DFF_Sales_Cube` project and show the Cubes, Dimensions, and Data Sources folders. On the main canvas, show the Cube Structure tab with Measures (units_sold, revenue) and Dimensions (DimPromotion, DimCategory, DimTime) visible.
 
-> 📸 **[Screenshot 35 — INSERT HERE]** SSAS Cube Browser tab: set Filter/Slicer to `DimCategory.category_code = 'SDR'`. Drag `DimPromotion.deal_type` to Rows and `[Measures].[units_sold]` to Values. Capture the pivot table showing No Promotion vs Bonus Buy vs Coupon vs Sale/Discount with their respective average unit sales figures.
+> **[Screenshot 35 Placeholder]** SSAS Cube Browser tab: set Filter/Slicer to `DimCategory.category_code = 'SDR'`. Drag `DimPromotion.deal_type` to Rows and `[Measures].[units_sold]` to Values. Capture the pivot table showing No Promotion vs Bonus Buy vs Coupon vs Sale/Discount with their respective average unit sales figures.
 
-> 📸 **[Screenshot 36 — INSERT HERE]** SSAS Cube Browser drill-down: with the same filter active, also drag `DimTime.year` to Columns. Capture the full pivot table showing deal_type × year cross-tabulation of average units sold (years 1989–1997 across columns).
+> **[Screenshot 36 Placeholder]** SSAS Cube Browser drill-down: with the same filter active, also drag `DimTime.year` to Columns. Capture the full pivot table showing deal_type × year cross-tabulation of average units sold (years 1989–1997 across columns).
 
 #### 5.2.3 Reports from Redshift Query v.2
 
@@ -1082,9 +1082,9 @@ GROUP BY dp.deal_type, b.avg_baseline
 ORDER BY incremental_lift DESC;
 ```
 
-> 📸 **[Screenshot 37 — INSERT HERE]** Amazon Redshift Query Editor v.2: paste the full BQ4 SQL query (shown in the code block above) into the editor. Capture the query editor with the full SQL visible and the Run button highlighted, before executing.
+> **[Screenshot 37 Placeholder]** Amazon Redshift Query Editor v.2: paste the full BQ4 SQL query (shown in the code block above) into the editor. Capture the query editor with the full SQL visible and the Run button highlighted, before executing.
 
-> 📸 **[Screenshot 38 — INSERT HERE]** Amazon Redshift Query Editor v.2 results: after clicking Run, capture the Results tab showing the output table with columns deal_type, num_promoted_records, avg_units_promoted, avg_baseline, incremental_lift, and lift_multiplier — with 3 rows (one per deal type, ordered by incremental_lift DESC).
+> **[Screenshot 38 Placeholder]** Amazon Redshift Query Editor v.2 results: after clicking Run, capture the Results tab showing the output table with columns deal_type, num_promoted_records, avg_units_promoted, avg_baseline, incremental_lift, and lift_multiplier — with 3 rows (one per deal type, ordered by incremental_lift DESC).
 
 #### 5.2.4 Reports Using Power BI
 
@@ -1098,11 +1098,11 @@ A Power BI dashboard was built by connecting directly to the `team1_dw_area` dat
 
 The dashboard confirms that Top 25% Toothpaste stores tend to have higher average income, higher population density, and are more likely to be urban — validating the hypothesis that demographic factors influence category performance.
 
-> 📸 **[Screenshot 39 — INSERT HERE]** Power BI Desktop — Model View: click the Model icon (third icon in the left sidebar). Capture the canvas showing FactWeeklySales at center with relationship lines to DimStore, DimTime, DimCategory, DimProduct, and DimPromotion, with each table's key fields visible.
+> **[Screenshot 39 Placeholder]** Power BI Desktop — Model View: click the Model icon (third icon in the left sidebar). Capture the canvas showing FactWeeklySales at center with relationship lines to DimStore, DimTime, DimCategory, DimProduct, and DimPromotion, with each table's key fields visible.
 
-> 📸 **[Screenshot 40 — INSERT HERE]** Power BI Desktop — Report Page 1: build a horizontal bar chart (X-axis: Total TPA Revenue, Y-axis: Store Quartile) and a table visual (columns: Store Name, City, Revenue, Avg Income, Price Tier, Is Urban, Quartile). Apply a page-level filter: `category_code = TPA`. Capture the full report page with Filters pane and Fields pane visible.
+> **[Screenshot 40 Placeholder]** Power BI Desktop — Report Page 1: build a horizontal bar chart (X-axis: Total TPA Revenue, Y-axis: Store Quartile) and a table visual (columns: Store Name, City, Revenue, Avg Income, Price Tier, Is Urban, Quartile). Apply a page-level filter: `category_code = TPA`. Capture the full report page with Filters pane and Fields pane visible.
 
-> 📸 **[Screenshot 41 — INSERT HERE]** Power BI Desktop — Report Page 2: add a Map visual using DimStore city/zip for location, bubble size = Total TPA Revenue, bubble color = Store Quartile. Add two Card visuals showing Total Stores and Total TPA Revenue. Capture the complete page showing the Chicago metro map with colored store bubbles and the legend.
+> **[Screenshot 41 Placeholder]** Power BI Desktop — Report Page 2: add a Map visual using DimStore city/zip for location, bubble size = Total TPA Revenue, bubble color = Store Quartile. Add two Card visuals showing Total Stores and Total TPA Revenue. Capture the complete page showing the Chicago metro map with colored store bubbles and the legend.
 
 ### 5.3 BI Tool Deployment and Storage Locations
 
