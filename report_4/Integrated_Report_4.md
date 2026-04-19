@@ -1022,17 +1022,17 @@ All four tools required by the professor are used at least once:
 
 The SSRS report connects to `team1_dw_area` and executes the BQ2 verification query (see Section 4.2.9). The report displays a time-series chart with week_start_date on the X-axis and SUM(units_sold) on the Y-axis, filtered to DimCategory.category_code = 'SDR'.
 
-*[Screenshot 30: SSRS Report Designer — BQ2 Weekly SDR Sales trend report]*
+![Screenshot 30: SSRS Report Designer — BQ2 Weekly SDR Sales trend report](screenshots/screenshot_30.png)
 
-*[Screenshot 31: SSRS Report Preview — BQ2 chart showing weekly Soft Drink unit sales]*
+![Screenshot 31: SSRS Report Preview — BQ2 chart showing weekly Soft Drink unit sales](screenshots/screenshot_31.png)
 
 **BQ9 — Weekly Top 10 Cracker Products (SSRS Parameterized Report)**
 
 This parameterized SSRS report allows the user to select a week_id and see the top 10 Cracker products by units sold, along with the previous week's units and the week-over-week change (computed via LAG). The report uses the RANK + LAG query from Section 4.2.9.
 
-*[Screenshot 32: SSRS Report Designer — BQ9 parameterized Cracker ranking report]*
+![Screenshot 32: SSRS Report Designer — BQ9 parameterized Cracker ranking report](screenshots/screenshot_32.png)
 
-*[Screenshot 33: SSRS Report Preview — BQ9 showing top 10 products for a selected week]*
+![Screenshot 33: SSRS Report Preview — BQ9 showing top 10 products for a selected week](screenshots/screenshot_33.png)
 
 #### 5.2.2 Report from Cubes Using SSAS
 
@@ -1046,11 +1046,11 @@ An SSAS multidimensional project was created in Visual Studio with the following
 
 The cube was processed and browsed in the SSAS Cube Browser. Slicing by DimCategory.category_code = 'SDR' and pivoting on DimPromotion.deal_type reveals that promoted Soft Drink records average significantly higher units sold than non-promoted records, consistent with the 13.6× lift observed in our exploratory analysis.
 
-*[Screenshot 34: Visual Studio — SSAS Cube structure in Solution Explorer]*
+![Screenshot 34: Visual Studio — SSAS Cube structure in Solution Explorer](screenshots/screenshot_34.png)
 
-*[Screenshot 35: SSAS Cube Browser — BQ3 pivot showing deal_type vs AVG(units_sold)]*
+![Screenshot 35: SSAS Cube Browser — BQ3 pivot showing deal_type vs AVG(units_sold)](screenshots/screenshot_35.png)
 
-*[Screenshot 36: SSAS Cube Browser — drill-down by year and quarter]*
+![Screenshot 36: SSAS Cube Browser — drill-down by year and quarter](screenshots/screenshot_36.png)
 
 #### 5.2.3 Reports from Redshift Query v.2
 
@@ -1082,9 +1082,9 @@ GROUP BY dp.deal_type, b.avg_baseline
 ORDER BY incremental_lift DESC;
 ```
 
-*[Screenshot 37: Redshift Query v.2 — query editor with BQ4 query]*
+![Screenshot 37: Redshift Query v.2 — query editor with BQ4 query](screenshots/screenshot_37.png)
 
-*[Screenshot 38: Redshift Query v.2 — BQ4 results showing lift by deal type]*
+![Screenshot 38: Redshift Query v.2 — BQ4 results showing lift by deal type](screenshots/screenshot_38.png)
 
 #### 5.2.4 Reports Using Power BI
 
@@ -1098,11 +1098,11 @@ A Power BI dashboard was built by connecting directly to the `team1_dw_area` dat
 
 The dashboard confirms that Top 25% Toothpaste stores tend to have higher average income, higher population density, and are more likely to be urban — validating the hypothesis that demographic factors influence category performance.
 
-*[Screenshot 39: Power BI — Data model view showing star schema connections]*
+![Screenshot 39: Power BI — Data model view showing star schema connections](screenshots/screenshot_39.png)
 
-*[Screenshot 40: Power BI — BQ8 dashboard: store quartile bar chart + demographic table]*
+![Screenshot 40: Power BI — BQ8 dashboard: store quartile bar chart + demographic table](screenshots/screenshot_40.png)
 
-*[Screenshot 41: Power BI — BQ8 dashboard: map view of stores by revenue tier]*
+![Screenshot 41: Power BI — BQ8 dashboard: map view of stores by revenue tier](screenshots/screenshot_41.png)
 
 ### 5.3 BI Tool Deployment and Storage Locations
 
