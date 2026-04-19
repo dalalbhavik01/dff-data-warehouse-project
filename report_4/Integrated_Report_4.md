@@ -977,7 +977,13 @@ ORDER BY week_id, rnk;
 
 ## Section 5: BI Reporting
 
-This section presents the final phase of the data warehousing lifecycle: delivering BI reports to end users. Using four distinct reporting tools — SSRS, SSAS, Redshift Query v.2, and Power BI — we built decision-support reports that answer the five professor-approved Business Questions (BQ2, BQ3, BQ4, BQ8, BQ9). Reports for BQ2, BQ3, BQ8, and BQ9 draw directly from the `team1_dw_area` data mart on SQL Server 2016. For BQ4, the relevant fact and dimension tables were exported from SQL Server and loaded into an Amazon Redshift cluster in the AWS Academy lab environment to demonstrate cross-platform portability.
+This section presents the final phase of the data warehousing lifecycle: delivering BI reports that transform raw data into actionable business knowledge. In the BI lifecycle, data stored in the warehouse is first processed into structured information through queries and aggregations, then interpreted as knowledge through visualizations and reports, and finally used to support management decisions. Our BI architecture follows a three-layer model:
+
+- **Data Layer:** The `team1_dw_area` star schema on SQL Server 2016, containing FactWeeklySales and five dimension tables.
+- **Application/Analytical Layer:** SSAS cube engine (multidimensional OLAP processing), SSRS report server (authoring and management), Redshift query engine (cloud-based columnar analytics), and Power BI data model (in-memory analytical engine).
+- **Presentation Layer:** SSRS rendered reports (Preview/web deployment), SSAS Cube Browser (drag-and-drop pivot), Redshift Query Editor v.2 results pane, and Power BI interactive dashboards.
+
+Using four distinct reporting tools — SSRS, SSAS, Redshift Query v.2, and Power BI — we built decision-support reports that answer the five professor-approved Business Questions (BQ2, BQ3, BQ4, BQ8, BQ9). Reports for BQ2, BQ3, BQ8, and BQ9 draw directly from the `team1_dw_area` data mart on SQL Server 2016. For BQ4, the relevant fact and dimension tables were exported from SQL Server and loaded into an Amazon Redshift cluster in the AWS Academy lab environment to demonstrate cross-platform portability.
 
 ### 5.1 Reporting Plan
 
@@ -992,6 +998,8 @@ The following table maps each BQ to the BI tool used and the report type produce
 | BQ4 | Which promotion type (B/C/S) generated the highest incremental unit sales lift in Canned Soup? | Redshift Query v.2 | Query results with lift multiplier comparison |
 | BQ8 | Which stores fall into the top 25%, middle 50%, and bottom 25% of total Toothpaste revenue, and how do their demographics differ? | Power BI | Interactive dashboard with quartile segmentation |
 | BQ9 | For each week, rank the top 10 Cracker products by unit sales and show their week-over-week sales change. | SSRS | Parameterized report with weekly product ranking |
+
+Using the professor's report classification taxonomy, our five reports span three categories: BQ2 is a *standard/canned report* (fixed weekly trend), BQ9 is an *interactive report* (user selects a week parameter), BQ3 and BQ4 produce *ad-hoc analytical results* (cube browsing and cloud query), and BQ8 is a full *dashboard* (multiple linked visuals with cross-filtering).
 
 #### 5.1.2 Data Mappings from Data Marts to Report Attributes
 
@@ -1009,10 +1017,10 @@ Each report attribute maps directly to the star schema defined in Section 3:
 
 All four tools required by the professor are used at least once:
 
-1. **SSRS (SQL Server Reporting Services):** Used for BQ2 and BQ9. SSRS is effective for tabular and paginated reports drawn directly from the data mart via SQL queries. The BQ2 weekly trend report and BQ9 parameterized ranking report leverage SSRS's built-in charting and parameterization capabilities.
-2. **SSAS (SQL Server Analysis Services):** Used for BQ3. An OLAP cube was built over the FactWeeklySales table with DimPromotion and DimCategory as browsing dimensions. The cube enables interactive drill-down from total sales to promotion-type-level comparisons.
-3. **Redshift Query v.2:** Used for BQ4. The FactWeeklySales, DimPromotion, and DimCategory tables were exported from SQL Server as CSV files and loaded into a Redshift cluster in the AWS Academy environment. The promotion lift calculation was then executed as a cloud-based analytical query, demonstrating that the same star schema logic is portable to Redshift’s columnar engine.
-4. **Power BI:** Used for BQ8. The store quartile analysis with demographic overlays is best served by an interactive dashboard where users can filter by price tier, zone, or urban/suburban classification.
+1. **SSRS (SQL Server Reporting Services):** Used for BQ2 and BQ9. SSRS follows a three-phase workflow: *Authoring* (designing the report layout and queries in Visual Studio), *Management* (configuring data sources and parameters), and *Delivery* (previewing locally or deploying to the SSRS web server). A shared data source (`DFF_DataSource`) was created to provide a reusable connection to `team1_dw_area` across both reports. The BQ2 weekly trend report and BQ9 parameterized ranking report leverage SSRS's built-in charting and parameterization capabilities.
+2. **SSAS (SQL Server Analysis Services):** Used for BQ3. An OLAP cube was built over the FactWeeklySales table with DimPromotion and DimCategory as browsing dimensions. The cube uses the default MOLAP (Multidimensional OLAP) storage mode, which pre-calculates and stores aggregations for fast query response. This is preferred over ROLAP (which queries the relational source at runtime) because it provides significantly better performance for interactive browsing. The cube enables OLAP operations such as *slicing* (filtering to a single category), *dicing* (selecting specific promotion types), and *drill-down* (expanding from total to year-level detail).
+3. **Redshift Query v.2:** Used for BQ4. The FactWeeklySales, DimPromotion, and DimCategory tables were exported from SQL Server as CSV files and loaded into a Redshift cluster in the AWS Academy environment. The promotion lift calculation was then executed as a cloud-based analytical query, demonstrating that the same star schema logic is portable to Redshift's columnar engine.
+4. **Power BI:** Used for BQ8. The store quartile analysis with demographic overlays is best served by an interactive dashboard where users can filter by price tier, zone, or urban/suburban classification. Power BI's in-memory engine imports the star schema and auto-detects relationships, enabling rapid visual exploration.
 
 ### 5.2 Report Implementation
 
@@ -1039,12 +1047,12 @@ This parameterized SSRS report allows the user to select a week_id and see the t
 **BQ3 — Promotion vs Non-Promotion Sales Volume (SSAS Cube)**
 
 An SSAS multidimensional project was created in Visual Studio with the following structure:
-- **Data Source:** `team1_dw_area` on SQL Server 2016
-- **Data Source View:** FactWeeklySales with all five dimension tables
-- **Cube:** DFF_Sales_Cube with measures: SUM(units_sold), SUM(revenue), AVG(units_sold)
-- **Dimensions:** DimPromotion (deal_type, is_promoted), DimCategory (category_code), DimTime (year, quarter)
+- **Data Source:** `team1_dw_area` on SQL Server 2016 (using the service account for impersonation)
+- **Data Source View (DSV):** A logical view containing FactWeeklySales with all five dimension tables. The DSV provides an abstraction layer between the relational source and the cube, allowing SSAS to detect foreign key relationships and map them to dimension hierarchies.
+- **Cube:** DFF_Sales_Cube with measures: SUM(units_sold), SUM(revenue), AVG(units_sold). The cube uses **MOLAP storage** with proactive caching, meaning all aggregations are pre-computed and stored in the multidimensional structure for optimal query performance.
+- **Dimensions:** DimPromotion (deal_type, is_promoted), DimCategory (category_code), DimTime (year, quarter). Attribute relationships were configured within each dimension to define how attributes roll up in hierarchies (e.g., week rolls up to quarter, quarter rolls up to year in DimTime), improving aggregation performance and query accuracy.
 
-The cube was processed and browsed in the SSAS Cube Browser. Slicing by DimCategory.category_code = 'SDR' and pivoting on DimPromotion.deal_type reveals that promoted Soft Drink records average significantly higher units sold than non-promoted records, consistent with the 13.6× lift observed in our exploratory analysis.
+The cube was deployed, processed, and browsed in the SSAS Cube Browser. The BQ3 analysis uses the following OLAP operations: *slicing* by DimCategory.category_code = 'SDR' to isolate the Soft Drink category, then *pivoting* on DimPromotion.deal_type in the Rows area. This reveals that promoted Soft Drink records average significantly higher units sold than non-promoted records, consistent with the 13.6× lift observed in our exploratory analysis. A subsequent *drill-down* by year (dragging DimTime.year to Columns) shows how the promotional effect varies across the 1989–1997 time period.
 
 > **[Screenshot 34 Placeholder]** Visual Studio Solution Explorer: expand the `DFF_Sales_Cube` project and show the Cubes, Dimensions, and Data Sources folders. On the main canvas, show the Cube Structure tab with Measures (units_sold, revenue) and Dimensions (DimPromotion, DimCategory, DimTime) visible.
 
