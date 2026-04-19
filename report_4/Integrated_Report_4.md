@@ -82,7 +82,9 @@ The following diagram illustrates the complete data flow from operational source
 **Note on CCOUNT.csv:** Although CCOUNT.csv is part of the DFF dataset and is referenced above for completeness, it was **excluded from the ETL implementation**. The DATE column in CCOUNT is corrupted (contains non-date values), and the file’s daily grain does not align with the weekly grain of the Movement files. Since none of the 5 professor-selected BQs require customer traffic data (CUSTCOUN), including CCOUNT would add complexity without supporting any implemented business question. The data quality issues in CCOUNT were documented in Section 1.4.
 - Category code is implicit from the filename (e.g., wsdr.csv → SDR), not stored as a column.
 
-*[INSERT: DFF Hybrid ETL Pipeline Architecture diagram here]*
+**Figure 1: DFF Hybrid Data Pipeline Architecture**
+
+![DFF Hybrid Data Pipeline Architecture](etl_pipeline_diagram.png)
 
 **Figure 1.** DFF Hybrid ETL Pipeline Architecture — Source files → Staging → Data Mart
 
@@ -323,7 +325,11 @@ The professor selected 5 BQs from our list of 10 for implementation:
 
 ### 3.6 Star Schema Diagram
 
-*[INSERT: Star Schema ERD from Visio or LucidChart. Per professor's feedback: write attributes with data types inside each table box (e.g., "store_key INT PK"). Do NOT label the relationship lines — just draw plain lines connecting fact to dimensions.]*
+**Figure 2: Star Schema ERD — FactWeeklySales with 5 Dimensions**
+
+![Star Schema ERD](star_schema_erd.png)
+
+*ERD generated using a diagramming tool showing all table attributes with data types. Relationship lines connect the fact table's foreign keys to each dimension's primary key.*
 
 ### 3.7 Mapping Table #1: Source Files to Staging Tables
 
@@ -638,33 +644,33 @@ CREATE DATABASE [team1_staging_area];
 CREATE DATABASE [team1_dw_area];
 ```
 
-*[Screenshot 1: SSMS Object Explorer showing both databases]*
+![Screenshot 1](screenshots/screenshot_01.png)
 
 ### 4.2.2 Staging Table Creation
 
 All 9 staging tables and 1 temporary table were created in `team1_staging_area`. The complete SQL statements are in Appendix A (`02_create_staging_tables.sql`).
 
-*[Screenshot 2: SSMS Object Explorer — staging tables listed]*
+![Screenshot 2](screenshots/screenshot_02.png)
 
 ### 4.2.3 Data Mart Table Creation
 
 All 5 dimension tables and 1 fact table were created in `team1_dw_area`, with dimensions created first to enable foreign key constraints. The complete SQL is in Appendix A (`03_create_dw_tables.sql`).
 
-*[Screenshot 3: SSMS Object Explorer — DW tables listed]*
+![Screenshot 3](screenshots/screenshot_03.png)
 
 ### 4.2.4 SSIS Package 1: Extract to Staging
 
 **Control Flow:** Package 1 contains 9 Data Flow Tasks, each extracting one CSV source file into a corresponding staging table.
 
-*[Screenshot 4: SSIS Control Flow — Package 1 showing all 9 Data Flow Tasks]*
+![Screenshot 4](screenshots/screenshot_04.png)
 
 **Sample Data Flow Task (Soft Drinks Movement):** Flat File Source → OLE DB Destination
 
-*[Screenshot 5: SSIS Data Flow — DFT_Movement_SDR]*
+![Screenshot 5](screenshots/screenshot_05.png)
 
 **Flat File Connection Settings:** Encoding = 1252 (Windows Western), Column Delimiter = Comma, Header Row Delimiter = {CR}{LF}
 
-*[Screenshot 6: Flat File Connection Manager — encoding and delimiter settings]*
+![Screenshot 6](screenshots/screenshot_06.png)
 
 **Before Loading (empty staging table):**
 
@@ -673,11 +679,11 @@ SELECT COUNT(*) AS RowCount FROM [team1_staging_area].dbo.stg_Movement_SDR;
 -- Result: 0
 ```
 
-*[Screenshot 8: SSMS — SELECT COUNT showing 0 rows before load]*
+![Screenshot 8](screenshots/screenshot_08.png)
 
 **Execution Result:**
 
-*[Screenshot 7: SSIS Package 1 execution — all green checkmarks]*
+![Screenshot 7](screenshots/screenshot_07.png)
 
 **After Loading (staging tables populated):**
 
@@ -685,7 +691,7 @@ SELECT COUNT(*) AS RowCount FROM [team1_staging_area].dbo.stg_Movement_SDR;
 SELECT TOP 10 * FROM [team1_staging_area].dbo.stg_Movement_SDR;
 ```
 
-*[Screenshot 9: SSMS — SELECT TOP 10 showing loaded data]*
+![Screenshot 9](screenshots/screenshot_09.png)
 
 **Row Counts After Extraction:**
 
@@ -702,13 +708,13 @@ UNION ALL SELECT 'stg_Store',        COUNT(*) FROM stg_Store
 ORDER BY TableName;
 ```
 
-*[Screenshot 10: SSMS — row counts for all staging tables]*
+![Screenshot 10](screenshots/screenshot_10.png)
 
 ### 4.2.5 SSIS Package 2: Transform Staging
 
 **Control Flow:** Package 2 contains Execute SQL Tasks for staging-area transformations (T1, T2, T5–T7).
 
-*[Screenshot 11: SSIS Control Flow — Package 2]*
+![Screenshot 11](screenshots/screenshot_11.png)
 
 The SQL transformations executed in this package include:
 
@@ -738,21 +744,21 @@ FROM (
 
 
 
-*[Screenshot 12: SSIS Execute SQL Task — showing transformation SQL]*
-*[Screenshot 13: SSIS Package 2 execution — all green checkmarks]*
-*[Screenshot 14: SSMS — showing CATEGORY_CODE column added to staging table]*
+![Screenshot 12](screenshots/screenshot_12.png)
+![Screenshot 13](screenshots/screenshot_13.png)
+![Screenshot 14](screenshots/screenshot_14.png)
 
 ### 4.2.6 SSIS Package 3: Load Data Mart
 
 **Control Flow:** Package 3 loads dimensions first, then the fact table, then drops temporary tables.
 
-*[*Screenshot 15: SSIS Control Flow — Package 3*]*
+![Screenshot 15](screenshots/screenshot_15.png)
 
 **Sample Data Flow Task (Store Dimension):**
-*[*Screenshot 16: SSIS Package 3 — DimStore Data Flow*]*
+![Screenshot 16](screenshots/screenshot_16.png)
 
 **Execution Result:**
-*[*Screenshot 17: SSIS Package 3 execution — all green checkmarks*]*
+![Screenshot 17](screenshots/screenshot_17.png)
 
 #### Dimension Loading Results
 
@@ -766,7 +772,7 @@ INSERT INTO dbo.DimCategory (category_code, category_name, department) VALUES
 -- (24 more rows...)
 ```
 
-*[Screenshot 18: SSMS — SELECT * FROM DimCategory showing 28 rows]*
+![Screenshot 18](screenshots/screenshot_18.png)
 
 **DimPromotion (4 rows):**
 ```sql
@@ -775,19 +781,19 @@ INSERT INTO dbo.DimPromotion (deal_code, deal_type, is_promoted) VALUES
 ('C', 'Coupon', 1), ('S', 'Sale/Discount', 1);
 ```
 
-*[Screenshot 19: SSMS — SELECT * FROM DimPromotion showing 4 rows]*
+![Screenshot 19](screenshots/screenshot_19.png)
 
 **DimTime (~400 rows):**
 
-*[Screenshot 20: SSMS — SELECT TOP 10 * FROM DimTime]*
+![Screenshot 20](screenshots/screenshot_20.png)
 
 **DimStore (~107 rows):**
 
-*[Screenshot 21: SSMS — SELECT TOP 10 * FROM DimStore showing demographics]*
+![Screenshot 21](screenshots/screenshot_21.png)
 
 **DimProduct (~3,112 rows):**
 
-*[Screenshot 22: SSMS — SELECT TOP 10 * FROM DimProduct]*
+![Screenshot 22](screenshots/screenshot_22.png)
 
 #### Fact Table Loading Results
 
@@ -825,7 +831,7 @@ INNER JOIN dbo.DimCategory dc  ON sm.CATEGORY_CODE = dc.category_code
 INNER JOIN dbo.DimPromotion dpr ON sm.SALE = dpr.deal_code;
 ```
 
-*[Screenshot 23: SSMS — SELECT TOP 10 * FROM FactWeeklySales + COUNT]*
+![Screenshot 23](screenshots/screenshot_23.png)
 
 
 
@@ -837,7 +843,7 @@ After all dimension and fact tables were loaded, temporary tables were dropped:
 DROP TABLE [team1_staging_area].dbo.tmp_Product_All;
 ```
 
-*[*Screenshot 24: SSMS Object Explorer — tmp_Product_All no longer visible*]*
+![Screenshot 24](screenshots/screenshot_24.png)
 
 ### 4.2.8 Granularity Discussion
 
@@ -865,7 +871,7 @@ GROUP BY dt.week_id, dt.week_start_date
 ORDER BY dt.week_id;
 ```
 
-*[*Screenshot 25: SSMS — BQ2 query results*]*
+![Screenshot 25](screenshots/screenshot_25.png)
 
 **BQ3 — Promotion vs Non-Promotion:**
 ```sql
@@ -880,7 +886,7 @@ GROUP BY dp.deal_type, dp.is_promoted
 ORDER BY avg_units DESC;
 ```
 
-*[*Screenshot 26: SSMS — BQ3 query results*]*
+![Screenshot 26](screenshots/screenshot_26.png)
 
 **BQ4 — Promotion Lift by Type (Canned Soup):**
 ```sql
@@ -903,7 +909,7 @@ GROUP BY dp.deal_type
 ORDER BY lift DESC;
 ```
 
-*[*Screenshot 27: SSMS — BQ4 query results*]*
+![Screenshot 27](screenshots/screenshot_27.png)
 
 **BQ8 — Store Quartile Tiers (Toothpaste):**
 ```sql
@@ -930,7 +936,7 @@ GROUP BY CASE WHEN q=1 THEN 'Bottom 25%' WHEN q IN (2,3) THEN 'Middle 50%'
 ORDER BY avg_rev DESC;
 ```
 
-*[*Screenshot 28: SSMS — BQ8 query results*]*
+![Screenshot 28](screenshots/screenshot_28.png)
 
 **BQ9 — Top 10 Weekly Cracker Products with WoW Change:**
 ```sql
@@ -952,7 +958,7 @@ FROM weekly WHERE rnk <= 10
 ORDER BY week_id, rnk;
 ```
 
-*[*Screenshot 29: SSMS — BQ9 query results*]*
+![Screenshot 29](screenshots/screenshot_29.png)
 
 ### 4.2.10 Final Data Mart Summary
 

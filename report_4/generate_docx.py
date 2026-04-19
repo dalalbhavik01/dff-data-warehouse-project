@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Generate a formatted DOCX from Integrated_Report_3.md
-with yellow placeholder boxes for screenshots and ERDs.
+Generate a formatted DOCX from Integrated_Report_4.md
+with embedded images and yellow placeholder boxes for missing screenshots.
 """
 
 import re
@@ -48,6 +48,25 @@ def add_placeholder_box(doc, text):
     trHeight.set(qn("w:hRule"), "atLeast")
     trPr.append(trHeight)
     doc.add_paragraph("")  # spacing
+
+
+def add_image(doc, image_path, caption=""):
+    """Add an embedded image with optional caption."""
+    if os.path.exists(image_path):
+        p = doc.add_paragraph()
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        run = p.add_run()
+        run.add_picture(image_path, width=Inches(5.5))
+        if caption:
+            cap_p = doc.add_paragraph()
+            cap_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            cap_run = cap_p.add_run(caption)
+            cap_run.font.size = Pt(9)
+            cap_run.font.italic = True
+            cap_run.font.color.rgb = RGBColor(0x55, 0x55, 0x55)
+        doc.add_paragraph("")  # spacing
+    else:
+        add_placeholder_box(doc, f"[Image not found: {os.path.basename(image_path)}]")
 
 
 def add_code_block(doc, code_text):
@@ -126,6 +145,32 @@ def process_inline(paragraph, text):
             paragraph.add_run(part)
 
 
+def is_screenshot_placeholder(line):
+    """Check if a line is a screenshot/INSERT placeholder and return the text."""
+    stripped = line.strip()
+    # Pattern 1: *[Screenshot X: ...]*
+    m = re.match(r'^\*\[(Screenshot.*?)\]\*$', stripped)
+    if m:
+        return m.group(1)
+    # Pattern 2: *[*Screenshot X: ...*]* (extra asterisks)
+    m = re.match(r'^\*\[\*?(Screenshot.*?)\*?\]\*$', stripped)
+    if m:
+        return m.group(1)
+    # Pattern 3: *[INSERT: ...]*
+    m = re.match(r'^\*\[(INSERT:.*?)\]\*$', stripped)
+    if m:
+        return m.group(1)
+    return None
+
+
+def is_image_line(line):
+    """Check if a line is a markdown image ![alt](path) and return (alt, path)."""
+    m = re.match(r'^!\[(.*?)\]\((.*?)\)$', line.strip())
+    if m:
+        return m.group(1), m.group(2)
+    return None
+
+
 def main():
     with open(MD_PATH, "r", encoding="utf-8") as f:
         lines = f.readlines()
@@ -148,8 +193,6 @@ def main():
     i = 0
     in_code_block = False
     code_lines = []
-    in_tree_block = False
-    tree_lines = []
 
     while i < len(lines):
         line = lines[i].rstrip("\n")
@@ -162,13 +205,6 @@ def main():
                 add_code_block(doc, code_text)
                 code_lines = []
                 in_code_block = False
-            elif line.strip() == "```" and i + 1 < len(lines) and (
-                lines[i + 1].strip().startswith("SQL Server") or
-                lines[i + 1].strip().startswith("├") or
-                lines[i + 1].strip().startswith("│") or
-                lines[i + 1].strip().startswith("└")
-            ):
-                in_code_block = True
             else:
                 in_code_block = True
             i += 1
@@ -181,7 +217,6 @@ def main():
 
         # --- Horizontal rule ---
         if line.strip() == "---":
-            # Add a thin line
             p = doc.add_paragraph()
             p.paragraph_format.space_before = Pt(6)
             p.paragraph_format.space_after = Pt(6)
@@ -216,16 +251,21 @@ def main():
             i += 1
             continue
 
-        # --- Screenshot / ERD placeholders ---
-        placeholder_match = re.match(r'^\*\[(Screenshot.*?|INSERT:.*?)\]\*$', line.strip())
-        if placeholder_match:
-            add_placeholder_box(doc, placeholder_match.group(1))
+        # --- Image embedding ---
+        img = is_image_line(line)
+        if img:
+            alt_text, img_path = img
+            # Resolve path relative to script dir
+            if not os.path.isabs(img_path):
+                img_path = os.path.join(SCRIPT_DIR, img_path)
+            add_image(doc, img_path, alt_text)
             i += 1
             continue
-        # Also catch lines like *[Screenshot 26:...]*
-        placeholder_match2 = re.match(r'^\*\[(Screenshot.*?)\]\*$', line.strip())
-        if placeholder_match2:
-            add_placeholder_box(doc, placeholder_match2.group(1))
+
+        # --- Screenshot / ERD placeholders ---
+        placeholder_text = is_screenshot_placeholder(line)
+        if placeholder_text:
+            add_placeholder_box(doc, placeholder_text)
             i += 1
             continue
 
@@ -278,8 +318,10 @@ def main():
 
     # Save
     doc.save(OUT_PATH)
+    file_size = os.path.getsize(OUT_PATH) / 1024
     print(f"✅ DOCX saved to: {OUT_PATH}")
-    print(f"   File size: {os.path.getsize(OUT_PATH) / 1024:.1f} KB")
+    print(f"   File size: {file_size:.1f} KB")
+    print(f"   Images embedded: etl_pipeline_diagram.png, star_schema_erd.png")
 
 
 if __name__ == "__main__":
