@@ -90,7 +90,7 @@ def add_placeholder_box(doc, label, instruction=""):
     r0 = p0.add_run(label)
     r0.bold = True
     r0.font.size = Pt(12)
-    r0.font.color.rgb = RGBColor(0x33, 0x33, 0x33)
+    r0.font.color.rgb = RGBColor(0x00, 0x00, 0x00)
     set_cell_bg(c0, "EEEEEE")
     set_row_min_height(table.rows[0], 700)
 
@@ -103,7 +103,7 @@ def add_placeholder_box(doc, label, instruction=""):
         r1 = p1.add_run(instruction)
         r1.italic = True
         r1.font.size = Pt(12)
-        r1.font.color.rgb = RGBColor(0x55, 0x55, 0x55)
+        r1.font.color.rgb = RGBColor(0x00, 0x00, 0x00)
         set_cell_bg(c1, "FAFAFA")
         set_row_min_height(table.rows[1], 500)
 
@@ -123,7 +123,7 @@ def add_image(doc, image_path, caption=""):
             cr.italic = True
             cr.font.size = Pt(12)
             cr.font.name = "Times New Roman"
-            cr.font.color.rgb = RGBColor(0x55, 0x55, 0x55)
+            cr.font.color.rgb = RGBColor(0x00, 0x00, 0x00)
         doc.add_paragraph("")
     else:
         add_placeholder_box(doc, f"[Image not found: {os.path.basename(image_path)}]")
@@ -147,7 +147,7 @@ def add_code_block(doc, code_text):
     run = p.add_run(code_text)
     run.font.name  = "Courier New"
     run.font.size  = Pt(12)
-    run.font.color.rgb = RGBColor(0x22, 0x22, 0x22)
+    run.font.color.rgb = RGBColor(0x00, 0x00, 0x00)
     doc.add_paragraph("")
 
 
@@ -200,7 +200,7 @@ def process_inline(paragraph, text):
             r = paragraph.add_run(part[1:-1])
             r.font.name  = "Courier New"
             r.font.size  = Pt(12)
-            r.font.color.rgb = RGBColor(0xC0, 0x39, 0x2B)
+            r.font.color.rgb = RGBColor(0x00, 0x00, 0x00)
         else:
             r = paragraph.add_run(part)
             r.font.name = "Times New Roman"
@@ -302,7 +302,7 @@ def main():
     normal.font.name = "Times New Roman"
     normal.font.size = Pt(12)
 
-    # Heading fonts — Times New Roman, restrained sizes
+    # Heading fonts — Times New Roman, restrained sizes, plain black
     heading_config = {
         "Heading 1": Pt(14),   # ## Section X
         "Heading 2": Pt(13),   # ### subsection
@@ -311,8 +311,9 @@ def main():
     for style_name, size in heading_config.items():
         try:
             h_style = doc.styles[style_name]
-            h_style.font.name = "Times New Roman"
-            h_style.font.size = size
+            h_style.font.name  = "Times New Roman"
+            h_style.font.size  = size
+            h_style.font.color.rgb = RGBColor(0x00, 0x00, 0x00)
         except KeyError:
             pass
 
@@ -350,31 +351,35 @@ def main():
         if line.startswith("# ") and not line.startswith("## "):
             p = doc.add_heading(line[2:].strip(), level=0)
             p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            # Title: 16pt Times New Roman bold
+            # Title: 16pt Times New Roman bold, black
             for run in p.runs:
-                run.font.name = "Times New Roman"
-                run.font.size = Pt(16)
+                run.font.name  = "Times New Roman"
+                run.font.size  = Pt(16)
+                run.font.color.rgb = RGBColor(0x00, 0x00, 0x00)
             i += 1
             continue
         if line.startswith("## "):
             p = doc.add_heading(line[3:].strip(), level=1)
             for run in p.runs:
-                run.font.name = "Times New Roman"
-                run.font.size = Pt(14)
+                run.font.name  = "Times New Roman"
+                run.font.size  = Pt(14)
+                run.font.color.rgb = RGBColor(0x00, 0x00, 0x00)
             i += 1
             continue
         if line.startswith("### "):
             p = doc.add_heading(line[4:].strip(), level=2)
             for run in p.runs:
-                run.font.name = "Times New Roman"
-                run.font.size = Pt(13)
+                run.font.name  = "Times New Roman"
+                run.font.size  = Pt(13)
+                run.font.color.rgb = RGBColor(0x00, 0x00, 0x00)
             i += 1
             continue
         if line.startswith("#### "):
             p = doc.add_heading(line[5:].strip(), level=3)
             for run in p.runs:
-                run.font.name = "Times New Roman"
-                run.font.size = Pt(12)
+                run.font.name  = "Times New Roman"
+                run.font.size  = Pt(12)
+                run.font.color.rgb = RGBColor(0x00, 0x00, 0x00)
             i += 1
             continue
 
@@ -400,14 +405,16 @@ def main():
             bq = detect_blockquote_placeholder(line)
             if bq:
                 label, instruction = bq
-                add_placeholder_box(doc, f"📸 {label}", instruction)
+                clean_label = label.replace("[", "").replace("]", "")
+                add_placeholder_box(doc, f"[Screenshot Placeholder: {clean_label}]", instruction)
             else:
                 content = line.strip()[2:].strip()
                 p = doc.add_paragraph()
                 p.paragraph_format.left_indent = Cm(0.8)
                 r = p.add_run(content)
                 r.italic = True
-                r.font.color.rgb = RGBColor(0x44, 0x44, 0x44)
+                r.font.name = "Times New Roman"
+                r.font.color.rgb = RGBColor(0x00, 0x00, 0x00)
             i += 1
             continue
 
