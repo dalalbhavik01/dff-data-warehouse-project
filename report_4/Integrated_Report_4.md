@@ -1,11 +1,11 @@
-# Design and Implementation of a Data Warehouse for a Retail Store
+# Design and Implementation of a Data Warehouse for Dominick's Fine Foods (DFF)
 
 **Course:** ISTM 637 – Data Warehousing, Spring 2026  
 **University:** Texas A&M University  
 **Team:** Team 1  
 **Members:** Nisarg Sonar, Bhavik Dalal, Yifei Wang  
 **Group Number:** 1  
-**Contact Email:** [team-email@tamu.edu]  
+**Contact Email:** bhavik.dalal@tamu.edu  
 **Date:** April 27, 2026
 
 ---
@@ -1110,15 +1110,15 @@ The following table documents where all data warehouse, reporting, and analysis 
 
 | Component | Location |
 |:--|:--|
-| Staging Database | `team1_staging_area` on SQL Server 2016, [SERVER_NAME\INSTANCE] |
-| Data Mart Database | `team1_dw_area` on SQL Server 2016, [SERVER_NAME\INSTANCE] |
-| SSIS Packages (.dtsx) | Visual Studio project folder: `DFF_ETL_Project\` on lab machine |
-| SSRS Reports (.rdl) | SSRS Report Server: `http://[SERVER_NAME]/ReportServer` |
-| SSAS Cube (.cube) | SSAS instance: `[SERVER_NAME]\SSAS_INSTANCE`, database: `DFF_Sales_Cube` |
-| Power BI Dashboard (.pbix) | Local file: `DFF_BQ8_Dashboard.pbix` (shared via Power BI Service if available) |
-| Redshift Queries | Amazon Redshift Query Editor v.2, cluster: [CLUSTER_NAME] |
-| SQL Scripts | `report_4/sql/` directory (see Appendix A) |
-| Mapping Tables (Excel) | `MappingTables.xlsx` (see Appendix B) |
+| Staging Database | `team1_staging_area` on SQL Server 2016, ISTM637-PC\SQLEXPRESS (TAMU ISTM Lab) |
+| Data Mart Database | `team1_dw_area` on SQL Server 2016, ISTM637-PC\SQLEXPRESS (TAMU ISTM Lab) |
+| SSIS Packages (.dtsx) | Visual Studio 2015 (SSDT) project folder on lab machine |
+| SSRS Reports (.rdl) | SSRS Report Server on ISTM637-PC: `http://ISTM637-PC/ReportServer` |
+| SSAS Cube | SSAS instance on ISTM637-PC, database: `DFF_Sales_Cube` |
+| Power BI Dashboard (.pbix) | Local file: `DFF_BQ8_Dashboard.pbix`, shared with team via OneDrive |
+| Redshift Queries | Amazon Redshift Query Editor v.2 (AWS Academy lab environment) |
+| SQL Scripts | `report_4/sql/` directory — 8 scripts (see Appendix A) |
+| Mapping Tables (Excel) | `report_4/MappingTables.xlsx` (see Appendix B) |
 
 ### 5.4 Summary: All Business Questions Supported
 
