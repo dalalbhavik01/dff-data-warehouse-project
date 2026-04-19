@@ -55,30 +55,18 @@ We developed BI solutions across four different enterprise platforms to answer c
 ### 1. Power BI (Store Demographics & Revenue Analyst)
 *Business Question: Which stores fall into the top 25%, middle 50%, and bottom 25% of total Toothpaste revenue, and how do their demographics differ?*
 
-<div align="center">
-  <img src="assets/power-bi-dash.png" alt="Power BI Dashboard" width="800"/>
-</div>
 
 ### 2. AWS Redshift Query v.2 (Big Data Promotion Lift)
 *Business Question: Which promotion type (Bonus Buy/Coupon/Sale) generated the highest incremental unit sales lift in the Canned Soup category?*
 
-<div align="center">
-  <img src="assets/redshift-results.png" alt="AWS Redshift Results" width="800"/>
-</div>
 
 ### 3. SQL Server Reporting Services (SSRS)
 *Business Question: What were the total weekly unit sales of Soft Drinks across all stores for each week?*
 
-<div align="center">
-  <img src="assets/ssrs-report.png" alt="SSRS Trend Report" width="600"/>
-</div>
 
 ### 4. SQL Server Analysis Services (SSAS Cubes)
 *Business Question: How do promotion weeks compare to non-promotion weeks in terms of sales volume?*
 
-<div align="center">
-  <img src="assets/ssas-cube.png" alt="SSAS Cube Pivot" width="600"/>
-</div>
 
 ---
 
