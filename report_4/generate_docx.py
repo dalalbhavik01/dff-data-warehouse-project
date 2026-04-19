@@ -121,7 +121,8 @@ def add_image(doc, image_path, caption=""):
             cp.alignment = WD_ALIGN_PARAGRAPH.CENTER
             cr = cp.add_run(caption)
             cr.italic = True
-            cr.font.size = Pt(9)
+            cr.font.size = Pt(10)
+            cr.font.name = "Times New Roman"
             cr.font.color.rgb = RGBColor(0x55, 0x55, 0x55)
         doc.add_paragraph("")
     else:
@@ -144,8 +145,8 @@ def add_code_block(doc, code_text):
     p.paragraph_format.space_before = Pt(4)
     p.paragraph_format.space_after  = Pt(4)
     run = p.add_run(code_text)
-    run.font.name  = "Courier New"   # universally available in Google Docs
-    run.font.size  = Pt(8.5)
+    run.font.name  = "Courier New"
+    run.font.size  = Pt(9)
     run.font.color.rgb = RGBColor(0x22, 0x22, 0x22)
     doc.add_paragraph("")
 
@@ -168,7 +169,8 @@ def add_md_table(doc, header_line, data_lines):
         cell.text = ""
         run = cell.paragraphs[0].add_run(h)
         run.bold = True
-        run.font.size = Pt(9)
+        run.font.name = "Times New Roman"
+        run.font.size = Pt(10)
         set_cell_bg(cell, "D9E2F3")
 
     for r_idx, row_data in enumerate(rows_data):
@@ -176,7 +178,8 @@ def add_md_table(doc, header_line, data_lines):
             cell = table.rows[r_idx + 1].cells[c_idx]
             cell.text = ""
             run = cell.paragraphs[0].add_run(row_data[c_idx])
-            run.font.size = Pt(9)
+            run.font.name = "Times New Roman"
+            run.font.size = Pt(10)
 
     doc.add_paragraph("")
 
@@ -188,16 +191,19 @@ def process_inline(paragraph, text):
         if part.startswith("**") and part.endswith("**"):
             r = paragraph.add_run(part[2:-2])
             r.bold = True
+            r.font.name = "Times New Roman"
         elif part.startswith("*") and part.endswith("*") and not part.startswith("**"):
             r = paragraph.add_run(part[1:-1])
             r.italic = True
+            r.font.name = "Times New Roman"
         elif part.startswith("`") and part.endswith("`"):
             r = paragraph.add_run(part[1:-1])
             r.font.name  = "Courier New"
-            r.font.size  = Pt(9)
+            r.font.size  = Pt(10)
             r.font.color.rgb = RGBColor(0xC0, 0x39, 0x2B)
         else:
-            paragraph.add_run(part)
+            r = paragraph.add_run(part)
+            r.font.name = "Times New Roman"
 
 
 # ---------------------------------------------------------------------------
@@ -291,10 +297,24 @@ def main():
         section.left_margin   = Cm(2.54)
         section.right_margin  = Cm(2.54)
 
-    # Body font: Arial (universally available in Google Docs)
+    # Body font: Times New Roman 12pt (academic standard)
     normal = doc.styles["Normal"]
-    normal.font.name = "Arial"
-    normal.font.size = Pt(11)
+    normal.font.name = "Times New Roman"
+    normal.font.size = Pt(12)
+
+    # Heading fonts — Times New Roman, restrained sizes
+    heading_config = {
+        "Heading 1": Pt(14),   # ## Section X
+        "Heading 2": Pt(13),   # ### subsection
+        "Heading 3": Pt(12),   # #### sub-subsection
+    }
+    for style_name, size in heading_config.items():
+        try:
+            h_style = doc.styles[style_name]
+            h_style.font.name = "Times New Roman"
+            h_style.font.size = size
+        except KeyError:
+            pass
 
     i            = 0
     in_code      = False
@@ -330,18 +350,31 @@ def main():
         if line.startswith("# ") and not line.startswith("## "):
             p = doc.add_heading(line[2:].strip(), level=0)
             p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            # Title: 16pt Times New Roman bold
+            for run in p.runs:
+                run.font.name = "Times New Roman"
+                run.font.size = Pt(16)
             i += 1
             continue
         if line.startswith("## "):
-            doc.add_heading(line[3:].strip(), level=1)
+            p = doc.add_heading(line[3:].strip(), level=1)
+            for run in p.runs:
+                run.font.name = "Times New Roman"
+                run.font.size = Pt(14)
             i += 1
             continue
         if line.startswith("### "):
-            doc.add_heading(line[4:].strip(), level=2)
+            p = doc.add_heading(line[4:].strip(), level=2)
+            for run in p.runs:
+                run.font.name = "Times New Roman"
+                run.font.size = Pt(13)
             i += 1
             continue
         if line.startswith("#### "):
-            doc.add_heading(line[5:].strip(), level=3)
+            p = doc.add_heading(line[5:].strip(), level=3)
+            for run in p.runs:
+                run.font.name = "Times New Roman"
+                run.font.size = Pt(12)
             i += 1
             continue
 
