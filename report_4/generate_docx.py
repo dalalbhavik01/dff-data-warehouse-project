@@ -205,7 +205,46 @@ def is_image_line(line):
     return None
 
 
+def preflight_check():
+    """Warn if BI screenshots 30-41 are missing before generating the DOCX."""
+    ss_dir = os.path.join(SCRIPT_DIR, "screenshots")
+    missing = []
+    for n in range(30, 42):
+        path = os.path.join(ss_dir, f"screenshot_{n:02d}.png")
+        if not os.path.exists(path):
+            missing.append(f"  screenshot_{n:02d}.png")
+
+    if missing:
+        print("=" * 60)
+        print("⚠️  WARNING: BI screenshots are missing")
+        print("=" * 60)
+        print(f"\n  {len(missing)} of 12 required BI screenshots (30–41) not found:\n")
+        for m in missing:
+            print(m)
+        print("""
+  The DOCX will be generated with bordered placeholder boxes
+  in place of these screenshots.
+
+  When you are ready to use REAL screenshots:
+    1. Save your screenshots as screenshots/screenshot_30.png
+       through screenshots/screenshot_41.png
+    2. Run:  python3 generate_docx.py
+
+  AI-generated fallbacks are preserved in:
+    screenshots/ai_backup/screenshot_30.png  ...  screenshot_41.png
+  Only use these if real screenshots are not available.
+""")
+        print("=" * 60)
+        answer = input("  Continue and generate DOCX with placeholders? [y/N]: ").strip().lower()
+        if answer != "y":
+            print("  Aborted. Re-run after adding real screenshots.")
+            raise SystemExit(0)
+        print()
+
+
 def main():
+    preflight_check()
+
     with open(MD_PATH, "r", encoding="utf-8") as f:
         lines = f.readlines()
 
