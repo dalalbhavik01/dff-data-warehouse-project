@@ -1,151 +1,122 @@
-# DFF Data Warehouse Project
+<div align="center">
+  
+# 🛒 Dominick's Fine Foods (DFF) Data Warehouse
+**An End-to-End Enterprise Data Warehousing & Business Intelligence Project**
 
-**Course:** ISTM 637 — Data Warehousing | **Spring 2026** | **Team 1**
+[![SQL Server](https://img.shields.io/badge/SQL%20Server-CC292B?style=for-the-badge&logo=microsoft-sql-server&logoColor=white)](https://www.microsoft.com/en-us/sql-server)
+[![SSIS](https://img.shields.io/badge/SSIS-0078D7?style=for-the-badge&logo=microsoft&logoColor=white)](https://docs.microsoft.com/en-us/sql/integration-services)
+[![SSAS](https://img.shields.io/badge/SSAS-861B2D?style=for-the-badge&logo=microsoft-sql-server&logoColor=white)](https://docs.microsoft.com/en-us/analysis-services)
+[![SSRS](https://img.shields.io/badge/SSRS-E3008C?style=for-the-badge&logo=microsoft&logoColor=white)](https://docs.microsoft.com/en-us/sql/reporting-services)
+[![AWS Redshift](https://img.shields.io/badge/AWS%20Redshift-8C4FFF?style=for-the-badge&logo=amazon-redshift&logoColor=white)](https://aws.amazon.com/redshift/)
+[![Power BI](https://img.shields.io/badge/Power%20BI-F2C811?style=for-the-badge&logo=powerbi&logoColor=black)](https://powerbi.microsoft.com/)
 
-> Design and implementation of a data warehouse for Dominick's Fine Foods (DFF), a Chicago-area supermarket chain with ~100 stores. Built on the University of Chicago Booth School's Kilts Center retail scanner dataset (1989–1994).
+*Designed and implemented by **Team 1** for ISTM 637 (Data Warehousing) at Texas A&M University*
+
+</div>
 
 ---
 
-## 📁 Project Structure
+## 📖 Project Overview
 
-```
+This project involves the comprehensive design and implementation of an enterprise-grade data warehouse for **Dominick's Finer Foods (DFF)**, a prominent Chicago-area supermarket chain. Utilizing the famous Kilts Center retail scanner dataset (~5 GB of store-level data spanning 1989–1994), we engineered a complete **Hybrid Data Pipeline** to transform raw OLTP files into actionable business intelligence.
+
+Our solution supports end-to-end analytical processing, progressing from raw CSV source files to advanced BI dashboards, demonstrating proficiency in data modeling, ETL engineering, and multidimensional reporting.
+
+---
+
+## 🏗️ Architecture & Data Modeling
+
+### Hybrid ETL Pipeline
+
+The data moves through a rigorous ETL (Extract, Transform, Load) pipeline using **SQL Server Integration Services (SSIS)**. This hybrid architecture cleanses the operational data, derives missing metadata, manages surrogate keys, and populates the presentation layer.
+
+<div align="center">
+  <img src="assets/etl_pipeline_diagram.png" alt="ETL Pipeline Architecture" width="800"/>
+</div>
+
+### Dimensional Star Schema (Kimball Methodology)
+
+To support our analytical queries, we designed an **Independent Data Mart** employing a pure star schema based on Ralph Kimball's bottom-up methodology. The warehouse centers around a highly granular `FactWeeklySales` table.
+
+- **Grain:** One row per UPC × Store × Week
+- **Volume:** ~15 Million Fact Rows
+- **Dimensions:** Product, Store, Time, Category, Promotion
+
+<div align="center">
+  <img src="assets/star_schema_erd.png" alt="Star Schema ERD" width="800"/>
+</div>
+
+---
+
+## 📊 Business Intelligence & Reporting
+
+We developed BI solutions across four different enterprise platforms to answer critical business questions for DFF management.
+
+### 1. Power BI (Store Demographics & Revenue Analyst)
+*Business Question: Which stores fall into the top 25%, middle 50%, and bottom 25% of total Toothpaste revenue, and how do their demographics differ?*
+
+<div align="center">
+  <img src="assets/power-bi-dash.png" alt="Power BI Dashboard" width="800"/>
+</div>
+
+### 2. AWS Redshift Query v.2 (Big Data Promotion Lift)
+*Business Question: Which promotion type (Bonus Buy/Coupon/Sale) generated the highest incremental unit sales lift in the Canned Soup category?*
+
+<div align="center">
+  <img src="assets/redshift-results.png" alt="AWS Redshift Results" width="800"/>
+</div>
+
+### 3. SQL Server Reporting Services (SSRS)
+*Business Question: What were the total weekly unit sales of Soft Drinks across all stores for each week?*
+
+<div align="center">
+  <img src="assets/ssrs-report.png" alt="SSRS Trend Report" width="600"/>
+</div>
+
+### 4. SQL Server Analysis Services (SSAS Cubes)
+*Business Question: How do promotion weeks compare to non-promotion weeks in terms of sales volume?*
+
+<div align="center">
+  <img src="assets/ssas-cube.png" alt="SSAS Cube Pivot" width="600"/>
+</div>
+
+---
+
+## 📂 Repository Structure
+
+The project was executed in four milestone phases, culminating in a fully integrated final report.
+
+```text
 dff-data-warehouse-project/
 │
-├── README.md                          ← You are here
-├── .gitignore
+├── README.md                          ← Project showcase (You are here)
+├── assets/                            ← Showcase images
 │
-├── DFF data - zipped/                 ← Raw OLTP source data
-│   ├── Ccount/                        │   CCOUNT.csv (327K rows — store traffic)
-│   ├── Demographics/                  │   DEMO.csv (108 stores)
-│   ├── Movement/                      │   24 category folders (wsdr, wcso, etc.)
-│   └── UPC/                           │   28 product lookup files
-│
-├── report_1/                          ← Report 1: Requirements Analysis
-│   ├── CONSULTING_REPORT_1_Team_1.docx    Final submission (42/50)
-│   ├── dominick-project-report-one-*.doc  Assignment instructions
-│   ├── business_questions.md              All business questions
-│   ├── top_10_business_questions.md       Curated top 10 BQs
-│   ├── data_exploration_summary.md        EDA findings
-│   ├── charts/                            BQ visualization charts
-│   └── report_charts/                     EDA charts & ERDs
-│
-├── report_2/                          ← Report 2: Logical & Physical Design
-│   ├── CONSULTING_REPORT_2_Team_1_v8.docx Final submission (73/75)
-│   ├── Report_2_Final.md                  Report content (markdown)
-│   ├── data_warehouse_schema.md           Star schema specification
-│   ├── ER_Diagram_Reference.md            ERD specifications
-│   ├── ERD_Final.jpeg                     Star schema ERD
-│   ├── hybrid_data_pipeline.png           Architecture diagram
-│   └── modules for reference/             Course slide decks
-│
-└── report_3/                          ← Report 3: ETL Design & Implementation
-    ├── Integrated_Report_3.md             Full integrated report (§1-§8)
-    ├── IMPLEMENTATION_STEPS.md            Step-by-step SSIS execution guide
-    ├── dominick-project-report-three-*.doc Assignment instructions
-    ├── feedback of report 1 and 2/        Professor annotations (PDFs)
-    ├── sql/                               ETL SQL scripts
-    │   ├── 01_create_databases.sql
-    │   ├── 02_create_staging_tables.sql
-    │   ├── 03_create_dw_tables.sql
-    │   ├── 04_transform_staging.sql
-    │   ├── 05_load_dimensions.sql
-    │   ├── 06_load_facts.sql
-    │   ├── 07_drop_temp_tables.sql
-    │   └── 08_verify_bq_queries.sql
-    ├── etl_1_text.txt                     ETL lecture notes (extracted)
-    └── etl_2_text.txt                     ETL lecture notes (extracted)
+├── report_1/                          ← Requirements, EDA, and BQ Formulation
+├── report_2/                          ← Logical & Physical Design (Bus Matrix, Star Schema)
+├── report_3/                          ← ETL Design & Implementation (SSIS, SQL Scripts)
+└── report_4/                          ← Integrated Final Report & BI Deployments
+    ├── Integrated_Report_4.docx       ← The final submitted comprehensive report
+    ├── sql/                           ← All 8 robust SQL scripts for DB creation & ETL
+    └── screenshots/                   ← 41 screenshots providing full implementation evidence
 ```
 
 ---
 
-## 🏗️ Architecture
+## 🛠️ Technology Stack
 
-| Component | Choice |
-|:--|:--|
-| Implementation Architecture | Hybrid Data Pipeline |
-| Warehouse Architecture | Independent Data Marts |
-| Modeling Scheme | Dimensional Modeling (Star Schema) |
-| OLAP Style | HOLAP (Hybrid Online Analytical Processing) |
-| Target Infrastructure | SQL Server 2016 + SSIS |
-
----
-
-## ⭐ Star Schema
-
-```
-                    ┌──────────────┐
-                    │  DimProduct  │
-                    └──────┬───────┘
-                           │
-┌──────────────┐   ┌───────┴────────┐   ┌──────────────┐
-│   DimStore   ├───┤FactWeeklySales ├───┤  DimCategory  │
-└──────────────┘   └───────┬────────┘   └──────────────┘
-                           │
-┌──────────────┐           │            ┌──────────────┐
-│   DimTime    ├───────────┘────────────┤ DimPromotion │
-└──────────────┘                        └──────────────┘
-```
-
-**Grain:** One row per UPC × Store × Week | **~34.6M fact rows** across 4 categories
+| Technology | Purpose |
+|:---|:---|
+| **Microsoft SQL Server 2016** | Core RDBMS, Data Staging, and Data Mart hosting |
+| **SQL Server Integration Services (SSIS)** | ETL Engineering, Data Cleansing, and Pipeline Automation |
+| **SQL Server Analysis Services (SSAS)** | Multidimensional Cube Design and OLAP processing |
+| **SQL Server Reporting Services (SSRS)** | Parameterized and Paginated Operational Reporting |
+| **Amazon Redshift (AWS)** | Cloud Data Warehousing and Analytical Query Execution |
+| **Microsoft Power BI** | Interactive Dashboards, DAX calculations, and Geospatial Mapping |
+| **LucidChart / Draw.io** | Architecture and Entity Relationship Diagramming |
 
 ---
 
-## 📊 Business Questions (5 Selected)
-
-| # | Question | Difficulty | OLAP Op |
-|:--|:--|:--|:--|
-| BQ2 | Weekly Soft Drink unit sales across all stores | 🟢 Easy | Roll-up |
-| BQ3 | Promotion vs non-promotion sales comparison | 🟢 Easy | Slice |
-| BQ4 | Which promo type has highest lift in Canned Soup? | 🟡 Medium | Dice |
-| BQ8 | Store quartile tiers by Toothpaste revenue | 🔴 Hard | NTILE |
-| BQ9 | Top 10 weekly Cracker products with WoW change | 🔴 Hard | RANK + LAG |
-
----
-
-## 🔄 ETL Pipeline
-
-```
-CSV Files ──→ [SSIS Package 1] ──→ Staging Area ──→ [SSIS Package 2] ──→ Clean Staging
-                                                                              │
-                                                                              ▼
-BQ Queries ←── Data Mart ←────── [SSIS Package 3] ←──────────────────── Load DW
-```
-
-| Phase | SSIS Package | SQL Script | What It Does |
-|:--|:--|:--|:--|
-| Extract | `01_Extract_to_Staging.dtsx` | `01`, `02` | Load 10 CSVs into staging tables |
-| Transform | `02_Transform_Staging.dtsx` | `04` | Clean, derive category codes, fix NULLs |
-| Load | `03_Load_DataMart.dtsx` | `03`, `05`, `06`, `07` | Create schema → Load dimensions → Load facts → Cleanup |
-| Verify | — | `08` | Run 5 BQ verification queries |
-
----
-
-## 📈 Grades
-
-| Report | Score | Key Feedback |
-|:--|:--|:--|
-| Report 1 | 42/50 | -3 wrong ERD (used star schema instead of source data), -3 no BQ prioritization |
-| Report 2 | 73/75 | -2 ERD not from proper tool (Visio/LucidChart required) |
-| Report 3 | TBD | Due April 8, 2026 |
-
----
-
-## 🛠️ How to Run the ETL
-
-> Requires SQL Server 2016 + SSIS (Visual Studio with SSDT)
-
-1. Connect to SQL Server in SSMS
-2. Execute scripts in order: `01` → `02` → `03`
-3. Build 3 SSIS packages in Visual Studio (see `IMPLEMENTATION_STEPS.md`)
-4. Execute packages: Extract → Transform → Load
-5. Execute `04` → `05` → `06` → `07` (via SSIS or directly in SSMS)
-6. Verify with `08_verify_bq_queries.sql`
-
-See [`report_3/IMPLEMENTATION_STEPS.md`](report_3/IMPLEMENTATION_STEPS.md) for detailed step-by-step instructions with screenshot checklist.
-
----
-
-## 👥 Team 1
-
-ISTM 637 — Data Warehousing, Spring 2026  
-Texas A&M University, Mays Business School
+<div align="center">
+  <i>"Transforming retail transaction arrays into strategic business insights."</i>
+</div>
