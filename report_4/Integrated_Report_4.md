@@ -315,13 +315,13 @@ The professor selected 5 BQs from our list of 10 for implementation:
 
 **BQ9 (Top 10 CRA products with WoW):** Query FactWeeklySales joined to DimProduct and DimTime, filtered by 'CRA'. Use RANK() partitioned by week_id and LAG() partitioned by upc. ✅
 
-### 3.6 Star Schema Diagram
+### 3.6 Entity-Relationship Diagram (ERD)
 
-**Figure 2: Star Schema Diagram — FactWeeklySales with 5 Dimensions**
+**Figure 2: ERD for FactWeeklySales and Five Dimensions**
 
-![Star Schema Diagram](star_schema_erd.png)
+![Entity-Relationship Diagram](star_schema_erd.png)
 
-*Diagram generated using a diagramming tool showing all table attributes with data types. Relationship lines connect the fact table's foreign keys to each dimension's primary key.*
+*ERD generated using a diagramming tool showing all table attributes with data types. Relationship lines connect the fact table's foreign keys to each dimension's primary key.*
 
 ### 3.7 Mapping Table #1: Source Files to Staging Tables
 
@@ -969,6 +969,8 @@ ORDER BY week_id, rnk;
 | FactWeeklySales | ~34.6M | 14,921,365 | ✅ |
 
 **Note on FactWeeklySales row count:** The estimated 34.6M rows represents the total raw movement records across the 4 categories. The actual loaded count of 14,921,365 reflects the application of two ETL quality filters: `OK = 1` (retaining only quality-validated observations) and `PRICE > 0` (excluding zero-price rows that would cause division errors in derived columns). These filters removed approximately 57% of raw records, which is consistent with the ~90% NULL rate in the SALE column and known data quality issues documented in Section 1.4.
+
+**Foreign-key integrity check:** A post-load verification query confirmed 0 NULL values for product_key, store_key, time_key, category_key, and promotion_key in FactWeeklySales. All foreign keys in the fact table reference valid dimension records, with no orphan rows. This was enforced by using INNER JOINs during the staging-to-mart load (see Section 4.2.6) and by defining FK constraints in the CREATE TABLE DDL (see Appendix A, `03_create_dw_tables.sql`).
 
 ---
 
