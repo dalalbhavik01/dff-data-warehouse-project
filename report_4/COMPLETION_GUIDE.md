@@ -1,9 +1,9 @@
 # BI Tool Implementation Guide
-## Integrated Report 4 — Screenshots 30–41
+## Integrated Report 4 - Screenshots 30–41
 
 > **How to use this guide:**
 > Follow each section in order. Each task tells you exactly what to build, what SQL or settings to use, and
-> which screenshot to take. After capturing all 12, run `python3 generate_docx.py` once more — the
+> which screenshot to take. After capturing all 12, run `python3 generate_docx.py` once more - the
 > placeholders in the DOCX will be replaced with your real screenshots automatically.
 
 ---
@@ -14,9 +14,9 @@ Make sure the following are available before you start.
 
 ### Software Required (all available in TAMU ISTM Lab)
 - **SQL Server 2016** with `team1_dw_area` database already populated (from Report 3 ETL)
-- **Visual Studio 2015** with SQL Server Data Tools (SSDT) — includes both SSRS and SSAS project templates
-- **Power BI Desktop** — free download from https://powerbi.microsoft.com/en-us/desktop/
-- **AWS Academy Lab** — your course account with Redshift access
+- **Visual Studio 2015** with SQL Server Data Tools (SSDT) - includes both SSRS and SSAS project templates
+- **Power BI Desktop** - free download from https://powerbi.microsoft.com/en-us/desktop/
+- **AWS Academy Lab** - your course account with Redshift access
 
 ### Data Availability Check (run in SSMS first)
 Before starting, verify the data mart is populated:
@@ -33,7 +33,7 @@ Expected minimums: FactWeeklySales ≥ 14,000,000 | DimStore = 107 | DimCategory
 
 ---
 
-## PART 1 — SSRS (Screenshots 30–33)
+## PART 1 - SSRS (Screenshots 30–33)
 
 **Business Questions covered:** BQ2 (weekly SDR sales trend) and BQ9 (top 10 Crackers weekly ranking)  
 **Estimated time:** 45–60 minutes
@@ -54,12 +54,12 @@ Expected minimums: FactWeeklySales ≥ 14,000,000 | DimStore = 107 | DimCategory
    - Server name: `ISTM637-PC\SQLEXPRESS` (or your lab server name)
    - Authentication: **Windows Authentication**
    - Select database: `team1_dw_area`
-5. Click **Test Connection** — must say "Test connection succeeded"
+5. Click **Test Connection** - must say "Test connection succeeded"
 6. Click OK → OK
 
 ### 1.3 Build the BQ2 Report (SSRS)
 
-1. Right-click **Reports → Add New Item → Report** — name it `BQ2_Weekly_SDR_Sales.rdl`
+1. Right-click **Reports → Add New Item → Report** - name it `BQ2_Weekly_SDR_Sales.rdl`
 
 2. **Add a Dataset:**  
    Right-click in the Report Data pane → **Add Dataset**  
@@ -91,7 +91,7 @@ Expected minimums: FactWeeklySales ≥ 14,000,000 | DimStore = 107 | DimCategory
    - Click the chart title and type: `BQ2: Weekly Soft Drink Unit Sales Across All Stores`
 
 4. **Insert a Table below the chart:**
-   - **Report → Insert → Table** — place it under the chart
+   - **Report → Insert → Table** - place it under the chart
    - Map columns: `week_id`, `week_start_date`, `total_units_sold`
    - Bold the header row
 
@@ -109,7 +109,7 @@ Expected minimums: FactWeeklySales ≥ 14,000,000 | DimStore = 107 | DimCategory
 
 ### 1.4 Build the BQ9 Report (SSRS Parameterized)
 
-1. Right-click **Reports → Add New Item → Report** — name it `BQ9_Top10_Crackers.rdl`
+1. Right-click **Reports → Add New Item → Report** - name it `BQ9_Top10_Crackers.rdl`
 
 2. **Add a Dataset for the Parameter (week list):**
    - Name: `DS_WeekList`
@@ -185,12 +185,12 @@ Expected minimums: FactWeeklySales ≥ 14,000,000 | DimStore = 107 | DimCategory
    - Click the **Preview tab**
    - In the `Select Week Number` dropdown, choose week **100** (or any week with data)
    - Click **View Report**
-   - Wait for the table to render — verify 10 rows appear with colored WoW values
+   - Wait for the table to render - verify 10 rows appear with colored WoW values
    - Save as: `report_4/screenshots/screenshot_33.png`
 
 ---
 
-## PART 2 — SSAS (Screenshots 34–36)
+## PART 2 - SSAS (Screenshots 34–36)
 
 **Business Question covered:** BQ3 (promotion vs non-promotion sales comparison)  
 **Estimated time:** 30–45 minutes
@@ -224,7 +224,7 @@ Expected minimums: FactWeeklySales ≥ 14,000,000 | DimStore = 107 | DimCategory
    - `DimStore`
    - `DimProduct`
 4. Click Next → name it `DFF_DSV` → Finish
-5. Verify all relationship lines are auto-detected (they should be — FK constraints are defined)
+5. Verify all relationship lines are auto-detected (they should be - FK constraints are defined)
 
 ### 2.4 Create and Configure the Cube
 
@@ -241,7 +241,7 @@ Expected minimums: FactWeeklySales ≥ 14,000,000 | DimStore = 107 | DimCategory
 
 ### 2.5 Configure Storage and Attribute Relationships
 
-1. The cube defaults to **MOLAP** storage mode (pre-computed aggregations stored in the multidimensional structure). Leave this as default — it provides the best query performance for interactive browsing.
+1. The cube defaults to **MOLAP** storage mode (pre-computed aggregations stored in the multidimensional structure). Leave this as default - it provides the best query performance for interactive browsing.
 2. Open the **DimTime** dimension → click the **Attribute Relationships** tab:
    - Ensure `week_id` rolls up to `quarter`, and `quarter` rolls up to `year`
    - If not auto-detected, drag from `week_id` → `quarter` and `quarter` → `year` to create the relationships
@@ -274,7 +274,7 @@ Expected minimums: FactWeeklySales ≥ 14,000,000 | DimStore = 107 | DimCategory
 
 4. **Take Screenshot 35:**
    - Switch back to the **Browser tab**
-   - With the filter `SDR` and deal_type in rows, units_sold in values — this is the BQ3 pivot
+   - With the filter `SDR` and deal_type in rows, units_sold in values - this is the BQ3 pivot
    - Save as: `report_4/screenshots/screenshot_35.png`
 
 5. **Take Screenshot 36 (Drill-down):**
@@ -284,7 +284,7 @@ Expected minimums: FactWeeklySales ≥ 14,000,000 | DimStore = 107 | DimCategory
 
 ---
 
-## PART 3 — Amazon Redshift Query v.2 (Screenshots 37–38)
+## PART 3 - Amazon Redshift Query v.2 (Screenshots 37–38)
 
 **Business Question covered:** BQ4 (promotion lift by deal type in Canned Soup)  
 **Estimated time:** 20–30 minutes
@@ -345,7 +345,7 @@ CREATE TABLE IF NOT EXISTS bq4_cso_sales (
 Paste this **complete query** into the Redshift Query Editor v.2 editor:
 
 ```sql
--- BQ4: Promotion Lift by Deal Type — Canned Soup (Redshift Query v.2)
+-- BQ4: Promotion Lift by Deal Type - Canned Soup (Redshift Query v.2)
 WITH baseline AS (
     SELECT AVG(CAST(units_sold AS FLOAT)) AS avg_baseline
     FROM   bq4_cso_sales
@@ -390,7 +390,7 @@ ORDER BY incremental_lift DESC;
 
 ---
 
-## PART 4 — Power BI Desktop (Screenshots 39–41)
+## PART 4 - Power BI Desktop (Screenshots 39–41)
 
 **Business Question covered:** BQ8 (store quartile tiers by Toothpaste revenue with demographics)  
 **Estimated time:** 30–45 minutes
@@ -425,7 +425,7 @@ ORDER BY incremental_lift DESC;
 
 Click the **Data** icon → select the `FactWeeklySales` table → click **New Measure** from the toolbar:
 
-**Measure 1 — Total TPA Revenue:**
+**Measure 1 - Total TPA Revenue:**
 ```dax
 Total TPA Revenue =
 CALCULATE(
@@ -434,7 +434,7 @@ CALCULATE(
 )
 ```
 
-**Measure 2 — Store Revenue Rank (used to compute quartile):**
+**Measure 2 - Store Revenue Rank (used to compute quartile):**
 ```dax
 Store Revenue Rank =
 RANKX(
@@ -466,7 +466,7 @@ SWITCH(TRUE(),
 
 ### 4.4 Build the Report Pages
 
-**Page 1 — Store Quartile Dashboard:**
+**Page 1 - Store Quartile Dashboard:**
 
 1. In the Report view, rename "Page 1" to `BQ8 Dashboard` (double-click tab)
 2. Add a **title text box** at the top: `BQ8: Store Quartile Analysis by Toothpaste Revenue`
@@ -481,7 +481,7 @@ SWITCH(TRUE(),
    - In the Filters pane, drag `DimCategory[category_code]` to "Filters on this page"
    - Set it to `TPA`
 
-**Page 2 — Map View:**
+**Page 2 - Map View:**
 
 1. Right-click the report tab at the bottom → **Add page** → rename to `BQ8 Map`
 2. **Insert Map visual:**
@@ -489,14 +489,14 @@ SWITCH(TRUE(),
    - Bubble size: `[Total TPA Revenue]`
    - Legend: `DimStore[Revenue Quartile]`
 3. **Add two Card visuals:**
-   - Card 1: `DISTINCTCOUNT(DimStore[store_id])` — label it `Total Stores`
-   - Card 2: `[Total TPA Revenue]` — label it `Total TPA Revenue`
+   - Card 1: `DISTINCTCOUNT(DimStore[store_id])` - label it `Total Stores`
+   - Card 2: `[Total TPA Revenue]` - label it `Total TPA Revenue`
 4. Add the same `category_code = TPA` page filter
 
 ### 4.5 Take the Screenshots
 
 **Take Screenshot 39:**
-- Click the **Model view** icon (third in left sidebar) — NOT Report view
+- Click the **Model view** icon (third in left sidebar) - NOT Report view
 - The canvas should show the star schema with all 6 tables connected
 - Make sure FactWeeklySales is visible in the center with all relationship lines
 - Save as: `report_4/screenshots/screenshot_39.png`
@@ -515,7 +515,7 @@ SWITCH(TRUE(),
 
 ---
 
-## PART 5 — Embed Screenshots and Regenerate Final DOCX
+## PART 5 - Embed Screenshots and Regenerate Final DOCX
 
 ### 5.1 Verify All 12 Screenshots Are in Place
 
@@ -523,7 +523,7 @@ SWITCH(TRUE(),
 ls report_4/screenshots/screenshot_3*.png report_4/screenshots/screenshot_4*.png
 ```
 
-Expected output — all 12 files:
+Expected output - all 12 files:
 ```
 screenshot_30.png  screenshot_33.png  screenshot_36.png  screenshot_39.png
 screenshot_31.png  screenshot_34.png  screenshot_37.png  screenshot_40.png
@@ -537,7 +537,7 @@ The `generate_docx.py` script auto-detects the `> **[Screenshot N Placeholder]**
 Once you save the screenshots to the `screenshots/` folder, edit `Integrated_Report_4.md` to replace each placeholder line with an image embed using this exact format:
 
 ```
-![Screenshot 30: SSRS Report Designer — BQ2](screenshots/screenshot_30.png)
+![Screenshot 30: SSRS Report Designer - BQ2](screenshots/screenshot_30.png)
 ```
 
 You can do all 12 at once with this script (run from the `report_4/` directory):
@@ -548,18 +548,18 @@ python3 - <<'EOF'
 import re
 
 replacements = {
-    30: "SSRS Report Designer — BQ2 Weekly SDR Sales trend report",
-    31: "SSRS Report Preview — BQ2 chart showing weekly Soft Drink unit sales",
-    32: "SSRS Report Designer — BQ9 parameterized Cracker ranking report",
-    33: "SSRS Report Preview — BQ9 showing top 10 products for selected week",
-    34: "Visual Studio — SSAS Cube structure in Solution Explorer",
-    35: "SSAS Cube Browser — BQ3 pivot showing deal_type vs AVG units sold",
-    36: "SSAS Cube Browser — drill-down by year and deal type",
-    37: "Redshift Query v.2 — BQ4 query in editor",
-    38: "Redshift Query v.2 — BQ4 results showing lift by deal type",
-    39: "Power BI — Data model view showing star schema connections",
-    40: "Power BI — BQ8 dashboard: store quartile bar chart and demographic table",
-    41: "Power BI — BQ8 map view of stores by revenue tier",
+    30: "SSRS Report Designer - BQ2 Weekly SDR Sales trend report",
+    31: "SSRS Report Preview - BQ2 chart showing weekly Soft Drink unit sales",
+    32: "SSRS Report Designer - BQ9 parameterized Cracker ranking report",
+    33: "SSRS Report Preview - BQ9 showing top 10 products for selected week",
+    34: "Visual Studio - SSAS Cube structure in Solution Explorer",
+    35: "SSAS Cube Browser - BQ3 pivot showing deal_type vs AVG units sold",
+    36: "SSAS Cube Browser - drill-down by year and deal type",
+    37: "Redshift Query v.2 - BQ4 query in editor",
+    38: "Redshift Query v.2 - BQ4 results showing lift by deal type",
+    39: "Power BI - Data model view showing star schema connections",
+    40: "Power BI - BQ8 dashboard: store quartile bar chart and demographic table",
+    41: "Power BI - BQ8 map view of stores by revenue tier",
 }
 
 with open("Integrated_Report_4.md", "r") as f:
@@ -594,10 +594,10 @@ Expected output:
 
 Open `Integrated_Report_4.docx` and confirm:
 
-- [ ] **Section 5.2.1** — Two real SSRS screenshots visible (not placeholder boxes)
-- [ ] **Section 5.2.2** — Three real SSAS screenshots visible
-- [ ] **Section 5.2.3** — Two real Redshift screenshots visible
-- [ ] **Section 5.2.4** — Three real Power BI screenshots visible
+- [ ] **Section 5.2.1** - Two real SSRS screenshots visible (not placeholder boxes)
+- [ ] **Section 5.2.2** - Three real SSAS screenshots visible
+- [ ] **Section 5.2.3** - Two real Redshift screenshots visible
+- [ ] **Section 5.2.4** - Three real Power BI screenshots visible
 - [ ] No placeholder boxes remain in Section 5
 - [ ] Appendix C lists all 41 screenshots (1–29 ETL + 30–41 BI)
 
@@ -616,15 +616,15 @@ git push
 
 | # | Tool | BQ | What to capture |
 |:--|:--|:--|:--|
-| 30 | SSRS | BQ2 | Report Designer — line chart + table layout in Design tab |
-| 31 | SSRS | BQ2 | Report Preview — rendered chart with 1989–1997 data |
-| 32 | SSRS | BQ9 | Report Designer — `@WeekID` parameter + table columns |
-| 33 | SSRS | BQ9 | Report Preview — 10-row Cracker table for a selected week |
-| 34 | SSAS | BQ3 | Cube Structure tab — Measures + Dimensions + Solution Explorer |
-| 35 | SSAS | BQ3 | Cube Browser — deal_type pivot, filtered to SDR |
-| 36 | SSAS | BQ3 | Cube Browser — drill-down adding Year to columns |
+| 30 | SSRS | BQ2 | Report Designer - line chart + table layout in Design tab |
+| 31 | SSRS | BQ2 | Report Preview - rendered chart with 1989–1997 data |
+| 32 | SSRS | BQ9 | Report Designer - `@WeekID` parameter + table columns |
+| 33 | SSRS | BQ9 | Report Preview - 10-row Cracker table for a selected week |
+| 34 | SSAS | BQ3 | Cube Structure tab - Measures + Dimensions + Solution Explorer |
+| 35 | SSAS | BQ3 | Cube Browser - deal_type pivot, filtered to SDR |
+| 36 | SSAS | BQ3 | Cube Browser - drill-down adding Year to columns |
 | 37 | Redshift | BQ4 | Query editor with full BQ4 SQL visible, before running |
-| 38 | Redshift | BQ4 | Results tab — 3 rows with lift_multiplier column |
-| 39 | Power BI | BQ8 | Model view — star schema with all 6 tables + relationships |
-| 40 | Power BI | BQ8 | Report Page 1 — bar chart + demographic table, TPA filter |
-| 41 | Power BI | BQ8 | Report Page 2 — Chicago store map with quartile bubble colors |
+| 38 | Redshift | BQ4 | Results tab - 3 rows with lift_multiplier column |
+| 39 | Power BI | BQ8 | Model view - star schema with all 6 tables + relationships |
+| 40 | Power BI | BQ8 | Report Page 1 - bar chart + demographic table, TPA filter |
+| 41 | Power BI | BQ8 | Report Page 2 - Chicago store map with quartile bubble colors |
