@@ -1135,13 +1135,13 @@ The following table documents where all data warehouse, reporting, and analysis 
 
 ### 5.4 Summary: All Business Questions Supported
 
-The table below confirms that every professor-approved BQ is supported by at least one BI report with charts and written analysis:
+The table below confirms that every professor-approved BQ is supported by at least one BI report with visual or analytical output and written analysis:
 
 | BQ | Question | Tool Used | Report Delivered | Charts | Analysis |
 |:--|:--|:--|:--|:--|:--|
 | BQ2 | Weekly SDR unit sales | SSRS | Tabular + trend chart | ✅ | ✅ |
 | BQ3 | Promo vs non-promo sales | SSAS | Cube pivot + drill-down | ✅ | ✅ |
-| BQ4 | Promo lift by type (CSO) | Redshift v.2 | Query results + lift table | ✅ | ✅ |
+| BQ4 | Promo lift by type (CSO) | Redshift v.2 | Analytical result set + lift table | Table | ✅ |
 | BQ8 | Store quartile tiers (TPA) | Power BI | Interactive dashboard | ✅ | ✅ |
 | BQ9 | Top 10 weekly CRA products | SSRS | Parameterized report | ✅ | ✅ |
 
