@@ -458,6 +458,14 @@ def main():
             i += 1
             continue
 
+        # ── Tab-indented line (TOC subsections) ──────────────────────────
+        if line.startswith("\t"):
+            p = doc.add_paragraph()
+            p.paragraph_format.left_indent = Cm(1.0)
+            process_inline(p, line.strip())
+            i += 1
+            continue
+
         # ── Regular paragraph ─────────────────────────────────────────────
         p = doc.add_paragraph()
         process_inline(p, line)

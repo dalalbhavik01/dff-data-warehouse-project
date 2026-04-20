@@ -12,13 +12,40 @@
 
 ## Table of Contents
 
-1. Introduction
-2. Business Questions and Substantiations
-3. Independent Data Marts Design Using Kimball's Approach
-4. Data Cleaning and Integration
-5. BI Reporting
-6. References
-7. Appendix
+**1.	Introduction**
+	1.1	About Dominick's Fine Foods
+	1.2	Project Design Specifications
+	1.3	Understanding of the Data
+	1.4	Key Data Quality Issues
+	1.5	Source Data Relationships and ETL Architecture
+**2.	Business Questions and Substantiations**
+	2.1	Literature Review
+	2.2	Business Questions (10 Questions with Difficulty Classification)
+	2.3	Prioritization of Business Questions
+	2.4	Data Evidence Supporting Selected Business Questions
+**3.	Independent Data Marts Design Using Kimball's Approach**
+	3.1	Data Mart / Dimension Bus Matrix
+	3.2	Data Warehouse Logical Design (Star Schema Design)
+	3.3	Selected Business Questions
+	3.4	Star Schema — Table Definitions
+	3.5	Schema Justification — How Each BQ Is Supported
+	3.6	Entity-Relationship Diagram (ERD)
+	3.7	Mapping Table #1: Source Files to Staging Tables
+	3.8	Mapping Table #2: Staging Tables to Data Mart Tables
+	3.9	Physical Design Plan
+**4.	Data Cleaning and Integration**
+	4.1	Development of the ETL Plan
+	4.2	Implementation of the ETL Plan
+**5.	BI Reporting**
+	5.1	Reporting Plan
+	5.2	Report Implementation
+	5.3	BI Tool Deployment and Storage Locations
+	5.4	Summary: All Business Questions Supported
+**6.	References**
+**7.	Appendix**
+	Appendix A: Complete SQL Scripts
+	Appendix B: Mapping Tables
+	Appendix C: Complete Screenshot Index
 
 ---
 
