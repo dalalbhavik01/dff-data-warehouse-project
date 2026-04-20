@@ -303,17 +303,20 @@ def main():
     normal.font.size = Pt(12)
 
     # Heading fonts — Times New Roman, restrained sizes, plain black
+    # Spacing matched to Report 3: H1 before=12/after=6, H2/H3 before=8/after=4
     heading_config = {
-        "Heading 1": Pt(16),   # ## Section X
-        "Heading 2": Pt(14),   # ### subsection
-        "Heading 3": Pt(12),   # #### sub-subsection
+        "Heading 1": (Pt(16), Pt(12), Pt(6)),   # ## Section X
+        "Heading 2": (Pt(14), Pt(8),  Pt(4)),   # ### subsection
+        "Heading 3": (Pt(12), Pt(8),  Pt(4)),   # #### sub-subsection
     }
-    for style_name, size in heading_config.items():
+    for style_name, (size, sp_before, sp_after) in heading_config.items():
         try:
             h_style = doc.styles[style_name]
             h_style.font.name  = "Times New Roman"
             h_style.font.size  = size
             h_style.font.color.rgb = RGBColor(0x00, 0x00, 0x00)
+            h_style.paragraph_format.space_before = sp_before
+            h_style.paragraph_format.space_after  = sp_after
         except KeyError:
             pass
 
