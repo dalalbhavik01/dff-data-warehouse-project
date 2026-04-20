@@ -29,7 +29,7 @@ SELECT 'DimStore',                  COUNT(*)        FROM DimStore           UNIO
 SELECT 'DimProduct',                COUNT(*)        FROM DimProduct         UNION ALL
 SELECT 'DimTime',                   COUNT(*)        FROM DimTime;
 ```
-Expected minimums: FactWeeklySales ≥ 14,000,000 | DimStore = 107 | DimCategory = 12 | DimTime ≥ 400
+Expected minimums: FactWeeklySales ≥ 14,000,000 | DimStore = 107 | DimCategory = 28 | DimTime ≥ 400
 
 ---
 
@@ -239,13 +239,23 @@ Expected minimums: FactWeeklySales ≥ 14,000,000 | DimStore = 107 | DimCategory
    - In the Cube designer, right-click in the Calculations tab → New Calculated Member
    - Name: `[Avg Units Sold]` | Expression: `[Measures].[units_sold] / [Measures].[Record Count]`
 
-### 2.5 Deploy the Cube
+### 2.5 Configure Storage and Attribute Relationships
+
+1. The cube defaults to **MOLAP** storage mode (pre-computed aggregations stored in the multidimensional structure). Leave this as default — it provides the best query performance for interactive browsing.
+2. Open the **DimTime** dimension → click the **Attribute Relationships** tab:
+   - Ensure `week_id` rolls up to `quarter`, and `quarter` rolls up to `year`
+   - If not auto-detected, drag from `week_id` → `quarter` and `quarter` → `year` to create the relationships
+3. Open the **DimPromotion** dimension → Attribute Relationships tab:
+   - Ensure `deal_code` relates to `deal_type` and `is_promoted` (these should be rigid relationships since the mapping doesn't change over time)
+
+### 2.6 Deploy the Cube
 
 1. Make sure your local SSAS instance is running (check Services on Windows)
 2. From the menu: **Build → Deploy DFF_Sales_Cube**
 3. Look for "Deploy: 1 succeeded" in the Output window
+4. The cube will be **processed** automatically during deployment, populating all MOLAP aggregations from the star schema data
 
-### 2.6 Browse the Cube
+### 2.7 Browse the Cube
 
 1. Double-click `DFF_Sales_Cube.cube` → click the **Browser** tab at the top
 2. Click **Reconnect** if needed
