@@ -94,17 +94,9 @@ The following diagram illustrates the complete data flow from operational source
 
 ### 2.1 Literature Review
 
-Our research draws on published studies that used the DFF dataset:
+Our data warehouse design and business question formulation are grounded in prior academic research that used the DFF dataset. Hoch, Drèze, and Purk (1994) demonstrated that DFF's zone-based pricing strategy could increase profits by 3–5% through optimized price tiers, validating the importance of store-level pricing analysis. Chevalier, Kashyap, and Rossi (2003) used DFF data to show that retailers use loss-leader pricing during peak seasons, with promotional pricing following counter-cyclical patterns directly relevant to our promotional lift analysis (BQ3, BQ4). Chintagunta (2002) analyzed brand-level pricing competition within DFF categories, supporting the need for product-level granularity. Mehta and Ma (2012) used DFF scanner data to demonstrate data mining techniques for category management and demand forecasting. Montgomery (1997) used DFF data to develop store-level pricing models, reinforcing the importance of demographic segmentation in pricing decisions (BQ8). Full citations are listed in Section 6: References.
 
-1. **Hoch, Drèze, and Purk (1994)** — "EDLP, Hi-Lo, and Margin Arithmetic." Demonstrated that DFF's zone-based pricing strategy could increase profits by 3–5% through optimized price tiers, validating the importance of store-level pricing analysis.
 
-2. **Chevalier, Kashyap, and Rossi (2003)** — "Why Don't Prices Rise During Periods of Peak Demand?" Used DFF data to show that retailers use loss-leader pricing during peak seasons. Found that promotional pricing follows counter-cyclical patterns, directly relevant to our promotional lift analysis.
-
-3. **Chintagunta (2002)** — "Investigating Category Pricing Behavior at a Retail Chain." Analyzed brand-level pricing competition within DFF categories, supporting the need for product-level and brand-level granularity in the data warehouse.
-
-4. **Mehta and Ma (2012)** — "A High Dimensional Data Analysis Approach for Retail Data." Used DFF scanner data to demonstrate data mining techniques for category management and demand forecasting at retail chains.
-
-5. **Montgomery (1997)** — "Creating Micro-Marketing Pricing Strategies Using Supermarket Scanner Data." Used DFF data to develop store-level pricing models, reinforcing the importance of demographic segmentation in pricing decisions.
 
 ### 2.2 Business Questions (10 Questions with Difficulty Classification)
 
@@ -325,11 +317,11 @@ The professor selected 5 BQs from our list of 10 for implementation:
 
 ### 3.6 Star Schema Diagram
 
-**Figure 2: Star Schema ERD — FactWeeklySales with 5 Dimensions**
+**Figure 2: Star Schema Diagram — FactWeeklySales with 5 Dimensions**
 
-![Star Schema ERD](star_schema_erd.png)
+![Star Schema Diagram](star_schema_erd.png)
 
-*ERD generated using a diagramming tool showing all table attributes with data types. Relationship lines connect the fact table's foreign keys to each dimension's primary key.*
+*Diagram generated using a diagramming tool showing all table attributes with data types. Relationship lines connect the fact table's foreign keys to each dimension's primary key.*
 
 ### 3.7 Mapping Table #1: Source Files to Staging Tables
 
@@ -637,7 +629,12 @@ This section documents the actual implementation of the ETL plan using SSIS (SQL
 
 ### 4.2.1 Database Creation
 
-The two databases were created using the following SQL:
+The two databases were created on **SQL Server 2016** (server: `ISTM637-PC\SQLEXPRESS` in the TAMU ISTM Lab) using the following SQL:
+
+| Database | Purpose | Server |
+|:--|:--|:--|
+| `team1_staging_area` | Staging database — holds raw imported data from CSV source files before transformation | `ISTM637-PC\SQLEXPRESS` (SQL Server 2016, TAMU ISTM Lab) |
+| `team1_dw_area` | Data mart (presentation server) — holds the star schema with fact and dimension tables for BI reporting | `ISTM637-PC\SQLEXPRESS` (SQL Server 2016, TAMU ISTM Lab) |
 
 ```sql
 CREATE DATABASE [team1_staging_area];
