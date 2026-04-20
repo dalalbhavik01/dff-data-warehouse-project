@@ -28,6 +28,44 @@ OUT_PATH   = os.path.join(SCRIPT_DIR, "Integrated_Report_4.docx")
 # Helpers
 # ---------------------------------------------------------------------------
 
+
+def add_toc_field(doc):
+    """
+    Insert a dynamic Table of Contents field into the document.
+    When the user opens the DOCX in Word, they right-click the TOC → Update Field
+    to auto-populate from Heading 1/2/3 styles. In Google Docs, it renders as
+    a placeholder that can be replaced with Insert → Table of Contents.
+    """
+    p = doc.add_paragraph()
+    run = p.add_run()
+    fld_char_begin = OxmlElement('w:fldChar')
+    fld_char_begin.set(qn('w:fldCharType'), 'begin')
+    run._r.append(fld_char_begin)
+
+    run2 = p.add_run()
+    instr = OxmlElement('w:instrText')
+    instr.set(qn('xml:space'), 'preserve')
+    instr.text = ' TOC \\o "1-3" \\h \\z \\u '
+    run2._r.append(instr)
+
+    run3 = p.add_run()
+    fld_char_separate = OxmlElement('w:fldChar')
+    fld_char_separate.set(qn('w:fldCharType'), 'separate')
+    run3._r.append(fld_char_separate)
+
+    # Placeholder text shown before the field is updated
+    run4 = p.add_run('Right-click here and select "Update Field" to generate the Table of Contents.')
+    run4.font.name = "Times New Roman"
+    run4.font.size = Pt(12)
+    run4.font.color.rgb = RGBColor(0x80, 0x80, 0x80)
+
+    run5 = p.add_run()
+    fld_char_end = OxmlElement('w:fldChar')
+    fld_char_end.set(qn('w:fldCharType'), 'end')
+    run5._r.append(fld_char_end)
+
+    return p
+
 def set_cell_bg(cell, hex_color):
     """Set a table cell background color via OOXML shading."""
     shd = OxmlElement("w:shd")
@@ -362,11 +400,22 @@ def main():
             i += 1
             continue
         if line.startswith("## "):
-            p = doc.add_heading(line[3:].strip(), level=1)
+            heading_text = line[3:].strip()
+            p = doc.add_heading(heading_text, level=1)
             for run in p.runs:
                 run.font.name  = "Times New Roman"
                 run.font.size  = Pt(16)
                 run.font.color.rgb = RGBColor(0x00, 0x00, 0x00)
+            # If this is the TOC heading, insert a dynamic TOC field
+            # and skip all static TOC entries until the next '---'
+            if heading_text == "Table of Contents":
+                add_toc_field(doc)
+                i += 1
+                while i < len(lines):
+                    skip_line = lines[i].rstrip("\n")
+                    if skip_line.strip() == "---":
+                        break
+                    i += 1
             i += 1
             continue
         if line.startswith("### "):
