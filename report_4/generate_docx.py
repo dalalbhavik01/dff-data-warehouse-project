@@ -146,7 +146,7 @@ def add_code_block(doc, code_text):
     p.paragraph_format.space_after  = Pt(4)
     run = p.add_run(code_text)
     run.font.name  = "Courier New"
-    run.font.size  = Pt(12)
+    run.font.size  = Pt(9)
     run.font.color.rgb = RGBColor(0x00, 0x00, 0x00)
     doc.add_paragraph("")
 
@@ -170,7 +170,7 @@ def add_md_table(doc, header_line, data_lines):
         run = cell.paragraphs[0].add_run(h)
         run.bold = True
         run.font.name = "Times New Roman"
-        run.font.size = Pt(12)
+        run.font.size = Pt(9)
         set_cell_bg(cell, "D9E2F3")
 
     for r_idx, row_data in enumerate(rows_data):
@@ -179,7 +179,7 @@ def add_md_table(doc, header_line, data_lines):
             cell.text = ""
             run = cell.paragraphs[0].add_run(row_data[c_idx])
             run.font.name = "Times New Roman"
-            run.font.size = Pt(12)
+            run.font.size = Pt(9)
 
     doc.add_paragraph("")
 
@@ -304,8 +304,8 @@ def main():
 
     # Heading fonts — Times New Roman, restrained sizes, plain black
     heading_config = {
-        "Heading 1": Pt(14),   # ## Section X
-        "Heading 2": Pt(13),   # ### subsection
+        "Heading 1": Pt(16),   # ## Section X
+        "Heading 2": Pt(14),   # ### subsection
         "Heading 3": Pt(12),   # #### sub-subsection
     }
     for style_name, size in heading_config.items():
@@ -351,10 +351,10 @@ def main():
         if line.startswith("# ") and not line.startswith("## "):
             p = doc.add_heading(line[2:].strip(), level=0)
             p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            # Title: 16pt Times New Roman bold, black
+            # Title: 18pt Times New Roman bold, black
             for run in p.runs:
                 run.font.name  = "Times New Roman"
-                run.font.size  = Pt(16)
+                run.font.size  = Pt(18)
                 run.font.color.rgb = RGBColor(0x00, 0x00, 0x00)
             i += 1
             continue
@@ -362,7 +362,7 @@ def main():
             p = doc.add_heading(line[3:].strip(), level=1)
             for run in p.runs:
                 run.font.name  = "Times New Roman"
-                run.font.size  = Pt(14)
+                run.font.size  = Pt(16)
                 run.font.color.rgb = RGBColor(0x00, 0x00, 0x00)
             i += 1
             continue
@@ -370,7 +370,7 @@ def main():
             p = doc.add_heading(line[4:].strip(), level=2)
             for run in p.runs:
                 run.font.name  = "Times New Roman"
-                run.font.size  = Pt(13)
+                run.font.size  = Pt(14)
                 run.font.color.rgb = RGBColor(0x00, 0x00, 0x00)
             i += 1
             continue
