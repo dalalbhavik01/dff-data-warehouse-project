@@ -355,8 +355,18 @@ def main():
             h_style.font.color.rgb = RGBColor(0x00, 0x00, 0x00)
             h_style.paragraph_format.space_before = sp_before
             h_style.paragraph_format.space_after  = sp_after
+            h_style.paragraph_format.page_break_before = False
+            h_style.paragraph_format.keep_with_next    = False
         except KeyError:
             pass
+
+    # Also disable page break on Title style
+    try:
+        title_style = doc.styles["Title"]
+        title_style.paragraph_format.page_break_before = False
+        title_style.paragraph_format.keep_with_next    = False
+    except KeyError:
+        pass
 
     i            = 0
     in_code      = False
