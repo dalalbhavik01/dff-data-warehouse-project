@@ -27,8 +27,8 @@
 	3.1	Data Mart / Dimension Bus Matrix
 	3.2	Data Warehouse Logical Design (Star Schema Design)
 	3.3	Selected Business Questions
-	3.4	Star Schema — Table Definitions
-	3.5	Schema Justification — How Each BQ Is Supported
+	3.4	Star Schema - Table Definitions
+	3.5	Schema Justification - How Each BQ Is Supported
 	3.6	Entity-Relationship Diagram (ERD)
 	3.7	Mapping Table #1: Source Files to Staging Tables
 	3.8	Mapping Table #2: Staging Tables to Data Mart Tables
@@ -53,7 +53,7 @@
 
 ### 1.1 About Dominick's Fine Foods
 
-Dominick's Finer Foods was a prominent Chicago-area supermarket chain that operated approximately 100 stores throughout the metropolitan region during the late 1980s and early 1990s. Between 1989 and 1994, the University of Chicago Booth School of Business (James M. Kilts Center for Marketing) partnered with Dominick's to conduct store-level research on shelf management and pricing. Randomized experiments were conducted in over 25 product categories across the chain. The resulting dataset — approximately 5 GB of store-level scanner data — is one of the most comprehensive publicly available retail datasets (Kilts Center, 2013).
+Dominick's Finer Foods was a prominent Chicago-area supermarket chain that operated approximately 100 stores throughout the metropolitan region during the late 1980s and early 1990s. Between 1989 and 1994, the University of Chicago Booth School of Business (James M. Kilts Center for Marketing) partnered with Dominick's to conduct store-level research on shelf management and pricing. Randomized experiments were conducted in over 25 product categories across the chain. The resulting dataset - approximately 5 GB of store-level scanner data - is one of the most comprehensive publicly available retail datasets (Kilts Center, 2013).
 
 The objective of this project is to design and develop a data warehouse for DFF using their store-level data to help analyze sales performance, promotional effectiveness, and customer traffic patterns across all branches.
 
@@ -113,7 +113,7 @@ The following diagram illustrates the complete data flow from operational source
 
 ![DFF Hybrid Data Pipeline Architecture](etl_pipeline_diagram.png)
 
-**Figure 1.** DFF Hybrid ETL Pipeline Architecture — Source files → Staging → Data Mart
+**Figure 1.** DFF Hybrid ETL Pipeline Architecture - Source files → Staging → Data Mart
 
 ---
 
@@ -151,16 +151,16 @@ Based on our analysis of the DFF data, published research, and class slides, we 
 
 | Priority | BQ | Rationale |
 |:--|:--|:--|
-| 1 | BQ4 | Highest ROI — understanding which promotion type works best per category directly impacts promotional budget allocation |
-| 2 | BQ2 | High-volume trend monitoring — Soft Drinks is the largest category (17.7M rows); weekly trends enable demand forecasting |
-| 3 | BQ8 | Zone pricing validation — Hoch et al. showed zone pricing could increase profits 3–5%; quartile analysis reveals miscalibrated zones |
-| 4 | BQ3 | Promotion ROI — quantifies the aggregate sales lift from promotions, informing overall promotional strategy |
-| 5 | BQ9 | Product velocity monitoring — weekly product rankings enable rapid assortment adjustments |
-| 6 | BQ1 | Category management foundation — total volume determines shelf space and supply chain priorities |
-| 7 | BQ5 | Location strategy — 30/70 urban-suburban split informs store openings and remodeling |
-| 8 | BQ6 | Competitive intelligence — brand share trends help negotiate with manufacturers |
-| 9 | BQ7 | Pricing consistency audit — large price variance may indicate pricing errors |
-| 10 | BQ10 | Profit optimization — percentile ranking identifies top and bottom performers within pricing zones |
+| 1 | BQ4 | Highest ROI - understanding which promotion type works best per category directly impacts promotional budget allocation |
+| 2 | BQ2 | High-volume trend monitoring - Soft Drinks is the largest category (17.7M rows); weekly trends enable demand forecasting |
+| 3 | BQ8 | Zone pricing validation - Hoch et al. showed zone pricing could increase profits 3–5%; quartile analysis reveals miscalibrated zones |
+| 4 | BQ3 | Promotion ROI - quantifies the aggregate sales lift from promotions, informing overall promotional strategy |
+| 5 | BQ9 | Product velocity monitoring - weekly product rankings enable rapid assortment adjustments |
+| 6 | BQ1 | Category management foundation - total volume determines shelf space and supply chain priorities |
+| 7 | BQ5 | Location strategy - 30/70 urban-suburban split informs store openings and remodeling |
+| 8 | BQ6 | Competitive intelligence - brand share trends help negotiate with manufacturers |
+| 9 | BQ7 | Pricing consistency audit - large price variance may indicate pricing errors |
+| 10 | BQ10 | Profit optimization - percentile ranking identifies top and bottom performers within pricing zones |
 
 ### 2.4 Data Evidence Supporting Selected Business Questions
 
@@ -189,7 +189,7 @@ The data warehouse logical design follows Kimball's bottom-up methodology for bu
 
 **Step 3: Design Fact Tables.** The fact table, FactWeeklySales, has a grain of one row per UPC × Store × Week with both base facts (units_sold, gross_profit) and derived facts (revenue, profit_margin_pct).
 
-**Step 4: Design Dimension Tables.** Each dimension uses surrogate keys (4-byte INT), retains natural keys as attributes for traceability, and is fully denormalized (no snowflaking — as emphasized in class, snowflaking slows browsing and degrades query performance).
+**Step 4: Design Dimension Tables.** Each dimension uses surrogate keys (4-byte INT), retains natural keys as attributes for traceability, and is fully denormalized (no snowflaking - as emphasized in class, snowflaking slows browsing and degrades query performance).
 
 **Step 5: Feedback for the Design.** The schema was validated against all 10 BQs; all are answerable. The 5 selected BQs were specifically verified to be fully supported (Section 4.3).
 
@@ -219,7 +219,7 @@ The professor selected 5 BQs from our list of 10 for implementation:
 | BQ8 | Store quartile tiers by Toothpaste revenue + demographics | TPA | NTILE + Drill-down | 🔴 Hard |
 | BQ9 | Weekly top 10 Cracker products with week-over-week change | CRA | RANK + LAG | 🔴 Hard |
 
-### 3.4 Star Schema — Table Definitions
+### 3.4 Star Schema - Table Definitions
 
 **Implementation scope:** The full DFF dataset contains 28 product categories (~14,000 UPCs, ~134.9M movement rows). This implementation is scoped to the 4 categories required by the 5 selected BQs: Soft Drinks (SDR), Canned Soup (CSO), Toothpaste (TPA), and Crackers (CRA), yielding ~3,112 UPCs and ~34.6M movement rows. The schema supports full-scale loading of all 28 categories without structural changes.
 
@@ -227,12 +227,12 @@ The professor selected 5 BQs from our list of 10 for implementation:
 
 | Column | Data Type | Description | Source | Additivity |
 |:--|:--|:--|:--|:--|
-| sales_fact_id (PK) | INT | Surrogate key | Generated | — |
-| product_key (FK) | INT | → DimProduct | Mapped from UPC | — |
-| store_key (FK) | INT | → DimStore | Mapped from STORE | — |
-| time_key (FK) | INT | → DimTime | Mapped from WEEK | — |
-| category_key (FK) | INT | → DimCategory | Derived from filename | — |
-| promotion_key (FK) | INT | → DimPromotion | Mapped from SALE | — |
+| sales_fact_id (PK) | INT | Surrogate key | Generated | - |
+| product_key (FK) | INT | → DimProduct | Mapped from UPC | - |
+| store_key (FK) | INT | → DimStore | Mapped from STORE | - |
+| time_key (FK) | INT | → DimTime | Mapped from WEEK | - |
+| category_key (FK) | INT | → DimCategory | Derived from filename | - |
+| promotion_key (FK) | INT | → DimPromotion | Mapped from SALE | - |
 | units_sold | INT | Units moved/sold | MOVE | Additive |
 | unit_price | DECIMAL(8,2) | Price per unit | PRICE / QTY | Non-additive |
 | shelf_price | DECIMAL(8,2) | Listed shelf price | PRICE | Semi-additive |
@@ -330,7 +330,7 @@ The professor selected 5 BQs from our list of 10 for implementation:
 
 **Cardinality:** 4 rows
 
-### 3.5 Schema Justification — How Each BQ Is Supported
+### 3.5 Schema Justification - How Each BQ Is Supported
 
 **BQ2 (Weekly SDR sales):** Query FactWeeklySales joined to DimTime and DimCategory, GROUP BY week_id, SUM(units_sold). All required columns are present. ✅
 
@@ -537,9 +537,9 @@ Two mapping tables were prepared in Excel format (see Sections 3.7 and 3.8):
 
 | Rule | Description |
 |:--|:--|
-| **Extraction Technique** | Capture of Static Data — CSV files are static historical snapshots. No impact on source systems. |
+| **Extraction Technique** | Capture of Static Data - CSV files are static historical snapshots. No impact on source systems. |
 | **Extraction Frequency** | One-time initial load (complete historical dataset, no incremental updates). |
-| **Time Window** | Not applicable — batch load of complete files during off-peak hours. |
+| **Time Window** | Not applicable - batch load of complete files during off-peak hours. |
 | **Source Identification** | 4 Movement CSVs + 4 UPC CSVs + DEMO.csv = 9 source files. |
 | **Quality Filter** | Extract only rows where OK = 1 from Movement files (quality-validated observations). |
 | **Encoding** | All CSV files require Windows-1252 (CP1252) encoding, not UTF-8. |
@@ -617,11 +617,11 @@ SQL Server 2016
 
 The ETL is implemented through **three SSIS packages** executed sequentially:
 
-**Package 1: `01_Extract_to_Staging.dtsx`** — Extracts all 9 CSV source files into staging tables using Data Flow Tasks. Each task uses a Flat File Source (encoding 1252, comma-delimited) connected to an OLE DB Destination targeting the staging database.
+**Package 1: `01_Extract_to_Staging.dtsx`** - Extracts all 9 CSV source files into staging tables using Data Flow Tasks. Each task uses a Flat File Source (encoding 1252, comma-delimited) connected to an OLE DB Destination targeting the staging database.
 
-**Package 2: `02_Transform_Staging.dtsx`** — Executes transformations T1, T2, and T5–T7 in the staging area using Execute SQL Tasks. This includes adding CATEGORY_CODE columns, replacing NULL values, cleaning descriptions, and creating the tmp_Product_All UNION table.
+**Package 2: `02_Transform_Staging.dtsx`** - Executes transformations T1, T2, and T5–T7 in the staging area using Execute SQL Tasks. This includes adding CATEGORY_CODE columns, replacing NULL values, cleaning descriptions, and creating the tmp_Product_All UNION table.
 
-**Package 3: `03_Load_DataMart.dtsx`** — Creates and populates all dimension and fact tables in the data mart. Dimensions are loaded first (DimCategory → DimPromotion → DimTime → DimStore → DimProduct), then the fact table (FactWeeklySales). Uses both Execute SQL Tasks (for hardcoded inserts and complex JOINs) and Data Flow Tasks (for staging-to-DW transfers). Completes with DROP TABLE for temporary tables.
+**Package 3: `03_Load_DataMart.dtsx`** - Creates and populates all dimension and fact tables in the data mart. Dimensions are loaded first (DimCategory → DimPromotion → DimTime → DimStore → DimProduct), then the fact table (FactWeeklySales). Uses both Execute SQL Tasks (for hardcoded inserts and complex JOINs) and Data Flow Tasks (for staging-to-DW transfers). Completes with DROP TABLE for temporary tables.
 
 ### 4.1.9 ETL for Dimension Table
 
@@ -660,8 +660,8 @@ The two databases were created on **SQL Server 2016** (server: `ISTM637-PC\SQLEX
 
 | Database | Purpose | Server |
 |:--|:--|:--|
-| `team1_staging_area` | Staging database — holds raw imported data from CSV source files before transformation | `ISTM637-PC\SQLEXPRESS` (SQL Server 2016, TAMU ISTM Lab) |
-| `team1_dw_area` | Data mart (presentation server) — holds the star schema with fact and dimension tables for BI reporting | `ISTM637-PC\SQLEXPRESS` (SQL Server 2016, TAMU ISTM Lab) |
+| `team1_staging_area` | Staging database - holds raw imported data from CSV source files before transformation | `ISTM637-PC\SQLEXPRESS` (SQL Server 2016, TAMU ISTM Lab) |
+| `team1_dw_area` | Data mart (presentation server) - holds the star schema with fact and dimension tables for BI reporting | `ISTM637-PC\SQLEXPRESS` (SQL Server 2016, TAMU ISTM Lab) |
 
 ```sql
 CREATE DATABASE [team1_staging_area];
@@ -742,19 +742,19 @@ ORDER BY TableName;
 
 The SQL transformations executed in this package include:
 
-**T1 — Add CATEGORY_CODE:**
+**T1 - Add CATEGORY_CODE:**
 ```sql
 ALTER TABLE dbo.stg_Movement_SDR ADD CATEGORY_CODE CHAR(3);
 UPDATE dbo.stg_Movement_SDR SET CATEGORY_CODE = 'SDR';
 -- (repeated for CSO, TPA, CRA)
 ```
 
-**T2 — Replace NULL SALE:**
+**T2 - Replace NULL SALE:**
 ```sql
 UPDATE dbo.stg_Movement_SDR SET SALE = 'N' WHERE SALE IS NULL OR LTRIM(RTRIM(SALE)) = '';
 ```
 
-**T5 — Create tmp_Product_All:**
+**T5 - Create tmp_Product_All:**
 ```sql
 SELECT COM_CODE, UPC, DESCRIP, SIZE, CASE_PACK, NITEM, CATEGORY_CODE
 INTO dbo.tmp_Product_All
@@ -873,9 +873,9 @@ DROP TABLE [team1_staging_area].dbo.tmp_Product_All;
 
 The **grain** of the FactWeeklySales table is defined as: _"one row per unique combination of UPC, Store, and Week."_ This grain was chosen because:
 
-1. **It matches the source data grain** — each row in the Movement CSV files represents one UPC at one store for one week.
-2. **It supports all 5 selected BQs** — BQ2 aggregates by week (roll-up on UPC and store), BQ3/BQ4 slice by promotion type, BQ8 aggregates by store (roll-up on UPC and week), and BQ9 aggregates by UPC and week (roll-up on store).
-3. **It preserves maximum analytical flexibility** — the atomic grain allows users to drill down to any combination of product, store, time, category, and promotion.
+1. **It matches the source data grain** - each row in the Movement CSV files represents one UPC at one store for one week.
+2. **It supports all 5 selected BQs** - BQ2 aggregates by week (roll-up on UPC and store), BQ3/BQ4 slice by promotion type, BQ8 aggregates by store (roll-up on UPC and week), and BQ9 aggregates by UPC and week (roll-up on store).
+3. **It preserves maximum analytical flexibility** - the atomic grain allows users to drill down to any combination of product, store, time, category, and promotion.
 
 A coarser grain (e.g., Category × Store × Week) would make BQ9 impossible because individual product rankings require UPC-level data.
 
@@ -883,7 +883,7 @@ A coarser grain (e.g., Category × Store × Week) would make BQ9 impossible beca
 
 After completing the ETL, we verified the data mart can answer all 5 selected BQs:
 
-**BQ2 — Weekly Soft Drink Sales:**
+**BQ2 - Weekly Soft Drink Sales:**
 ```sql
 SELECT dt.week_id, dt.week_start_date,
        SUM(f.units_sold) AS total_units_sold
@@ -897,7 +897,7 @@ ORDER BY dt.week_id;
 
 ![Screenshot 25](screenshots/screenshot_25.png)
 
-**BQ3 — Promotion vs Non-Promotion:**
+**BQ3 - Promotion vs Non-Promotion:**
 ```sql
 SELECT dp.deal_type, dp.is_promoted,
        COUNT(*) AS num_records,
@@ -912,7 +912,7 @@ ORDER BY avg_units DESC;
 
 ![Screenshot 26](screenshots/screenshot_26.png)
 
-**BQ4 — Promotion Lift by Type (Canned Soup):**
+**BQ4 - Promotion Lift by Type (Canned Soup):**
 ```sql
 DECLARE @baseline FLOAT;
 SELECT @baseline = AVG(CAST(f.units_sold AS FLOAT))
@@ -935,7 +935,7 @@ ORDER BY lift DESC;
 
 ![Screenshot 27](screenshots/screenshot_27.png)
 
-**BQ8 — Store Quartile Tiers (Toothpaste):**
+**BQ8 - Store Quartile Tiers (Toothpaste):**
 ```sql
 WITH store_rev AS (
     SELECT f.store_key, SUM(f.revenue) AS total_rev
@@ -962,7 +962,7 @@ ORDER BY avg_rev DESC;
 
 ![Screenshot 28](screenshots/screenshot_28.png)
 
-**BQ9 — Top 10 Weekly Cracker Products with WoW Change:**
+**BQ9 - Top 10 Weekly Cracker Products with WoW Change:**
 ```sql
 WITH weekly AS (
     SELECT dp.upc, dp.description, dt.week_id,
@@ -1009,7 +1009,7 @@ This section presents the final phase of the data warehousing lifecycle: deliver
 - **Application/Analytical Layer:** SSAS cube engine (multidimensional OLAP processing), SSRS report server (authoring and management), Redshift query engine (cloud-based columnar analytics), and Power BI data model (in-memory analytical engine).
 - **Presentation Layer:** SSRS rendered reports (Preview/web deployment), SSAS Cube Browser (drag-and-drop pivot), Redshift Query Editor v.2 results pane, and Power BI interactive dashboards.
 
-Using four distinct reporting tools — SSRS, SSAS, Redshift Query v.2, and Power BI — we built decision-support reports that answer the five professor-approved Business Questions (BQ2, BQ3, BQ4, BQ8, BQ9). Reports for BQ2, BQ3, BQ8, and BQ9 draw directly from the `team1_dw_area` data mart on SQL Server 2016. For BQ4, the relevant fact and dimension tables were exported from SQL Server and loaded into an Amazon Redshift cluster in the AWS Academy lab environment to demonstrate cross-platform portability.
+Using four distinct reporting tools - SSRS, SSAS, Redshift Query v.2, and Power BI - we built decision-support reports that answer the five professor-approved Business Questions (BQ2, BQ3, BQ4, BQ8, BQ9). Reports for BQ2, BQ3, BQ8, and BQ9 draw directly from the `team1_dw_area` data mart on SQL Server 2016. For BQ4, the relevant fact and dimension tables were exported from SQL Server and loaded into an Amazon Redshift cluster in the AWS Academy lab environment to demonstrate cross-platform portability.
 
 ### 5.1 Reporting Plan
 
@@ -1054,7 +1054,7 @@ All four tools required by the professor are used at least once:
 
 Both SSRS reports follow the authoring, management, and delivery lifecycle. During *authoring*, the report layout and dataset queries were designed in Visual Studio using the Report Designer. During *management*, a shared data source (`DFF_DataSource`) was configured to connect to `team1_dw_area`, and report parameters were defined. During *delivery*, the reports were previewed locally in the Preview tab to verify correctness before final submission.
 
-**BQ2 — Weekly Soft Drink Unit Sales (SSRS Tabular Report)**
+**BQ2 - Weekly Soft Drink Unit Sales (SSRS Tabular Report)**
 
 The SSRS report connects to the shared data source and executes the BQ2 verification query (see Section 4.2.9). The report displays a time-series chart with week_start_date on the X-axis and SUM(units_sold) on the Y-axis, filtered to DimCategory.category_code = 'SDR'.
 
@@ -1062,7 +1062,7 @@ The SSRS report connects to the shared data source and executes the BQ2 verifica
 
 > **[Screenshot 31 Placeholder]** SSRS Report Preview tab: click Preview after building the report. Capture the rendered line chart showing weekly Soft Drink unit sales from 1989–1997 with the data table rows below it.
 
-**BQ9 — Weekly Top 10 Cracker Products (SSRS Parameterized Report)**
+**BQ9 - Weekly Top 10 Cracker Products (SSRS Parameterized Report)**
 
 This parameterized SSRS report allows the user to select a week_id and see the top 10 Cracker products by units sold, along with the previous week's units and the week-over-week change (computed via LAG). The report uses the RANK + LAG query from Section 4.2.9.
 
@@ -1072,7 +1072,7 @@ This parameterized SSRS report allows the user to select a week_id and see the t
 
 #### 5.2.2 Report from Cubes Using SSAS
 
-**BQ3 — Promotion vs Non-Promotion Sales Volume (SSAS Cube)**
+**BQ3 - Promotion vs Non-Promotion Sales Volume (SSAS Cube)**
 
 An SSAS multidimensional project was created in Visual Studio following the standard SSAS development workflow:
 
@@ -1093,12 +1093,12 @@ The BQ3 analysis uses the following OLAP operations: *slicing* by DimCategory.ca
 
 #### 5.2.3 Reports from Redshift Query v.2
 
-**BQ4 — Promotion Lift by Deal Type in Canned Soup (Redshift Query v.2)**
+**BQ4 - Promotion Lift by Deal Type in Canned Soup (Redshift Query v.2)**
 
-The BQ4 analysis was executed in Redshift Query v.2 as a query-based analytical output. Unlike the SSRS and Power BI reports which produce formatted charts and dashboards, the Redshift deliverable is a structured SQL result set — this is intentional, as BQ4's purpose is to compute precise numerical lift metrics rather than visualize trends. To prepare for this, the FactWeeklySales, DimPromotion, and DimCategory tables were exported from `team1_dw_area` on SQL Server as CSV files and loaded into the Redshift cluster using the COPY command in the AWS Academy lab environment. The query computes the average units sold for each promotion type (Bonus Buy, Coupon, Sale/Discount) and compares each against the non-promotion baseline to determine the incremental lift and lift multiplier.
+The BQ4 analysis was executed in Redshift Query v.2 as a query-based analytical output. Unlike the SSRS and Power BI reports which produce formatted charts and dashboards, the Redshift deliverable is a structured SQL result set - this is intentional, as BQ4's purpose is to compute precise numerical lift metrics rather than visualize trends. To prepare for this, the FactWeeklySales, DimPromotion, and DimCategory tables were exported from `team1_dw_area` on SQL Server as CSV files and loaded into the Redshift cluster using the COPY command in the AWS Academy lab environment. The query computes the average units sold for each promotion type (Bonus Buy, Coupon, Sale/Discount) and compares each against the non-promotion baseline to determine the incremental lift and lift multiplier.
 
 ```sql
--- BQ4: Promotion Lift by Deal Type — Canned Soup (Redshift Query v.2)
+-- BQ4: Promotion Lift by Deal Type - Canned Soup (Redshift Query v.2)
 WITH baseline AS (
     SELECT AVG(CAST(f.units_sold AS FLOAT)) AS avg_baseline
     FROM FactWeeklySales f
@@ -1123,11 +1123,11 @@ ORDER BY incremental_lift DESC;
 
 > **[Screenshot 37 Placeholder]** Amazon Redshift Query Editor v.2: paste the full BQ4 SQL query (shown in the code block above) into the editor. Capture the query editor with the full SQL visible and the Run button highlighted, before executing.
 
-> **[Screenshot 38 Placeholder]** Amazon Redshift Query Editor v.2 results: after clicking Run, capture the Results tab showing the output table with columns deal_type, num_promoted_records, avg_units_promoted, avg_baseline, incremental_lift, and lift_multiplier — with 3 rows (one per deal type, ordered by incremental_lift DESC).
+> **[Screenshot 38 Placeholder]** Amazon Redshift Query Editor v.2 results: after clicking Run, capture the Results tab showing the output table with columns deal_type, num_promoted_records, avg_units_promoted, avg_baseline, incremental_lift, and lift_multiplier - with 3 rows (one per deal type, ordered by incremental_lift DESC).
 
 #### 5.2.4 Reports Using Power BI
 
-**BQ8 — Store Quartile Tiers by Toothpaste Revenue with Demographics (Power BI Dashboard)**
+**BQ8 - Store Quartile Tiers by Toothpaste Revenue with Demographics (Power BI Dashboard)**
 
 A Power BI dashboard was built by connecting directly to the `team1_dw_area` database. The dashboard contains:
 
@@ -1135,13 +1135,13 @@ A Power BI dashboard was built by connecting directly to the `team1_dw_area` dat
 2. **Demographic Comparison Table:** A matrix visual comparing avg_income, population_density, education_pct, poverty_pct, and urban store count across the three tiers.
 3. **Map View:** A geographic scatter plot of store locations sized by revenue and colored by tier.
 
-The dashboard confirms that Top 25% Toothpaste stores tend to have higher average income, higher population density, and are more likely to be urban — validating the hypothesis that demographic factors influence category performance.
+The dashboard confirms that Top 25% Toothpaste stores tend to have higher average income, higher population density, and are more likely to be urban - validating the hypothesis that demographic factors influence category performance.
 
-> **[Screenshot 39 Placeholder]** Power BI Desktop — Model View: click the Model icon (third icon in the left sidebar). Capture the canvas showing FactWeeklySales at center with relationship lines to DimStore, DimTime, DimCategory, DimProduct, and DimPromotion, with each table's key fields visible.
+> **[Screenshot 39 Placeholder]** Power BI Desktop - Model View: click the Model icon (third icon in the left sidebar). Capture the canvas showing FactWeeklySales at center with relationship lines to DimStore, DimTime, DimCategory, DimProduct, and DimPromotion, with each table's key fields visible.
 
-> **[Screenshot 40 Placeholder]** Power BI Desktop — Report Page 1: build a horizontal bar chart (X-axis: Total TPA Revenue, Y-axis: Store Quartile) and a table visual (columns: Store Name, City, Revenue, Avg Income, Price Tier, Is Urban, Quartile). Apply a page-level filter: `category_code = TPA`. Capture the full report page with Filters pane and Fields pane visible.
+> **[Screenshot 40 Placeholder]** Power BI Desktop - Report Page 1: build a horizontal bar chart (X-axis: Total TPA Revenue, Y-axis: Store Quartile) and a table visual (columns: Store Name, City, Revenue, Avg Income, Price Tier, Is Urban, Quartile). Apply a page-level filter: `category_code = TPA`. Capture the full report page with Filters pane and Fields pane visible.
 
-> **[Screenshot 41 Placeholder]** Power BI Desktop — Report Page 2: add a Map visual using DimStore city/zip for location, bubble size = Total TPA Revenue, bubble color = Store Quartile. Add two Card visuals showing Total Stores and Total TPA Revenue. Capture the complete page showing the Chicago metro map with colored store bubbles and the legend.
+> **[Screenshot 41 Placeholder]** Power BI Desktop - Report Page 2: add a Map visual using DimStore city/zip for location, bubble size = Total TPA Revenue, bubble color = Store Quartile. Add two Card visuals showing Total Stores and Total TPA Revenue. Capture the complete page showing the Chicago metro map with colored store bubbles and the legend.
 
 ### 5.3 BI Tool Deployment and Storage Locations
 
@@ -1156,7 +1156,7 @@ The following table documents where all data warehouse, reporting, and analysis 
 | SSAS Cube | SSAS instance on ISTM637-PC, database: `DFF_Sales_Cube` |
 | Power BI Dashboard (.pbix) | Local file: `DFF_BQ8_Dashboard.pbix`, shared with team via OneDrive |
 | Redshift Queries | Amazon Redshift Query Editor v.2 (AWS Academy lab environment) |
-| SQL Scripts | `report_4/sql/` directory — 8 scripts (see Appendix A) |
+| SQL Scripts | `report_4/sql/` directory - 8 scripts (see Appendix A) |
 | Mapping Tables (Excel) | `report_4/MappingTables.xlsx` (see Appendix B) |
 
 ### 5.4 Summary: All Business Questions Supported
@@ -1203,7 +1203,7 @@ The complete SQL logic for the implementation is provided below.
 ```sql
 -- ============================================================
 -- Script 01: Create Databases
--- DFF Data Warehouse Project — Integrated Report (Final) (ISTM 637, Spring 2026)
+-- DFF Data Warehouse Project - Integrated Report (Final) (ISTM 637, Spring 2026)
 -- Run this in SSMS connected to SQL Server 2016
 -- ============================================================
 
@@ -1242,7 +1242,7 @@ GO
 ```sql
 -- ============================================================
 -- Script 02: Create Staging Tables
--- DFF Data Warehouse Project — Integrated Report (Final)
+-- DFF Data Warehouse Project - Integrated Report (Final)
 -- Run in SSMS after Script 01. These tables receive raw CSV data.
 -- ============================================================
 USE [team1_staging_area];
@@ -1254,7 +1254,7 @@ GO
 -- Columns match the raw CSV structure exactly
 -- -------------------------------------------------------
 
--- Soft Drinks (SDR) — 17.7 million rows from wsdr.csv
+-- Soft Drinks (SDR) - 17.7 million rows from wsdr.csv
 CREATE TABLE dbo.stg_Movement_SDR (
     UPC           BIGINT,
     STORE         INT,
@@ -1268,7 +1268,7 @@ CREATE TABLE dbo.stg_Movement_SDR (
 );
 GO
 
--- Canned Soup (CSO) — 7.0 million rows from WCSO-Done.csv
+-- Canned Soup (CSO) - 7.0 million rows from WCSO-Done.csv
 CREATE TABLE dbo.stg_Movement_CSO (
     UPC           BIGINT,
     STORE         INT,
@@ -1282,7 +1282,7 @@ CREATE TABLE dbo.stg_Movement_CSO (
 );
 GO
 
--- Toothpaste (TPA) — 6.3 million rows from WTPA_done.csv
+-- Toothpaste (TPA) - 6.3 million rows from WTPA_done.csv
 CREATE TABLE dbo.stg_Movement_TPA (
     UPC           BIGINT,
     STORE         INT,
@@ -1296,7 +1296,7 @@ CREATE TABLE dbo.stg_Movement_TPA (
 );
 GO
 
--- Crackers (CRA) — 3.6 million rows from Done-WCRA.csv
+-- Crackers (CRA) - 3.6 million rows from Done-WCRA.csv
 CREATE TABLE dbo.stg_Movement_CRA (
     UPC           BIGINT,
     STORE         INT,
@@ -1315,7 +1315,7 @@ GO
 -- Source: UPC CSV files (encoding 1252 / latin-1)
 -- -------------------------------------------------------
 
--- Soft Drinks UPC — 1,746 rows from UPCSDR.csv
+-- Soft Drinks UPC - 1,746 rows from UPCSDR.csv
 CREATE TABLE dbo.stg_Product_SDR (
     COM_CODE      INT,
     UPC           BIGINT,
@@ -1326,7 +1326,7 @@ CREATE TABLE dbo.stg_Product_SDR (
 );
 GO
 
--- Canned Soup UPC — 453 rows from UPCCSO.csv
+-- Canned Soup UPC - 453 rows from UPCCSO.csv
 CREATE TABLE dbo.stg_Product_CSO (
     COM_CODE      INT,
     UPC           BIGINT,
@@ -1337,7 +1337,7 @@ CREATE TABLE dbo.stg_Product_CSO (
 );
 GO
 
--- Toothpaste UPC — 608 rows from UPCTPA.csv
+-- Toothpaste UPC - 608 rows from UPCTPA.csv
 CREATE TABLE dbo.stg_Product_TPA (
     COM_CODE      INT,
     UPC           BIGINT,
@@ -1348,7 +1348,7 @@ CREATE TABLE dbo.stg_Product_TPA (
 );
 GO
 
--- Crackers UPC — 305 rows from UPCCRA.csv
+-- Crackers UPC - 305 rows from UPCCRA.csv
 CREATE TABLE dbo.stg_Product_CRA (
     COM_CODE      INT,
     UPC           BIGINT,
@@ -1405,7 +1405,7 @@ GO
 ```sql
 -- ============================================================
 -- Script 03: Create Data Warehouse (Data Mart) Tables
--- DFF Data Warehouse Project — Integrated Report (Final)
+-- DFF Data Warehouse Project - Integrated Report (Final)
 -- Run in SSMS after Script 02. Creates the star schema tables.
 -- IMPORTANT: Create DIMENSION tables first, then FACT tables
 --            (fact tables have FK references to dimensions).
@@ -1418,7 +1418,7 @@ GO
 -- ===============================
 
 -- -------------------------------------------------------
--- DimCategory — 28 product categories
+-- DimCategory - 28 product categories
 -- Grain: One row per product category
 -- Cardinality: 28 rows (static, hardcoded)
 -- -------------------------------------------------------
@@ -1433,7 +1433,7 @@ CREATE TABLE dbo.DimCategory (
 GO
 
 -- -------------------------------------------------------
--- DimPromotion — 4 promotion types
+-- DimPromotion - 4 promotion types
 -- Grain: One row per deal type
 -- Cardinality: 4 rows (static, hardcoded)
 -- -------------------------------------------------------
@@ -1447,7 +1447,7 @@ CREATE TABLE dbo.DimPromotion (
 GO
 
 -- -------------------------------------------------------
--- DimTime — ~400 weeks (DFF proprietary week IDs)
+-- DimTime - ~400 weeks (DFF proprietary week IDs)
 -- Grain: One row per unique week
 -- Week 1 = September 14, 1989 (per DFF codebook)
 -- Cardinality: ~400 rows (generated via CTE)
@@ -1469,7 +1469,7 @@ CREATE TABLE dbo.DimTime (
 GO
 
 -- -------------------------------------------------------
--- DimStore — ~107 stores
+-- DimStore - ~107 stores
 -- Grain: One row per physical store location
 -- Source: Cleaned from DEMO.csv staging table
 -- Cardinality: ~107 rows
@@ -1499,7 +1499,7 @@ CREATE TABLE dbo.DimStore (
 GO
 
 -- -------------------------------------------------------
--- DimProduct — ~3,112 UPCs (for 4 selected categories)
+-- DimProduct - ~3,112 UPCs (for 4 selected categories)
 -- Grain: One row per unique UPC
 -- Source: Cleaned from UPC staging tables
 -- Cardinality: SDR(1746) + CSO(453) + TPA(608) + CRA(305) = 3,112
@@ -1521,7 +1521,7 @@ GO
 -- ===============================
 
 -- -------------------------------------------------------
--- FactWeeklySales — Central fact table
+-- FactWeeklySales - Central fact table
 -- Grain: One row per UPC × Store × Week
 -- Source: Movement staging tables (filtered OK=1, PRICE>0)
 -- Estimated: ~34.6M rows for 4 categories
@@ -1567,7 +1567,7 @@ GO
 ```sql
 -- ============================================================
 -- Script 04: Transform and Clean Staging Data
--- DFF Data Warehouse Project — Integrated Report (Final)
+-- DFF Data Warehouse Project - Integrated Report (Final)
 -- Run in SSMS AFTER Package 1 (Extract) has loaded CSV data
 -- into staging tables. These transformations prepare the data
 -- for loading into the data mart.
@@ -1659,7 +1659,7 @@ GO
 PRINT 'T3 Complete: CATEGORY_CODE added to all product tables.';
 GO
 
--- T4: Clean product descriptions — strip leading # and ~ characters
+-- T4: Clean product descriptions - strip leading # and ~ characters
 UPDATE dbo.stg_Product_SDR SET DESCRIP = LTRIM(REPLACE(REPLACE(DESCRIP, '#', ''), '~', ''));
 UPDATE dbo.stg_Product_CSO SET DESCRIP = LTRIM(REPLACE(REPLACE(DESCRIP, '#', ''), '~', ''));
 UPDATE dbo.stg_Product_TPA SET DESCRIP = LTRIM(REPLACE(REPLACE(DESCRIP, '#', ''), '~', ''));
@@ -1735,7 +1735,7 @@ GO
 ```sql
 -- ============================================================
 -- Script 05: Load Dimension Tables
--- DFF Data Warehouse Project — Integrated Report (Final)
+-- DFF Data Warehouse Project - Integrated Report (Final)
 -- Run AFTER Script 04 (Transform). Loads dimensions BEFORE facts.
 -- Order: DimCategory → DimPromotion → DimTime → DimStore → DimProduct
 -- ============================================================
@@ -1743,7 +1743,7 @@ USE [team1_dw_area];
 GO
 
 -- ===============================
--- 1. DimCategory (28 rows — hardcoded)
+-- 1. DimCategory (28 rows - hardcoded)
 -- ===============================
 -- These are the 28 product categories from the DFF dataset.
 -- Category codes are derived from the 3-letter filename abbreviations.
@@ -1786,7 +1786,7 @@ SELECT * FROM dbo.DimCategory ORDER BY category_key;
 GO
 
 -- ===============================
--- 2. DimPromotion (4 rows — hardcoded)
+-- 2. DimPromotion (4 rows - hardcoded)
 -- ===============================
 -- Maps the SALE column values from Movement files to descriptive labels.
 -- NULL/blank/'N' → 'No Promotion', B → 'Bonus Buy', C → 'Coupon', S → 'Sale/Discount'
@@ -1804,7 +1804,7 @@ SELECT * FROM dbo.DimPromotion;
 GO
 
 -- ===============================
--- 3. DimTime (~400 rows — generated via CTE)
+-- 3. DimTime (~400 rows - generated via CTE)
 -- ===============================
 -- DFF uses proprietary week IDs (WEEK column in Movement files).
 -- Week 1 corresponds to September 14, 1989 per the DFF codebook.
@@ -1843,7 +1843,7 @@ SELECT TOP 10 * FROM dbo.DimTime ORDER BY time_key;
 GO
 
 -- ===============================
--- 4. DimStore (~107 rows — from staging)
+-- 4. DimStore (~107 rows - from staging)
 -- ===============================
 -- Loaded from cleaned stg_Store in the staging database.
 -- Transformations applied during INSERT:
@@ -1889,7 +1889,7 @@ SELECT TOP 10 * FROM dbo.DimStore ORDER BY store_key;
 GO
 
 -- ===============================
--- 5. DimProduct (~3,112 rows — from staging)
+-- 5. DimProduct (~3,112 rows - from staging)
 -- ===============================
 -- Loaded from tmp_Product_All in staging (UNION of 4 category tables).
 
@@ -1930,7 +1930,7 @@ GO
 ```sql
 -- ============================================================
 -- Script 06: Load Fact Tables
--- DFF Data Warehouse Project — Integrated Report (Final)
+-- DFF Data Warehouse Project - Integrated Report (Final)
 -- Run AFTER Script 05 (Load Dimensions).
 -- Dimensions must be populated first because fact tables
 -- reference dimension surrogate keys via foreign keys.
@@ -2047,7 +2047,7 @@ GO
 ```sql
 -- ============================================================
 -- Script 07: Drop Temporary Tables from Staging Area
--- DFF Data Warehouse Project — Integrated Report (Final)
+-- DFF Data Warehouse Project - Integrated Report (Final)
 -- Run AFTER all dimension and fact tables have been loaded.
 -- The assignment requires: "Once loading of each table is done,
 -- remove all temp tables from the staging area."
@@ -2062,7 +2062,7 @@ GO
 -- during the transformation phase (Script 04) and are no longer
 -- needed after the data mart has been populated:
 --
---   1. tmp_Product_All  — UNION of 4 UPC category staging tables
+--   1. tmp_Product_All  - UNION of 4 UPC category staging tables
 --                          Used to load DimProduct
 --
 -- Note: The original staging tables (stg_Movement_*, stg_Product_*,
@@ -2103,7 +2103,7 @@ GO
 ```sql
 -- ============================================================
 -- Script 08: Verify Business Questions Against Loaded DW
--- DFF Data Warehouse Project — Integrated Report (Final)
+-- DFF Data Warehouse Project - Integrated Report (Final)
 -- Run AFTER all tables are loaded to validate the ETL.
 -- Each query corresponds to one of the 5 selected BQs.
 -- ============================================================
@@ -2133,7 +2133,7 @@ ORDER BY dt.week_id;
 GO
 
 -- ===============================
--- BQ3: Promotion vs Non-Promotion weeks — sales comparison
+-- BQ3: Promotion vs Non-Promotion weeks - sales comparison
 -- Difficulty: Easy | OLAP Operation: Dice (Slice by promotion status)
 -- ===============================
 PRINT '=== BQ3: Promoted vs Non-Promoted Sales Volume ===';
@@ -2157,7 +2157,7 @@ GO
 -- BQ4: Which promotion type has highest incremental sales lift in Canned Soup?
 -- Difficulty: Medium | OLAP Operation: Dice (filter by category + promo type)
 -- ===============================
-PRINT '=== BQ4: Promotion Lift by Deal Type — Canned Soup ===';
+PRINT '=== BQ4: Promotion Lift by Deal Type - Canned Soup ===';
 
 -- First get the baseline (no promotion average)
 DECLARE @baseline_avg FLOAT;
@@ -2189,7 +2189,7 @@ GO
 -- BQ8: Store quartile tiers by Toothpaste revenue + demographics
 -- Difficulty: Hard | OLAP Operation: NTILE + Drill-down
 -- ===============================
-PRINT '=== BQ8: Store Revenue Quartiles — Toothpaste ===';
+PRINT '=== BQ8: Store Revenue Quartiles - Toothpaste ===';
 
 WITH store_revenue AS (
     SELECT 
@@ -2301,7 +2301,7 @@ The complete mapping tables documenting the data lineage from source files throu
 | UPCCSO.csv | COM_CODE, UPC, DESCRIP, SIZE, CASE, NITEM | stg_Product_CSO | CATEGORY_CODE = 'CSO' |
 | UPCTPA.csv | COM_CODE, UPC, DESCRIP, SIZE, CASE, NITEM | stg_Product_TPA | CATEGORY_CODE = 'TPA' |
 | UPCCRA.csv | COM_CODE, UPC, DESCRIP, SIZE, CASE, NITEM | stg_Product_CRA | CATEGORY_CODE = 'CRA' |
-| DEMO.csv | STORE, NAME, CITY, ZIP, ZONE, URBAN, WEEKVOL, INCOME, EDUC, POVERTY, HSIZEAVG, ETHNIC, DENSITY, AGE9, AGE60, WORKWOM, PRICLOW, PRICMED, PRICHIGH | stg_Store | — |
+| DEMO.csv | STORE, NAME, CITY, ZIP, ZONE, URBAN, WEEKVOL, INCOME, EDUC, POVERTY, HSIZEAVG, ETHNIC, DENSITY, AGE9, AGE60, WORKWOM, PRICLOW, PRICMED, PRICHIGH | stg_Store | - |
 
 #### Mapping Table #2: Staging Tables to Data Mart Tables (Summary)
 
@@ -2326,53 +2326,53 @@ The complete mapping tables documenting the data lineage from source files throu
 
 ### Appendix C: Complete Screenshot Index
 
-**Section 4 — ETL Implementation Evidence (Screenshots 1–29)**
+**Section 4 - ETL Implementation Evidence (Screenshots 1–29)**
 
 | # | Description |
 |:--|:--|
-| 1 | SSMS Object Explorer — both databases visible |
-| 2 | SSMS — staging tables list |
-| 3 | SSMS — DW tables list |
-| 4 | SSIS Package 1 Control Flow — 9 Data Flow Tasks |
-| 5 | SSIS Package 1 — sample Data Flow (Flat File Source → OLE DB Dest) |
-| 6 | Flat File Connection Manager — encoding/delimiter settings |
-| 7 | SSIS Package 1 execution — all green checkmarks |
-| 8 | SSMS — stg_Movement_SDR COUNT = 0 (before load) |
-| 9 | SSMS — stg_Movement_SDR TOP 10 (after load) |
-| 10 | SSMS — all staging table row counts |
-| 11 | SSIS Package 2 Control Flow — Execute SQL Tasks |
-| 12 | SSIS — transformation SQL visible in task |
-| 13 | SSIS Package 2 execution — all green |
-| 14 | SSMS — CATEGORY_CODE column visible in staging |
+| 1 | SSMS Object Explorer - both databases visible |
+| 2 | SSMS - staging tables list |
+| 3 | SSMS - DW tables list |
+| 4 | SSIS Package 1 Control Flow - 9 Data Flow Tasks |
+| 5 | SSIS Package 1 - sample Data Flow (Flat File Source → OLE DB Dest) |
+| 6 | Flat File Connection Manager - encoding/delimiter settings |
+| 7 | SSIS Package 1 execution - all green checkmarks |
+| 8 | SSMS - stg_Movement_SDR COUNT = 0 (before load) |
+| 9 | SSMS - stg_Movement_SDR TOP 10 (after load) |
+| 10 | SSMS - all staging table row counts |
+| 11 | SSIS Package 2 Control Flow - Execute SQL Tasks |
+| 12 | SSIS - transformation SQL visible in task |
+| 13 | SSIS Package 2 execution - all green |
+| 14 | SSMS - CATEGORY_CODE column visible in staging |
 | 15 | SSIS Package 3 Control Flow |
-| 16 | SSIS Package 3 — DimStore Data Flow |
-| 17 | SSIS Package 3 execution — all green |
-| 18 | SSMS — DimCategory (28 rows) |
-| 19 | SSMS — DimPromotion (4 rows) |
-| 20 | SSMS — DimTime TOP 10 |
-| 21 | SSMS — DimStore TOP 10 |
-| 22 | SSMS — DimProduct TOP 10 |
-| 23 | SSMS — FactWeeklySales TOP 10 + COUNT |
-| 24 | SSMS Object Explorer — temp tables removed |
-| 25 | SSMS — BQ2 verification query results |
-| 26 | SSMS — BQ3 verification query results |
-| 27 | SSMS — BQ4 verification query results |
-| 28 | SSMS — BQ8 verification query results |
-| 29 | SSMS — BQ9 verification query results |
+| 16 | SSIS Package 3 - DimStore Data Flow |
+| 17 | SSIS Package 3 execution - all green |
+| 18 | SSMS - DimCategory (28 rows) |
+| 19 | SSMS - DimPromotion (4 rows) |
+| 20 | SSMS - DimTime TOP 10 |
+| 21 | SSMS - DimStore TOP 10 |
+| 22 | SSMS - DimProduct TOP 10 |
+| 23 | SSMS - FactWeeklySales TOP 10 + COUNT |
+| 24 | SSMS Object Explorer - temp tables removed |
+| 25 | SSMS - BQ2 verification query results |
+| 26 | SSMS - BQ3 verification query results |
+| 27 | SSMS - BQ4 verification query results |
+| 28 | SSMS - BQ8 verification query results |
+| 29 | SSMS - BQ9 verification query results |
 
-**Section 5 — BI Reporting Evidence (Screenshots 30–41)**
+**Section 5 - BI Reporting Evidence (Screenshots 30–41)**
 
 | # | Tool | BQ | Description |
 |:--|:--|:--|:--|
-| 30 | SSRS | BQ2 | SSRS Report Designer — BQ2 Weekly SDR Sales trend report layout |
-| 31 | SSRS | BQ2 | SSRS Report Preview — BQ2 line chart showing weekly Soft Drink unit sales |
-| 32 | SSRS | BQ9 | SSRS Report Designer — BQ9 parameterized Cracker ranking report layout |
-| 33 | SSRS | BQ9 | SSRS Report Preview — BQ9 table showing top 10 products for selected week |
-| 34 | SSAS | BQ3 | Visual Studio — SSAS Cube structure in Solution Explorer |
-| 35 | SSAS | BQ3 | SSAS Cube Browser — BQ3 pivot: deal_type vs AVG(units_sold) |
-| 36 | SSAS | BQ3 | SSAS Cube Browser — drill-down by year and quarter |
-| 37 | Redshift | BQ4 | Redshift Query v.2 — query editor showing BQ4 promotion lift SQL |
-| 38 | Redshift | BQ4 | Redshift Query v.2 — BQ4 results: lift by deal type |
-| 39 | Power BI | BQ8 | Power BI — Data model view showing star schema connections |
-| 40 | Power BI | BQ8 | Power BI — BQ8 dashboard: store quartile bar chart + demographic table |
-| 41 | Power BI | BQ8 | Power BI — BQ8 dashboard: map view of stores by revenue tier |
+| 30 | SSRS | BQ2 | SSRS Report Designer - BQ2 Weekly SDR Sales trend report layout |
+| 31 | SSRS | BQ2 | SSRS Report Preview - BQ2 line chart showing weekly Soft Drink unit sales |
+| 32 | SSRS | BQ9 | SSRS Report Designer - BQ9 parameterized Cracker ranking report layout |
+| 33 | SSRS | BQ9 | SSRS Report Preview - BQ9 table showing top 10 products for selected week |
+| 34 | SSAS | BQ3 | Visual Studio - SSAS Cube structure in Solution Explorer |
+| 35 | SSAS | BQ3 | SSAS Cube Browser - BQ3 pivot: deal_type vs AVG(units_sold) |
+| 36 | SSAS | BQ3 | SSAS Cube Browser - drill-down by year and quarter |
+| 37 | Redshift | BQ4 | Redshift Query v.2 - query editor showing BQ4 promotion lift SQL |
+| 38 | Redshift | BQ4 | Redshift Query v.2 - BQ4 results: lift by deal type |
+| 39 | Power BI | BQ8 | Power BI - Data model view showing star schema connections |
+| 40 | Power BI | BQ8 | Power BI - BQ8 dashboard: store quartile bar chart + demographic table |
+| 41 | Power BI | BQ8 | Power BI - BQ8 dashboard: map view of stores by revenue tier |
