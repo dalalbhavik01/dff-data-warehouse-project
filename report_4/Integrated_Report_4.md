@@ -37,7 +37,7 @@ The objective of this project is to design and develop a data warehouse for DFF 
 | Implementation Architecture | Hybrid Data Pipeline |
 | Warehouse Architecture | Independent Data Marts |
 | Modeling Scheme | Dimensional Modeling (Star Schema) |
-| OLAP Style | HOLAP (Hybrid Online Analytical Processing) |
+| OLAP Style | MOLAP (Multidimensional Online Analytical Processing) |
 | Target Infrastructure | SQL Server 2016 |
 
 ### 1.3 Understanding of the Data
@@ -1026,9 +1026,11 @@ All four tools required by the professor are used at least once:
 
 #### 5.2.1 Reports from Independent Data Marts Using SSRS
 
+Both SSRS reports follow the authoring, management, and delivery lifecycle. During *authoring*, the report layout and dataset queries were designed in Visual Studio using the Report Designer. During *management*, a shared data source (`DFF_DataSource`) was configured to connect to `team1_dw_area`, and report parameters were defined. During *delivery*, the reports were previewed locally in the Preview tab to verify correctness before final submission.
+
 **BQ2 — Weekly Soft Drink Unit Sales (SSRS Tabular Report)**
 
-The SSRS report connects to `team1_dw_area` and executes the BQ2 verification query (see Section 4.2.9). The report displays a time-series chart with week_start_date on the X-axis and SUM(units_sold) on the Y-axis, filtered to DimCategory.category_code = 'SDR'.
+The SSRS report connects to the shared data source and executes the BQ2 verification query (see Section 4.2.9). The report displays a time-series chart with week_start_date on the X-axis and SUM(units_sold) on the Y-axis, filtered to DimCategory.category_code = 'SDR'.
 
 > **[Screenshot 30 Placeholder]** SSRS Report Designer view: open `BQ2_Weekly_SDR_Sales.rdl` in Visual Studio. Capture the Design tab showing the line chart and data table layout with Solution Explorer visible on the right.
 
@@ -1046,13 +1048,16 @@ This parameterized SSRS report allows the user to select a week_id and see the t
 
 **BQ3 — Promotion vs Non-Promotion Sales Volume (SSAS Cube)**
 
-An SSAS multidimensional project was created in Visual Studio with the following structure:
-- **Data Source:** `team1_dw_area` on SQL Server 2016 (using the service account for impersonation)
-- **Data Source View (DSV):** A logical view containing FactWeeklySales with all five dimension tables. The DSV provides an abstraction layer between the relational source and the cube, allowing SSAS to detect foreign key relationships and map them to dimension hierarchies.
-- **Cube:** DFF_Sales_Cube with measures: SUM(units_sold), SUM(revenue), AVG(units_sold). The cube uses **MOLAP storage** with proactive caching, meaning all aggregations are pre-computed and stored in the multidimensional structure for optimal query performance.
-- **Dimensions:** DimPromotion (deal_type, is_promoted), DimCategory (category_code), DimTime (year, quarter). Attribute relationships were configured within each dimension to define how attributes roll up in hierarchies (e.g., week rolls up to quarter, quarter rolls up to year in DimTime), improving aggregation performance and query accuracy.
+An SSAS multidimensional project was created in Visual Studio following the standard SSAS development workflow:
 
-The cube was deployed, processed, and browsed in the SSAS Cube Browser. The BQ3 analysis uses the following OLAP operations: *slicing* by DimCategory.category_code = 'SDR' to isolate the Soft Drink category, then *pivoting* on DimPromotion.deal_type in the Rows area. This reveals that promoted Soft Drink records average significantly higher units sold than non-promoted records, consistent with the 13.6× lift observed in our exploratory analysis. A subsequent *drill-down* by year (dragging DimTime.year to Columns) shows how the promotional effect varies across the 1989–1997 time period.
+1. **Data Source:** A connection to `team1_dw_area` on SQL Server 2016 was created using the service account for impersonation, which handles the credential handshake between the SSAS engine and the relational database.
+2. **Data Source View (DSV):** A logical view was built from the star schema by selecting FactWeeklySales and all five dimension tables (DimStore, DimProduct, DimTime, DimCategory, DimPromotion). The DSV provides an abstraction layer between the relational source and the cube, allowing SSAS to detect foreign key relationships and map them to dimension hierarchies.
+3. **Cube Definition:** DFF_Sales_Cube was defined with measures SUM(units_sold), SUM(revenue), and AVG(units_sold). The cube uses **MOLAP storage** with proactive caching, meaning all aggregations are pre-computed and stored in the multidimensional structure for optimal query performance.
+4. **Dimension Configuration:** DimPromotion (deal_type, is_promoted), DimCategory (category_code), and DimTime (year, quarter) were configured as browsing dimensions. Attribute relationships were defined within DimTime so that week_id rolls up to quarter, and quarter rolls up to year, giving the SSAS engine a valid aggregation path for drill-down and roll-up operations. Similarly, DimPromotion's deal_code attribute was related to deal_type and is_promoted with a rigid relationship type, since the mapping between deal codes and their labels does not change over time.
+5. **Processing and Deployment:** The cube was deployed to the local SSAS instance and processed, which populated all MOLAP aggregations from the underlying star schema data.
+6. **Browsing:** The processed cube was browsed in the SSAS Cube Browser.
+
+The BQ3 analysis uses the following OLAP operations: *slicing* by DimCategory.category_code = 'SDR' to isolate the Soft Drink category, then *pivoting* on DimPromotion.deal_type in the Rows area with [Measures].[units_sold] in the Values area. This reveals that promoted Soft Drink records average significantly higher units sold than non-promoted records, consistent with the 13.6× lift observed in our exploratory analysis. A subsequent *drill-down* by year (dragging DimTime.year to Columns) shows how the promotional effect varies across the 1989–1997 time period, demonstrating the slice, dice, and drill-down capabilities of the OLAP cube.
 
 > **[Screenshot 34 Placeholder]** Visual Studio Solution Explorer: expand the `DFF_Sales_Cube` project and show the Cubes, Dimensions, and Data Sources folders. On the main canvas, show the Cube Structure tab with Measures (units_sold, revenue) and Dimensions (DimPromotion, DimCategory, DimTime) visible.
 
@@ -1064,7 +1069,7 @@ The cube was deployed, processed, and browsed in the SSAS Cube Browser. The BQ3 
 
 **BQ4 — Promotion Lift by Deal Type in Canned Soup (Redshift Query v.2)**
 
-The BQ4 analysis was executed in Redshift Query v.2. To prepare for this, the FactWeeklySales, DimPromotion, and DimCategory tables were exported from `team1_dw_area` on SQL Server as CSV files and loaded into the Redshift cluster using the COPY command in the AWS Academy lab environment. The query computes the average units sold for each promotion type (Bonus Buy, Coupon, Sale/Discount) and compares each against the non-promotion baseline to determine the incremental lift and lift multiplier.
+The BQ4 analysis was executed in Redshift Query v.2 as a query-based analytical output. Unlike the SSRS and Power BI reports which produce formatted charts and dashboards, the Redshift deliverable is a structured SQL result set — this is intentional, as BQ4's purpose is to compute precise numerical lift metrics rather than visualize trends. To prepare for this, the FactWeeklySales, DimPromotion, and DimCategory tables were exported from `team1_dw_area` on SQL Server as CSV files and loaded into the Redshift cluster using the COPY command in the AWS Academy lab environment. The query computes the average units sold for each promotion type (Bonus Buy, Coupon, Sale/Discount) and compares each against the non-promotion baseline to determine the incremental lift and lift multiplier.
 
 ```sql
 -- BQ4: Promotion Lift by Deal Type — Canned Soup (Redshift Query v.2)
