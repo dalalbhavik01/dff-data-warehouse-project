@@ -1,0 +1,26 @@
+Revenue Quartile =
+VAR StoreRev =
+    CALCULATE(
+        SUM(FactWeeklySales[revenue]),
+        DimCategory[category_code] = "TPA"
+    )
+VAR TotalStores = COUNTROWS(ALL(DimStore))
+VAR StoreRank =
+    RANKX(
+        ALL(DimStore),
+        CALCULATE(
+            SUM(FactWeeklySales[revenue]),
+            DimCategory[category_code] = "TPA"
+        ),
+        ,
+        DESC,
+        DENSE
+    )
+RETURN
+    SWITCH(
+        TRUE(),
+        StoreRank <= TotalStores * 0.25, "1 - Top 25%",
+        StoreRank <= TotalStores * 0.50, "2 - Upper Middle",
+        StoreRank <= TotalStores * 0.75, "3 - Lower Middle",
+        "4 - Bottom 25%"
+    )

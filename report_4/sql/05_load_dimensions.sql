@@ -1,6 +1,6 @@
 -- ============================================================
 -- Script 05: Load Dimension Tables
--- DFF Data Warehouse Project — Report 3
+-- DFF Data Warehouse Project — Report 4
 -- Run AFTER Script 04 (Transform). Loads dimensions BEFORE facts.
 -- Order: DimCategory → DimPromotion → DimTime → DimStore → DimProduct
 -- ============================================================

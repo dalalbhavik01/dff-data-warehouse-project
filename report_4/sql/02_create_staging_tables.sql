@@ -1,6 +1,6 @@
 -- ============================================================
 -- Script 02: Create Staging Tables
--- DFF Data Warehouse Project — Report 3
+-- DFF Data Warehouse Project — Report 4
 -- Run in SSMS after Script 01. These tables receive raw CSV data.
 -- ============================================================
 USE [team1_staging_area];

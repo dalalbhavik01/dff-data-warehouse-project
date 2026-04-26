@@ -43,7 +43,9 @@ Expected minimums: FactWeeklySales ≥ 14,000,000 | DimStore = 107 | DimCategory
 1. Open **Visual Studio 2015**
 2. **File → New → Project**
 3. In the left panel expand: `Business Intelligence` → select **`Report Server Project`**
+   - If you don't see `Business Intelligence`, you need SSDT installed. Go to **Tools → Extensions and Updates** and search for "SQL Server Data Tools" or install from https://docs.microsoft.com/en-us/sql/ssdt/
 4. Name it `DFF_BI_Reports`, click OK
+5. Wait for the project to create — you should see **Reports** and **Shared Data Sources** folders in Solution Explorer
 
 ### 1.2 Create the Shared Data Source
 
@@ -54,17 +56,27 @@ Expected minimums: FactWeeklySales ≥ 14,000,000 | DimStore = 107 | DimCategory
    - Server name: `ISTM637-PC\SQLEXPRESS` (or your lab server name)
    - Authentication: **Windows Authentication**
    - Select database: `team1_dw_area`
-5. Click **Test Connection** - must say "Test connection succeeded"
+5. Click **Test Connection** — must say "Test connection succeeded"
+   - **If it fails:** Check that SQL Server is running (Windows Services → SQL Server), and that you're connected via VPN if remote
 6. Click OK → OK
 
 ### 1.3 Build the BQ2 Report (SSRS)
 
-1. Right-click **Reports → Add New Item → Report** - name it `BQ2_Weekly_SDR_Sales.rdl`
+1. Right-click **Reports → Add → New Item → Report** — name it `BQ2_Weekly_SDR_Sales.rdl`, click Add
 
-2. **Add a Dataset:**  
-   Right-click in the Report Data pane → **Add Dataset**  
+2. **Show the Report Data pane** (critical — hidden by default):
+   - Go to **View → Report Data** (or press **Ctrl+Alt+D**)
+   - A pane appears on the left with: Built-in Fields, Parameters, Images, Data Sources, Datasets
+
+3. **Add a Data Source reference to this report:**
+   - In the Report Data pane, right-click **Data Sources → Add Data Source**
+   - Select **Use shared data source reference** → Browse → select `DFF_DataSource` → OK
+
+4. **Add a Dataset:**
+   - In the Report Data pane, right-click **Datasets → Add Dataset**
    - Name: `DS_BQ2`
-   - Data Source: select `DFF_DataSource`
+   - Data source: select `DFF_DataSource`
+   - Query type: **Text**
    - Paste this query:
    ```sql
    SELECT
@@ -76,58 +88,75 @@ Expected minimums: FactWeeklySales ≥ 14,000,000 | DimStore = 107 | DimCategory
    JOIN DimCategory dc ON f.category_key = dc.category_key
    WHERE dc.category_code = 'SDR'
    GROUP BY dt.week_id, dt.week_start_date
-   ORDER BY dt.week_id;
+   ORDER BY dt.week_id
    ```
-   Click OK.
+   - Click the **Refresh Fields** button (circular arrow icon) to validate — you should see 3 fields listed. If you get a red error, double-check the data source connection.
+   - Click OK.
 
-3. **Insert a Line Chart:**
-   - From the menu: **Report → Insert → Chart** → choose **Line** → click OK
-   - Drag the chart to fill the top half of the report body
-   - In the Chart Data dialog:
-     - **Values (Y-axis):** drag `total_units_sold` → set aggregation to `Sum`
-     - **Category Groups (X-axis):** drag `week_start_date`
-   - Right-click the Y-axis → Axis Properties → set title to `Total Units Sold`
-   - Right-click the X-axis → Axis Properties → set title to `Week Start Date`
-   - Click the chart title and type: `BQ2: Weekly Soft Drink Unit Sales Across All Stores`
+5. **Insert a Line Chart:**
+   - Open the **Toolbox**: **View → Toolbox** (or **Ctrl+Alt+X**)
+   - Under **Report Items** in the Toolbox, drag a **Chart** onto the report design surface (top half)
+   - In the "Select Chart Type" dialog, choose **Line** → click OK
+   - The chart appears with placeholder text. Click inside the chart to open the **Chart Data** panel (small icons appear near the top-right of the chart):
+     - **Values (∑ area):** drag `total_units_sold` from the dataset fields. Right-click it → **Series Properties** → set aggregation to **Sum**
+     - **Category Groups (bottom area):** drag `week_start_date`
+   - Right-click the Y-axis → **Axis Properties** → set Title to `Total Units Sold`
+   - Right-click the X-axis → **Axis Properties** → set Title to `Week Start Date`
+   - Click the chart title text and type: `BQ2: Weekly Soft Drink Unit Sales Across All Stores`
+   - **If chart shows no data zones:** Make sure the chart is linked to `DS_BQ2`. Right-click the chart border → **Chart Properties** → verify the dataset.
 
-4. **Insert a Table below the chart:**
-   - **Report → Insert → Table** - place it under the chart
-   - Map columns: `week_id`, `week_start_date`, `total_units_sold`
-   - Bold the header row
+6. **Insert a Table below the chart:**
+   - From the **Toolbox**, drag a **Table** onto the design surface below the chart
+   - The table starts with 3 columns — click each column data cell and select from dropdown: `[week_id]`, `[week_start_date]`, `[total_units_sold]`
+   - Select the header row cells → right-click → **Text Box Properties** → Font → check **Bold**
+   - **If the table says "No dataset" or fields are missing:** Right-click the table border → **Tablix Properties** → set Dataset name to `DS_BQ2`
 
-5. **Take Screenshot 30:**
+7. **Take Screenshot 30:**
    - Stay on the **Design tab** (not Preview)
-   - Make sure Solution Explorer is visible on the right (View → Solution Explorer if hidden)
+   - Make sure Solution Explorer is visible on the right (**View → Solution Explorer** if hidden)
    - Press **Windows + Shift + S** (or use Snipping Tool) to capture the full Visual Studio window
    - Save as: `report_4/screenshots/screenshot_30.png`
 
-6. **Take Screenshot 31:**
+8. **Take Screenshot 31:**
    - Click the **Preview tab** at the top of the report designer
    - Wait for the report to render (may take 10–30 seconds)
+   - **If Preview errors:** Go back to Design → right-click the data source in Report Data pane → Properties → re-test the connection. Also run the BQ2 query directly in SSMS first to verify it returns data.
    - Capture the fully rendered page showing the line chart with data and the table below
    - Save as: `report_4/screenshots/screenshot_31.png`
 
 ### 1.4 Build the BQ9 Report (SSRS Parameterized)
 
-1. Right-click **Reports → Add New Item → Report** - name it `BQ9_Top10_Crackers.rdl`
+1. Right-click **Reports → Add → New Item → Report** — name it `BQ9_Top10_Crackers.rdl`, click Add
 
-2. **Add a Dataset for the Parameter (week list):**
+2. **Show Report Data pane:** **View → Report Data** (Ctrl+Alt+D)
+
+3. **Add a Data Source reference:**
+   - Right-click **Data Sources → Add Data Source** → select **Use shared data source reference** → Browse → `DFF_DataSource` → OK
+
+4. **Add the Parameter Dataset (week list) — do this FIRST before the main dataset:**
+   - Right-click **Datasets → Add Dataset**
    - Name: `DS_WeekList`
+   - Data source: `DFF_DataSource`
    - Query:
    ```sql
    SELECT DISTINCT week_id
    FROM DimTime
-   ORDER BY week_id;
+   ORDER BY week_id
    ```
+   - Click OK
 
-3. **Add the Report Parameter:**
-   - Right-click Parameters in the Report Data pane → **Add Parameter**
-   - Name: `WeekID`, Prompt: `Select Week Number`, Data type: Integer
-   - Under **Available Values:** select "Get values from a query"
+5. **Add the Report Parameter:**
+   - In the Report Data pane, right-click **Parameters → Add Parameter**
+   - **General tab:** Name: `WeekID`, Prompt: `Select Week Number`, Data type: **Integer**
+   - **Available Values tab:** select **Get values from a query**
      - Dataset: `DS_WeekList`, Value field: `week_id`, Label field: `week_id`
+   - **Default Values tab:** select **Specify values** → click **Add** → type `100` (provides a default so Preview doesn't error with no selection)
+   - Click OK
 
-4. **Add the Main Dataset:**
+6. **Add the Main Dataset:**
+   - Right-click **Datasets → Add Dataset**
    - Name: `DS_BQ9`
+   - Data source: `DFF_DataSource`
    - Query:
    ```sql
    WITH ranked AS (
@@ -160,33 +189,47 @@ Expected minimums: FactWeeklySales ≥ 14,000,000 | DimStore = 107 | DimCategory
    )
    SELECT * FROM with_lag
    WHERE week_id = @WeekID
-   ORDER BY sales_rank;
+   ORDER BY sales_rank
    ```
-   - Under **Parameters**, map `@WeekID` to the `WeekID` report parameter
+   - Click the **Parameters** tab on the left side of the Dataset Properties dialog. You should see `@WeekID` auto-detected from the query. Set its **Parameter Value** dropdown to `[@WeekID]` (your report parameter). If it's already mapped, leave it.
+   - Click **Refresh Fields** to validate — enter `100` if prompted for the parameter value. You should see 7 fields listed.
+   - Click OK.
 
-5. **Insert a Table:**
-   - Columns: `sales_rank`, `upc`, `description`, `units_sold`, `prev_week_units`, `wow_change`
-   - Rename headers to: Rank, UPC, Product Description, Units Sold, Prev Week, WoW Change
+7. **Insert a Table:**
+   - From the **Toolbox** (View → Toolbox), drag a **Table** onto the design surface
+   - The table starts with 3 columns. Right-click any column header → **Insert Column → Right** (repeat until you have 6 columns)
+   - Click each column data cell and map these fields from `DS_BQ9`:
+     - Column 1: `[sales_rank]` → rename header to **Rank**
+     - Column 2: `[upc]` → header: **UPC**
+     - Column 3: `[description]` → header: **Product Description**
+     - Column 4: `[units_sold]` → header: **Units Sold**
+     - Column 5: `[prev_week_units]` → header: **Prev Week**
+     - Column 6: `[wow_change]` → header: **WoW Change**
+   - **If fields aren't showing:** Right-click the table border → **Tablix Properties** → set Dataset name to `DS_BQ9`
 
-6. **Add Conditional Color to WoW Change column:**
-   - Right-click the WoW Change data cell → Text Box Properties → Font → Color → Expression:
+8. **Add Conditional Color to WoW Change column:**
+   - Right-click the **data cell** (not header) of the WoW Change column → **Text Box Properties**
+   - Go to the **Font** tab → next to the **Color** dropdown, click the **fx** button (expression editor)
+   - Paste this expression:
    ```
    =IIF(Fields!wow_change.Value > 0, "Green",
      IIF(Fields!wow_change.Value < 0, "Red", "Black"))
    ```
+   - Click OK → OK
 
-7. **Take Screenshot 32:**
+9. **Take Screenshot 32:**
    - Stay on the **Design tab**
-   - Make sure both the parameter field and the table layout with all 6 columns are fully visible
+   - Make sure both the parameter dropdown area and the table layout with all 6 columns are fully visible
    - Solution Explorer visible on right
    - Save as: `report_4/screenshots/screenshot_32.png`
 
-8. **Take Screenshot 33:**
-   - Click the **Preview tab**
-   - In the `Select Week Number` dropdown, choose week **100** (or any week with data)
-   - Click **View Report**
-   - Wait for the table to render - verify 10 rows appear with colored WoW values
-   - Save as: `report_4/screenshots/screenshot_33.png`
+10. **Take Screenshot 33:**
+    - Click the **Preview tab**
+    - In the `Select Week Number` dropdown, choose week **100** (or any week with data)
+    - Click **View Report**
+    - Wait for the table to render — verify 10 rows appear with green/red WoW values
+    - **If Preview is blank:** Try a different week (50, 150, 200). Run the query in SSMS with `DECLARE @WeekID INT = 100;` first to confirm data exists for that week.
+    - Save as: `report_4/screenshots/screenshot_33.png`
 
 ---
 
@@ -451,15 +494,28 @@ RANKX(
 2. Click **New Column** from the toolbar:
 ```dax
 Revenue Quartile =
-VAR StoreRev = CALCULATE(SUM(FactWeeklySales[revenue]),
-                          DimCategory[category_code] = "TPA")
+VAR StoreRev =
+    CALCULATE(
+        SUM(FactWeeklySales[revenue]),
+        DimCategory[category_code] = "TPA"
+    )
 VAR TotalStores = COUNTROWS(ALL(DimStore))
-VAR Rank = RANKX(ALL(DimStore), StoreRev, , DESC, DENSE)
+VAR StoreRank =
+    RANKX(
+        ALL(DimStore),
+        CALCULATE(
+            SUM(FactWeeklySales[revenue]),
+            DimCategory[category_code] = "TPA"
+        ),
+        ,
+        DESC,
+        DENSE
+    )
 RETURN
 SWITCH(TRUE(),
-    Rank <= TotalStores * 0.25, "Q1 (Top 25%)",
-    Rank <= TotalStores * 0.50, "Q2 (25-50%)",
-    Rank <= TotalStores * 0.75, "Q3 (50-75%)",
+    StoreRank <= TotalStores * 0.25, "Q1 (Top 25%)",
+    StoreRank <= TotalStores * 0.50, "Q2 (25-50%)",
+    StoreRank <= TotalStores * 0.75, "Q3 (50-75%)",
     "Q4 (Bottom 25%)"
 )
 ```

@@ -1,6 +1,6 @@
 -- ============================================================
 -- Script 04: Transform and Clean Staging Data
--- DFF Data Warehouse Project — Report 3
+-- DFF Data Warehouse Project — Report 4
 -- Run in SSMS AFTER Package 1 (Extract) has loaded CSV data
 -- into staging tables. These transformations prepare the data
 -- for loading into the data mart.
@@ -12,26 +12,30 @@ GO
 -- MOVEMENT TABLE TRANSFORMATIONS
 -- ===============================
 
--- T1: Add CATEGORY_CODE column to each movement staging table
+-- T1: Add/populate CATEGORY_CODE column for each movement staging table
 -- This column does not exist in the CSV files; it is derived 
 -- from the filename (e.g., wsdr.csv → 'SDR')
 
-ALTER TABLE dbo.stg_Movement_SDR ADD CATEGORY_CODE CHAR(3);
+IF COL_LENGTH('dbo.stg_Movement_SDR', 'CATEGORY_CODE') IS NULL
+    ALTER TABLE dbo.stg_Movement_SDR ADD CATEGORY_CODE CHAR(3);
 GO
 UPDATE dbo.stg_Movement_SDR SET CATEGORY_CODE = 'SDR';
 GO
 
-ALTER TABLE dbo.stg_Movement_CSO ADD CATEGORY_CODE CHAR(3);
+IF COL_LENGTH('dbo.stg_Movement_CSO', 'CATEGORY_CODE') IS NULL
+    ALTER TABLE dbo.stg_Movement_CSO ADD CATEGORY_CODE CHAR(3);
 GO
 UPDATE dbo.stg_Movement_CSO SET CATEGORY_CODE = 'CSO';
 GO
 
-ALTER TABLE dbo.stg_Movement_TPA ADD CATEGORY_CODE CHAR(3);
+IF COL_LENGTH('dbo.stg_Movement_TPA', 'CATEGORY_CODE') IS NULL
+    ALTER TABLE dbo.stg_Movement_TPA ADD CATEGORY_CODE CHAR(3);
 GO
 UPDATE dbo.stg_Movement_TPA SET CATEGORY_CODE = 'TPA';
 GO
 
-ALTER TABLE dbo.stg_Movement_CRA ADD CATEGORY_CODE CHAR(3);
+IF COL_LENGTH('dbo.stg_Movement_CRA', 'CATEGORY_CODE') IS NULL
+    ALTER TABLE dbo.stg_Movement_CRA ADD CATEGORY_CODE CHAR(3);
 GO
 UPDATE dbo.stg_Movement_CRA SET CATEGORY_CODE = 'CRA';
 GO
@@ -67,24 +71,28 @@ GO
 -- PRODUCT (UPC) TABLE TRANSFORMATIONS
 -- ===============================
 
--- T3: Add CATEGORY_CODE column to each UPC staging table
+-- T3: Add/populate CATEGORY_CODE column for each UPC staging table
 
-ALTER TABLE dbo.stg_Product_SDR ADD CATEGORY_CODE CHAR(3);
+IF COL_LENGTH('dbo.stg_Product_SDR', 'CATEGORY_CODE') IS NULL
+    ALTER TABLE dbo.stg_Product_SDR ADD CATEGORY_CODE CHAR(3);
 GO
 UPDATE dbo.stg_Product_SDR SET CATEGORY_CODE = 'SDR';
 GO
 
-ALTER TABLE dbo.stg_Product_CSO ADD CATEGORY_CODE CHAR(3);
+IF COL_LENGTH('dbo.stg_Product_CSO', 'CATEGORY_CODE') IS NULL
+    ALTER TABLE dbo.stg_Product_CSO ADD CATEGORY_CODE CHAR(3);
 GO
 UPDATE dbo.stg_Product_CSO SET CATEGORY_CODE = 'CSO';
 GO
 
-ALTER TABLE dbo.stg_Product_TPA ADD CATEGORY_CODE CHAR(3);
+IF COL_LENGTH('dbo.stg_Product_TPA', 'CATEGORY_CODE') IS NULL
+    ALTER TABLE dbo.stg_Product_TPA ADD CATEGORY_CODE CHAR(3);
 GO
 UPDATE dbo.stg_Product_TPA SET CATEGORY_CODE = 'TPA';
 GO
 
-ALTER TABLE dbo.stg_Product_CRA ADD CATEGORY_CODE CHAR(3);
+IF COL_LENGTH('dbo.stg_Product_CRA', 'CATEGORY_CODE') IS NULL
+    ALTER TABLE dbo.stg_Product_CRA ADD CATEGORY_CODE CHAR(3);
 GO
 UPDATE dbo.stg_Product_CRA SET CATEGORY_CODE = 'CRA';
 GO

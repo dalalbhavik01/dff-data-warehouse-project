@@ -1,6 +1,6 @@
 -- ============================================================
 -- Script 03: Create Data Warehouse (Data Mart) Tables
--- DFF Data Warehouse Project — Report 3
+-- DFF Data Warehouse Project — Report 4
 -- Run in SSMS after Script 02. Creates the star schema tables.
 -- IMPORTANT: Create DIMENSION tables first, then FACT tables
 --            (fact tables have FK references to dimensions).

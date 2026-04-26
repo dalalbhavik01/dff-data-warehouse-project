@@ -29,7 +29,7 @@
 	3.3	Selected Business Questions
 	3.4	Star Schema - Table Definitions
 	3.5	Schema Justification - How Each BQ Is Supported
-	3.6	Entity-Relationship Diagram (ERD)
+	3.6	Star Schema Diagram
 	3.7	Mapping Table #1: Source Files to Staging Tables
 	3.8	Mapping Table #2: Staging Tables to Data Mart Tables
 	3.9	Physical Design Plan
@@ -64,7 +64,7 @@ The objective of this project is to design and develop a data warehouse for DFF 
 | Implementation Architecture | Hybrid Data Pipeline |
 | Warehouse Architecture | Independent Data Marts |
 | Modeling Scheme | Dimensional Modeling (Star Schema) |
-| OLAP Style | MOLAP (Multidimensional Online Analytical Processing) |
+| OLAP Style | MOLAP for SSAS cube processing; relational star schema for SSRS, Redshift, and Power BI |
 | Target Infrastructure | SQL Server 2016 |
 
 ### 1.3 Understanding of the Data
@@ -191,9 +191,9 @@ The data warehouse logical design follows Kimball's bottom-up methodology for bu
 
 **Step 4: Design Dimension Tables.** Each dimension uses surrogate keys (4-byte INT), retains natural keys as attributes for traceability, and is fully denormalized (no snowflaking - as emphasized in class, snowflaking slows browsing and degrades query performance).
 
-**Step 5: Feedback for the Design.** The schema was validated against all 10 BQs; all are answerable. The 5 selected BQs were specifically verified to be fully supported (Section 4.3).
+**Step 5: Feedback for the Design.** The schema was validated against all 10 BQs; all are answerable. The 5 selected BQs were specifically verified to be fully supported (Section 3.5).
 
-**Step 6: Data Sourcing.** Source files are identified, mapping tables are prepared (Sections 4.5–4.6), and the ETL plan is developed (Section 5).
+**Step 6: Data Sourcing.** Source files are identified, mapping tables are prepared (Sections 3.7–3.8), and the ETL plan is developed (Section 4).
 
 **Why is this methodology important for independent data marts?** Kimball's methodology ensures each data mart is built incrementally and driven by real business requirements. The star schema structure provides high-performance query access, an intuitive format for business users, and ensures that new business processes can be added as separate data marts without modifying existing schemas.
 
@@ -206,6 +206,8 @@ The data warehouse logical design follows Kimball's bottom-up methodology for bu
 ---
 
 ### 3.2 Data Warehouse Logical Design (Star Schema Design)
+
+The final dimensional model is presented as a star schema centered on `FactWeeklySales`. This section intentionally uses a dimensional schema diagram, not a source-system relationship model, because the final report is concerned with the analytical data mart created for DFF decision support. The diagramming-tool output shows each table with attributes and data types, and relationship lines are left unlabeled so the model reads as a clean analytical star schema rather than a transactional source model.
 
 ### 3.3 Selected Business Questions
 
@@ -342,13 +344,13 @@ The professor selected 5 BQs from our list of 10 for implementation:
 
 **BQ9 (Top 10 CRA products with WoW):** Query FactWeeklySales joined to DimProduct and DimTime, filtered by 'CRA'. Use RANK() partitioned by week_id and LAG() partitioned by upc. ✅
 
-### 3.6 Entity-Relationship Diagram (ERD)
+### 3.6 Star Schema Diagram
 
-**Figure 2: ERD for FactWeeklySales and Five Dimensions**
+**Figure 2: Star Schema for FactWeeklySales and Five Dimensions**
 
-![Entity-Relationship Diagram](star_schema_erd.png)
+![Dimensional Star Schema Diagram](star_schema_erd.png)
 
-*ERD generated using a diagramming tool showing all table attributes with data types. Relationship lines connect the fact table's foreign keys to each dimension's primary key.*
+*Dimensional star schema generated using a diagramming tool. Each table box lists attributes with data types, and the relationship lines connect the central fact table to the five dimensions without relationship labels.*
 
 ### 3.7 Mapping Table #1: Source Files to Staging Tables
 
@@ -486,9 +488,9 @@ The professor selected 5 BQs from our list of 10 for implementation:
 
 ### 3.9 Physical Design Plan
 
-The physical design transforms the logical star schema into a deployable structure on SQL Server 2016. For the **data aggregate plan**, three summary tables were created: agg_Weekly_Category_Sales (pre-aggregates units_sold and revenue by week and category to accelerate BQ2), agg_Store_Category_Revenue (aggregates total revenue by store and category for BQ8 quartile analysis), and agg_Weekly_Product_Sales (aggregates units_sold by week and product within a category for BQ9 ranking). These aggregate fact tables echo the original FactWeeklySales structure at reduced grain, following Kimball’s guidance. For **indexing**, the FactWeeklySales table uses a clustered index on sales_fact_id (primary key) with nonclustered indexes on (time_key, store_key, product_key) for composite lookups and single-column nonclustered indexes on promotion_key and category_key for BQ-specific filtering. Dimension tables use unique nonclustered indexes on surrogate primary keys and additional nonclustered indexes on frequently filtered columns (deal_code, is_promoted, price_tier, is_urban, department). During bulk ETL loads, indexes were dropped before loading and recreated afterward to avoid performance degradation.
+The physical design transforms the logical star schema into a deployable structure on SQL Server 2016. For the **data aggregate plan**, three summary tables were designed for future performance tuning: agg_Weekly_Category_Sales (pre-aggregates units_sold and revenue by week and category to accelerate BQ2), agg_Store_Category_Revenue (aggregates total revenue by store and category for BQ8 quartile analysis), and agg_Weekly_Product_Sales (aggregates units_sold by week and product within a category for BQ9 ranking). These aggregate fact tables follow the original FactWeeklySales structure at reduced grain, following Kimball’s guidance. For **indexing**, the implemented schema uses clustered primary keys on dimension and fact surrogate keys, and the indexing plan recommends nonclustered indexes on (time_key, store_key, product_key), promotion_key, and category_key for the most common BQ filters and joins. During a production-scale bulk load, secondary indexes would be created after loading to avoid ETL slowdowns.
 
-For **data standardization**, all naming follows consistent conventions: dimension tables prefixed with "Dim", fact tables with "Fact", staging tables with "stg_", and aggregate tables with "agg_". Column names use snake_case throughout. All surrogate keys are 4-byte INT, monetary values use DECIMAL, and boolean flags use BIT. For **storage**, the large FactWeeklySales table (~34.6M rows, ~4-5 GB) is horizontally partitioned by time_key (yearly partitions). Total estimated storage is 8-10 GB including indexes. The data mart architecture ensures new categories or business processes can be added without modifying existing tables.
+For **data standardization**, all naming follows consistent conventions: dimension tables prefixed with "Dim", fact tables with "Fact", staging tables with "stg_", and planned aggregate tables with "agg_". Column names use snake_case throughout. All surrogate keys are 4-byte INT, monetary values use DECIMAL, and boolean flags use BIT. For **storage**, FactWeeklySales is the largest table and can be horizontally partitioned by time_key in a production deployment so that queries scan only relevant year/week ranges. The data mart architecture ensures new categories or business processes can be added without modifying existing tables.
 
 ---
 
@@ -572,7 +574,7 @@ Two mapping tables were prepared in Excel format (see Sections 3.7 and 3.8):
 
 ### 4.1.6 Aggregate Tables
 
-Three pre-computed aggregate tables were created to improve query performance:
+The aggregate-table plan identifies three pre-computed summary tables that can be materialized to improve query performance:
 
 | Aggregate Table | Grain | Measures | Accelerates |
 |:--|:--|:--|:--|
@@ -580,7 +582,7 @@ Three pre-computed aggregate tables were created to improve query performance:
 | agg_Store_Category_Revenue | Store × Category | SUM(revenue), SUM(gross_profit) | BQ8 |
 | agg_Weekly_Product_Sales | Week × Product × Category | SUM(units_sold), RANK | BQ9 |
 
-These aggregate tables echo the original FactWeeklySales structure at reduced grain, following Kimball's guidance that summary tables should mirror the base fact table's structure.
+These planned aggregate tables echo the original FactWeeklySales structure at reduced grain, following Kimball's guidance that summary tables should mirror the base fact table's structure.
 
 ### 4.1.7 Organization of Data Staging Area
 
@@ -639,7 +641,7 @@ Dimensions are loaded **before** the fact table because fact table foreign keys 
 
 ### 4.1.10 ETL for Fact Table
 
-**FactWeeklySales (~34.6M rows):** This is the largest and most complex load. An INSERT INTO...SELECT statement unions all four movement staging tables (filtered to OK=1 and PRICE>0), then JOINs to all five dimension tables to resolve surrogate keys:
+**FactWeeklySales:** This is the largest and most complex load. The raw source volume across the four categories is ~34.6M rows; after ETL quality filters (OK=1, PRICE>0) and INNER JOIN enforcement against all five dimensions, the actual loaded count is 11,976,442 rows. An INSERT INTO...SELECT statement unions all four movement staging tables (filtered to OK=1 and PRICE>0), then JOINs to all five dimension tables to resolve surrogate keys:
 - DimProduct: JOIN on UPC to get product_key
 - DimStore: JOIN on STORE to get store_key
 - DimTime: JOIN on WEEK to get time_key
@@ -744,7 +746,8 @@ The SQL transformations executed in this package include:
 
 **T1 - Add CATEGORY_CODE:**
 ```sql
-ALTER TABLE dbo.stg_Movement_SDR ADD CATEGORY_CODE CHAR(3);
+IF COL_LENGTH('dbo.stg_Movement_SDR', 'CATEGORY_CODE') IS NULL
+    ALTER TABLE dbo.stg_Movement_SDR ADD CATEGORY_CODE CHAR(3);
 UPDATE dbo.stg_Movement_SDR SET CATEGORY_CODE = 'SDR';
 -- (repeated for CSO, TPA, CRA)
 ```
@@ -821,7 +824,7 @@ INSERT INTO dbo.DimPromotion (deal_code, deal_type, is_promoted) VALUES
 
 #### Fact Table Loading Results
 
-**FactWeeklySales (~34.6M rows):**
+**FactWeeklySales (11,976,442 loaded rows from ~34.6M raw source rows):**
 
 The complete loading SQL (from `06_load_facts.sql`) JOINs all four movement staging tables to all five dimension tables:
 
@@ -993,9 +996,9 @@ ORDER BY week_id, rnk;
 | DimTime | ~400 | 400 | ✅ |
 | DimStore | ~107 | 107 | ✅ |
 | DimProduct | ~3,112 | 3,127 | ✅ |
-| FactWeeklySales | ~34.6M | 14,921,365 | ✅ |
+| FactWeeklySales | ~34.6M raw source rows | 11,976,442 | ✅ |
 
-**Note on FactWeeklySales row count:** The estimated 34.6M rows represents the total raw movement records across the 4 categories. The actual loaded count of 14,921,365 reflects the application of two ETL quality filters: `OK = 1` (retaining only quality-validated observations) and `PRICE > 0` (excluding zero-price rows that would cause division errors in derived columns). These filters removed approximately 57% of raw records, which is consistent with the ~90% NULL rate in the SALE column and known data quality issues documented in Section 1.4.
+**Note on FactWeeklySales row count:** The estimated 34.6M rows represents the total raw movement records across the 4 selected categories. The actual loaded count of 11,976,442 matches the SSMS verification screenshot for `SELECT COUNT(*) FROM FactWeeklySales`. The difference between raw source volume and loaded fact volume reflects ETL quality filters (`OK = 1`, `PRICE > 0`) plus the inner joins used to enforce valid product, store, time, category, and promotion dimension references. This prevents orphaned facts and directly addresses the foreign-key integrity issue noted in prior feedback.
 
 **Foreign-key integrity check:** A post-load verification query confirmed 0 NULL values for product_key, store_key, time_key, category_key, and promotion_key in FactWeeklySales. All foreign keys in the fact table reference valid dimension records, with no orphan rows. This was enforced by using INNER JOINs during the staging-to-mart load (see Section 4.2.6) and by defining FK constraints in the CREATE TABLE DDL (see Appendix A, `03_create_dw_tables.sql`).
 
@@ -1047,6 +1050,18 @@ All four tools required by the professor are used at least once:
 2. **SSAS (SQL Server Analysis Services):** Used for BQ3. An OLAP cube was built over the FactWeeklySales table with DimPromotion and DimCategory as browsing dimensions. The cube uses the default MOLAP (Multidimensional OLAP) storage mode, which pre-calculates and stores aggregations for fast query response. This is preferred over ROLAP (which queries the relational source at runtime) because it provides significantly better performance for interactive browsing. The cube enables OLAP operations such as *slicing* (filtering to a single category), *dicing* (selecting specific promotion types), and *drill-down* (expanding from total to year-level detail).
 3. **Redshift Query v.2:** Used for BQ4. The FactWeeklySales, DimPromotion, and DimCategory tables were exported from SQL Server as CSV files and loaded into a Redshift cluster in the AWS Academy environment. The promotion lift calculation was then executed as a cloud-based analytical query, demonstrating that the same star schema logic is portable to Redshift's columnar engine.
 4. **Power BI:** Used for BQ8. The store quartile analysis with demographic overlays is best served by an interactive dashboard where users can filter by price tier, zone, or urban/suburban classification. Power BI's in-memory engine imports the star schema and auto-detects relationships, enabling rapid visual exploration.
+
+#### 5.1.4 Report Templates
+
+The reporting templates were designed to keep every output decision-support oriented rather than decorative. Each template starts from a business question, exposes the relevant dimensions, and presents the measure in the form most useful to DFF management.
+
+| Template | Tool | Layout | Decision-Support Purpose |
+|:--|:--|:--|:--|
+| Weekly trend report | SSRS | Line chart above a supporting table; week on the X-axis and total units on the Y-axis | Identifies Soft Drink demand spikes and weeks requiring inventory planning |
+| Parameterized top-10 report | SSRS | Week selector parameter with ranked product table and conditional WoW formatting | Lets users inspect Cracker product velocity for any selected week |
+| Cube pivot report | SSAS | Cube Browser pivot with promotion type on rows and time hierarchy available for drill-down | Compares promoted vs non-promoted sales volume interactively |
+| Cloud query result | Redshift Query v.2 | SQL editor plus result grid showing promotion lift metrics | Provides auditable lift calculations for Canned Soup promotion types |
+| Quartile dashboard | Power BI | Bar chart, demographic matrix, map, and KPI cards filtered to Toothpaste | Explains store revenue tiers using demographics and location context |
 
 ### 5.2 Report Implementation
 
@@ -1203,7 +1218,7 @@ The complete SQL logic for the implementation is provided below.
 ```sql
 -- ============================================================
 -- Script 01: Create Databases
--- DFF Data Warehouse Project - Integrated Report (Final) (ISTM 637, Spring 2026)
+-- DFF Data Warehouse Project — Report 4 (ISTM 637, Spring 2026)
 -- Run this in SSMS connected to SQL Server 2016
 -- ============================================================
 
@@ -1242,7 +1257,7 @@ GO
 ```sql
 -- ============================================================
 -- Script 02: Create Staging Tables
--- DFF Data Warehouse Project - Integrated Report (Final)
+-- DFF Data Warehouse Project — Report 4
 -- Run in SSMS after Script 01. These tables receive raw CSV data.
 -- ============================================================
 USE [team1_staging_area];
@@ -1254,7 +1269,7 @@ GO
 -- Columns match the raw CSV structure exactly
 -- -------------------------------------------------------
 
--- Soft Drinks (SDR) - 17.7 million rows from wsdr.csv
+-- Soft Drinks (SDR) — 17.7 million rows from wsdr.csv
 CREATE TABLE dbo.stg_Movement_SDR (
     UPC           BIGINT,
     STORE         INT,
@@ -1264,11 +1279,12 @@ CREATE TABLE dbo.stg_Movement_SDR (
     PRICE         FLOAT,
     SALE          VARCHAR(5),
     PROFIT        FLOAT,
-    OK            INT
+    OK            INT,
+    CATEGORY_CODE CHAR(3)
 );
 GO
 
--- Canned Soup (CSO) - 7.0 million rows from WCSO-Done.csv
+-- Canned Soup (CSO) — 7.0 million rows from WCSO-Done.csv
 CREATE TABLE dbo.stg_Movement_CSO (
     UPC           BIGINT,
     STORE         INT,
@@ -1278,11 +1294,12 @@ CREATE TABLE dbo.stg_Movement_CSO (
     PRICE         FLOAT,
     SALE          VARCHAR(5),
     PROFIT        FLOAT,
-    OK            INT
+    OK            INT,
+    CATEGORY_CODE CHAR(3)
 );
 GO
 
--- Toothpaste (TPA) - 6.3 million rows from WTPA_done.csv
+-- Toothpaste (TPA) — 6.3 million rows from WTPA_done.csv
 CREATE TABLE dbo.stg_Movement_TPA (
     UPC           BIGINT,
     STORE         INT,
@@ -1292,11 +1309,12 @@ CREATE TABLE dbo.stg_Movement_TPA (
     PRICE         FLOAT,
     SALE          VARCHAR(5),
     PROFIT        FLOAT,
-    OK            INT
+    OK            INT,
+    CATEGORY_CODE CHAR(3)
 );
 GO
 
--- Crackers (CRA) - 3.6 million rows from Done-WCRA.csv
+-- Crackers (CRA) — 3.6 million rows from Done-WCRA.csv
 CREATE TABLE dbo.stg_Movement_CRA (
     UPC           BIGINT,
     STORE         INT,
@@ -1306,7 +1324,8 @@ CREATE TABLE dbo.stg_Movement_CRA (
     PRICE         FLOAT,
     SALE          VARCHAR(5),
     PROFIT        FLOAT,
-    OK            INT
+    OK            INT,
+    CATEGORY_CODE CHAR(3)
 );
 GO
 
@@ -1315,47 +1334,51 @@ GO
 -- Source: UPC CSV files (encoding 1252 / latin-1)
 -- -------------------------------------------------------
 
--- Soft Drinks UPC - 1,746 rows from UPCSDR.csv
+-- Soft Drinks UPC — 1,746 rows from UPCSDR.csv
 CREATE TABLE dbo.stg_Product_SDR (
     COM_CODE      INT,
     UPC           BIGINT,
     DESCRIP       VARCHAR(100),
     SIZE          VARCHAR(30),
     CASE_PACK     INT,
-    NITEM         BIGINT
+    NITEM         BIGINT,
+    CATEGORY_CODE CHAR(3)
 );
 GO
 
--- Canned Soup UPC - 453 rows from UPCCSO.csv
+-- Canned Soup UPC — 453 rows from UPCCSO.csv
 CREATE TABLE dbo.stg_Product_CSO (
     COM_CODE      INT,
     UPC           BIGINT,
     DESCRIP       VARCHAR(100),
     SIZE          VARCHAR(30),
     CASE_PACK     INT,
-    NITEM         BIGINT
+    NITEM         BIGINT,
+    CATEGORY_CODE CHAR(3)
 );
 GO
 
--- Toothpaste UPC - 608 rows from UPCTPA.csv
+-- Toothpaste UPC — 608 rows from UPCTPA.csv
 CREATE TABLE dbo.stg_Product_TPA (
     COM_CODE      INT,
     UPC           BIGINT,
     DESCRIP       VARCHAR(100),
     SIZE          VARCHAR(30),
     CASE_PACK     INT,
-    NITEM         BIGINT
+    NITEM         BIGINT,
+    CATEGORY_CODE CHAR(3)
 );
 GO
 
--- Crackers UPC - 305 rows from UPCCRA.csv
+-- Crackers UPC — 305 rows from UPCCRA.csv
 CREATE TABLE dbo.stg_Product_CRA (
     COM_CODE      INT,
     UPC           BIGINT,
     DESCRIP       VARCHAR(100),
     SIZE          VARCHAR(30),
     CASE_PACK     INT,
-    NITEM         BIGINT
+    NITEM         BIGINT,
+    CATEGORY_CODE CHAR(3)
 );
 GO
 
@@ -1405,7 +1428,7 @@ GO
 ```sql
 -- ============================================================
 -- Script 03: Create Data Warehouse (Data Mart) Tables
--- DFF Data Warehouse Project - Integrated Report (Final)
+-- DFF Data Warehouse Project — Report 4
 -- Run in SSMS after Script 02. Creates the star schema tables.
 -- IMPORTANT: Create DIMENSION tables first, then FACT tables
 --            (fact tables have FK references to dimensions).
@@ -1418,7 +1441,7 @@ GO
 -- ===============================
 
 -- -------------------------------------------------------
--- DimCategory - 28 product categories
+-- DimCategory — 28 product categories
 -- Grain: One row per product category
 -- Cardinality: 28 rows (static, hardcoded)
 -- -------------------------------------------------------
@@ -1433,7 +1456,7 @@ CREATE TABLE dbo.DimCategory (
 GO
 
 -- -------------------------------------------------------
--- DimPromotion - 4 promotion types
+-- DimPromotion — 4 promotion types
 -- Grain: One row per deal type
 -- Cardinality: 4 rows (static, hardcoded)
 -- -------------------------------------------------------
@@ -1447,7 +1470,7 @@ CREATE TABLE dbo.DimPromotion (
 GO
 
 -- -------------------------------------------------------
--- DimTime - ~400 weeks (DFF proprietary week IDs)
+-- DimTime — ~400 weeks (DFF proprietary week IDs)
 -- Grain: One row per unique week
 -- Week 1 = September 14, 1989 (per DFF codebook)
 -- Cardinality: ~400 rows (generated via CTE)
@@ -1469,7 +1492,7 @@ CREATE TABLE dbo.DimTime (
 GO
 
 -- -------------------------------------------------------
--- DimStore - ~107 stores
+-- DimStore — ~107 stores
 -- Grain: One row per physical store location
 -- Source: Cleaned from DEMO.csv staging table
 -- Cardinality: ~107 rows
@@ -1499,7 +1522,7 @@ CREATE TABLE dbo.DimStore (
 GO
 
 -- -------------------------------------------------------
--- DimProduct - ~3,112 UPCs (for 4 selected categories)
+-- DimProduct — ~3,112 UPCs (for 4 selected categories)
 -- Grain: One row per unique UPC
 -- Source: Cleaned from UPC staging tables
 -- Cardinality: SDR(1746) + CSO(453) + TPA(608) + CRA(305) = 3,112
@@ -1521,7 +1544,7 @@ GO
 -- ===============================
 
 -- -------------------------------------------------------
--- FactWeeklySales - Central fact table
+-- FactWeeklySales — Central fact table
 -- Grain: One row per UPC × Store × Week
 -- Source: Movement staging tables (filtered OK=1, PRICE>0)
 -- Estimated: ~34.6M rows for 4 categories
@@ -1567,7 +1590,7 @@ GO
 ```sql
 -- ============================================================
 -- Script 04: Transform and Clean Staging Data
--- DFF Data Warehouse Project - Integrated Report (Final)
+-- DFF Data Warehouse Project — Report 4
 -- Run in SSMS AFTER Package 1 (Extract) has loaded CSV data
 -- into staging tables. These transformations prepare the data
 -- for loading into the data mart.
@@ -1579,26 +1602,30 @@ GO
 -- MOVEMENT TABLE TRANSFORMATIONS
 -- ===============================
 
--- T1: Add CATEGORY_CODE column to each movement staging table
+-- T1: Add/populate CATEGORY_CODE column for each movement staging table
 -- This column does not exist in the CSV files; it is derived 
 -- from the filename (e.g., wsdr.csv → 'SDR')
 
-ALTER TABLE dbo.stg_Movement_SDR ADD CATEGORY_CODE CHAR(3);
+IF COL_LENGTH('dbo.stg_Movement_SDR', 'CATEGORY_CODE') IS NULL
+    ALTER TABLE dbo.stg_Movement_SDR ADD CATEGORY_CODE CHAR(3);
 GO
 UPDATE dbo.stg_Movement_SDR SET CATEGORY_CODE = 'SDR';
 GO
 
-ALTER TABLE dbo.stg_Movement_CSO ADD CATEGORY_CODE CHAR(3);
+IF COL_LENGTH('dbo.stg_Movement_CSO', 'CATEGORY_CODE') IS NULL
+    ALTER TABLE dbo.stg_Movement_CSO ADD CATEGORY_CODE CHAR(3);
 GO
 UPDATE dbo.stg_Movement_CSO SET CATEGORY_CODE = 'CSO';
 GO
 
-ALTER TABLE dbo.stg_Movement_TPA ADD CATEGORY_CODE CHAR(3);
+IF COL_LENGTH('dbo.stg_Movement_TPA', 'CATEGORY_CODE') IS NULL
+    ALTER TABLE dbo.stg_Movement_TPA ADD CATEGORY_CODE CHAR(3);
 GO
 UPDATE dbo.stg_Movement_TPA SET CATEGORY_CODE = 'TPA';
 GO
 
-ALTER TABLE dbo.stg_Movement_CRA ADD CATEGORY_CODE CHAR(3);
+IF COL_LENGTH('dbo.stg_Movement_CRA', 'CATEGORY_CODE') IS NULL
+    ALTER TABLE dbo.stg_Movement_CRA ADD CATEGORY_CODE CHAR(3);
 GO
 UPDATE dbo.stg_Movement_CRA SET CATEGORY_CODE = 'CRA';
 GO
@@ -1634,24 +1661,28 @@ GO
 -- PRODUCT (UPC) TABLE TRANSFORMATIONS
 -- ===============================
 
--- T3: Add CATEGORY_CODE column to each UPC staging table
+-- T3: Add/populate CATEGORY_CODE column for each UPC staging table
 
-ALTER TABLE dbo.stg_Product_SDR ADD CATEGORY_CODE CHAR(3);
+IF COL_LENGTH('dbo.stg_Product_SDR', 'CATEGORY_CODE') IS NULL
+    ALTER TABLE dbo.stg_Product_SDR ADD CATEGORY_CODE CHAR(3);
 GO
 UPDATE dbo.stg_Product_SDR SET CATEGORY_CODE = 'SDR';
 GO
 
-ALTER TABLE dbo.stg_Product_CSO ADD CATEGORY_CODE CHAR(3);
+IF COL_LENGTH('dbo.stg_Product_CSO', 'CATEGORY_CODE') IS NULL
+    ALTER TABLE dbo.stg_Product_CSO ADD CATEGORY_CODE CHAR(3);
 GO
 UPDATE dbo.stg_Product_CSO SET CATEGORY_CODE = 'CSO';
 GO
 
-ALTER TABLE dbo.stg_Product_TPA ADD CATEGORY_CODE CHAR(3);
+IF COL_LENGTH('dbo.stg_Product_TPA', 'CATEGORY_CODE') IS NULL
+    ALTER TABLE dbo.stg_Product_TPA ADD CATEGORY_CODE CHAR(3);
 GO
 UPDATE dbo.stg_Product_TPA SET CATEGORY_CODE = 'TPA';
 GO
 
-ALTER TABLE dbo.stg_Product_CRA ADD CATEGORY_CODE CHAR(3);
+IF COL_LENGTH('dbo.stg_Product_CRA', 'CATEGORY_CODE') IS NULL
+    ALTER TABLE dbo.stg_Product_CRA ADD CATEGORY_CODE CHAR(3);
 GO
 UPDATE dbo.stg_Product_CRA SET CATEGORY_CODE = 'CRA';
 GO
@@ -1659,7 +1690,7 @@ GO
 PRINT 'T3 Complete: CATEGORY_CODE added to all product tables.';
 GO
 
--- T4: Clean product descriptions - strip leading # and ~ characters
+-- T4: Clean product descriptions — strip leading # and ~ characters
 UPDATE dbo.stg_Product_SDR SET DESCRIP = LTRIM(REPLACE(REPLACE(DESCRIP, '#', ''), '~', ''));
 UPDATE dbo.stg_Product_CSO SET DESCRIP = LTRIM(REPLACE(REPLACE(DESCRIP, '#', ''), '~', ''));
 UPDATE dbo.stg_Product_TPA SET DESCRIP = LTRIM(REPLACE(REPLACE(DESCRIP, '#', ''), '~', ''));
@@ -1735,7 +1766,7 @@ GO
 ```sql
 -- ============================================================
 -- Script 05: Load Dimension Tables
--- DFF Data Warehouse Project - Integrated Report (Final)
+-- DFF Data Warehouse Project — Report 4
 -- Run AFTER Script 04 (Transform). Loads dimensions BEFORE facts.
 -- Order: DimCategory → DimPromotion → DimTime → DimStore → DimProduct
 -- ============================================================
@@ -1743,7 +1774,7 @@ USE [team1_dw_area];
 GO
 
 -- ===============================
--- 1. DimCategory (28 rows - hardcoded)
+-- 1. DimCategory (28 rows — hardcoded)
 -- ===============================
 -- These are the 28 product categories from the DFF dataset.
 -- Category codes are derived from the 3-letter filename abbreviations.
@@ -1786,7 +1817,7 @@ SELECT * FROM dbo.DimCategory ORDER BY category_key;
 GO
 
 -- ===============================
--- 2. DimPromotion (4 rows - hardcoded)
+-- 2. DimPromotion (4 rows — hardcoded)
 -- ===============================
 -- Maps the SALE column values from Movement files to descriptive labels.
 -- NULL/blank/'N' → 'No Promotion', B → 'Bonus Buy', C → 'Coupon', S → 'Sale/Discount'
@@ -1804,7 +1835,7 @@ SELECT * FROM dbo.DimPromotion;
 GO
 
 -- ===============================
--- 3. DimTime (~400 rows - generated via CTE)
+-- 3. DimTime (~400 rows — generated via CTE)
 -- ===============================
 -- DFF uses proprietary week IDs (WEEK column in Movement files).
 -- Week 1 corresponds to September 14, 1989 per the DFF codebook.
@@ -1843,7 +1874,7 @@ SELECT TOP 10 * FROM dbo.DimTime ORDER BY time_key;
 GO
 
 -- ===============================
--- 4. DimStore (~107 rows - from staging)
+-- 4. DimStore (~107 rows — from staging)
 -- ===============================
 -- Loaded from cleaned stg_Store in the staging database.
 -- Transformations applied during INSERT:
@@ -1889,7 +1920,7 @@ SELECT TOP 10 * FROM dbo.DimStore ORDER BY store_key;
 GO
 
 -- ===============================
--- 5. DimProduct (~3,112 rows - from staging)
+-- 5. DimProduct (~3,112 rows — from staging)
 -- ===============================
 -- Loaded from tmp_Product_All in staging (UNION of 4 category tables).
 
@@ -1930,7 +1961,7 @@ GO
 ```sql
 -- ============================================================
 -- Script 06: Load Fact Tables
--- DFF Data Warehouse Project - Integrated Report (Final)
+-- DFF Data Warehouse Project — Report 4
 -- Run AFTER Script 05 (Load Dimensions).
 -- Dimensions must be populated first because fact tables
 -- reference dimension surrogate keys via foreign keys.
@@ -2047,7 +2078,7 @@ GO
 ```sql
 -- ============================================================
 -- Script 07: Drop Temporary Tables from Staging Area
--- DFF Data Warehouse Project - Integrated Report (Final)
+-- DFF Data Warehouse Project — Report 4
 -- Run AFTER all dimension and fact tables have been loaded.
 -- The assignment requires: "Once loading of each table is done,
 -- remove all temp tables from the staging area."
@@ -2062,7 +2093,7 @@ GO
 -- during the transformation phase (Script 04) and are no longer
 -- needed after the data mart has been populated:
 --
---   1. tmp_Product_All  - UNION of 4 UPC category staging tables
+--   1. tmp_Product_All  — UNION of 4 UPC category staging tables
 --                          Used to load DimProduct
 --
 -- Note: The original staging tables (stg_Movement_*, stg_Product_*,
@@ -2103,7 +2134,7 @@ GO
 ```sql
 -- ============================================================
 -- Script 08: Verify Business Questions Against Loaded DW
--- DFF Data Warehouse Project - Integrated Report (Final)
+-- DFF Data Warehouse Project — Report 4
 -- Run AFTER all tables are loaded to validate the ETL.
 -- Each query corresponds to one of the 5 selected BQs.
 -- ============================================================
@@ -2133,7 +2164,7 @@ ORDER BY dt.week_id;
 GO
 
 -- ===============================
--- BQ3: Promotion vs Non-Promotion weeks - sales comparison
+-- BQ3: Promotion vs Non-Promotion weeks — sales comparison
 -- Difficulty: Easy | OLAP Operation: Dice (Slice by promotion status)
 -- ===============================
 PRINT '=== BQ3: Promoted vs Non-Promoted Sales Volume ===';
@@ -2157,7 +2188,7 @@ GO
 -- BQ4: Which promotion type has highest incremental sales lift in Canned Soup?
 -- Difficulty: Medium | OLAP Operation: Dice (filter by category + promo type)
 -- ===============================
-PRINT '=== BQ4: Promotion Lift by Deal Type - Canned Soup ===';
+PRINT '=== BQ4: Promotion Lift by Deal Type — Canned Soup ===';
 
 -- First get the baseline (no promotion average)
 DECLARE @baseline_avg FLOAT;
@@ -2189,7 +2220,7 @@ GO
 -- BQ8: Store quartile tiers by Toothpaste revenue + demographics
 -- Difficulty: Hard | OLAP Operation: NTILE + Drill-down
 -- ===============================
-PRINT '=== BQ8: Store Revenue Quartiles - Toothpaste ===';
+PRINT '=== BQ8: Store Revenue Quartiles — Toothpaste ===';
 
 WITH store_revenue AS (
     SELECT 

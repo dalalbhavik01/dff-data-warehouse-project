@@ -1,6 +1,6 @@
 -- ============================================================
 -- Script 07: Drop Temporary Tables from Staging Area
--- DFF Data Warehouse Project — Report 3
+-- DFF Data Warehouse Project — Report 4
 -- Run AFTER all dimension and fact tables have been loaded.
 -- The assignment requires: "Once loading of each table is done,
 -- remove all temp tables from the staging area."

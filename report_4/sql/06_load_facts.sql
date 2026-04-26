@@ -1,6 +1,6 @@
 -- ============================================================
 -- Script 06: Load Fact Tables
--- DFF Data Warehouse Project — Report 3
+-- DFF Data Warehouse Project — Report 4
 -- Run AFTER Script 05 (Load Dimensions).
 -- Dimensions must be populated first because fact tables
 -- reference dimension surrogate keys via foreign keys.
@@ -111,4 +111,3 @@ UNION ALL SELECT 'NULL time_key',    COUNT(*) FROM dbo.FactWeeklySales WHERE tim
 UNION ALL SELECT 'NULL category_key', COUNT(*) FROM dbo.FactWeeklySales WHERE category_key IS NULL
 UNION ALL SELECT 'NULL promotion_key', COUNT(*) FROM dbo.FactWeeklySales WHERE promotion_key IS NULL;
 GO
-
