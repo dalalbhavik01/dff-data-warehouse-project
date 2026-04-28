@@ -1,44 +1,147 @@
+# ========================================
 # Python
+# ========================================
 .venv/
 __pycache__/
 *.pyc
 .mplcache/
 
-# OS
+# ========================================
+# OS / System
+# ========================================
 .DS_Store
 Thumbs.db
 *.lnk
 
-# Office temp files
+# ========================================
+# Office temp / lock files
+# ========================================
 ~$*
 
-# Data files (too large for git)
+# ========================================
+# Raw data (too large for git)
+# ========================================
 DFF data - zipped/
 
+# ========================================
 # IDE
+# ========================================
 .vscode/
 .idea/
 
-# ============================================
-# COPYRIGHTED COURSE MATERIALS — DO NOT PUSH
-# ============================================
-
-# PPT/PPTX slide decks (professor's copyrighted materials)
+# ========================================
+# COPYRIGHTED COURSE MATERIALS
+# ========================================
 *.pptx
 *.ppt
-
-# Modules/reference folder (all course slides)
 report_2/modules for reference/
-
-# PDF conversions of copyrighted slides
 report_3/pdf/
-
-# Extracted text from copyrighted slides
 report_1/extracted_text/
 report_2/extracted_text/
 report_2/slides_text.txt
 report_2/slides_full.txt
 report_3/etl_1_text.txt
 report_3/etl_2_text.txt
-1-software installation - version 3-from Lab-2026.pptx
-2-software installation - version 03-from home-2026.pptx
+report_4/ppt/
+
+# ========================================
+# Professor rubric templates (.doc format)
+# ========================================
+report_1/dominick-project-report-one-spring-2026.doc
+report_2/dominick-project-report-two-spring 2026.doc
+report_2/dominick-project-report-two-spring 2026.txt
+report_3/dominick-project-report-three-spring 2026.doc
+report_4/dominick-project-report-four-spring 2026.doc
+
+# ========================================
+# Feedback / graded PDFs (private)
+# ========================================
+report_3/feedback of report 1 and 2/
+report_4/feedback_annotated-*.pdf
+
+# ========================================
+# Draft / intermediate report versions
+# ========================================
+# Root-level duplicates
+CONSULTING_REPORT_3_Team_1.docx
+Integrated_Report_3_check.docx
+Integrated_Report_3_check1.docx
+Integrated_Report_4_team1.docx
+Integrated_Report_4_team1.pdf
+CONSULTING_REPORT_2_Team_1 (1).pdf
+
+# Report 1 drafts
+report_1/CONSULTING REPORT-1.docx
+report_1/Consulting_Report_1_DFF.docx
+report_1/business question-yifei.docx
+
+# Report 2 drafts
+report_2/CONSULTING_REPORT_2_Team_1_old.docx
+report_2/CONSULTING_REPORT_2_Team_1_v4.docx
+report_2/CONSULTING_REPORT_2_Team_1_v5.docx
+report_2/CONSULTING_REPORT_2_Team_1_v6.docx
+report_2/CONSULTING_REPORT_2_Team_1_v7.docx
+report_2/CONSULTING_REPORT_2_Team_1_v8.docx
+report_2/Business Questions.docx
+report_2/physical_erd_task3b.html
+
+# Report 4 drafts and intermediate files
+report_4/Integrated_Report_4.docx
+report_4/Integrated_Report_4_Draft.docx
+report_4/Integrated_Report_4_final.docx
+report_4/Integrated_Report_4_final_version.docx
+report_4/Integrated_Report_4_final_version_2.docx
+report_4/Integrated_Report_4_v2.docx
+report_4/Integrated_Report_4.md
+report_4/Section_2_4_preview.docx
+report_4/Appendix_C_Screenshot_Index.docx
+report_4/ANTIGRAVITY_CLAUDE_OPUS_4_6_PROMPT.md
+
+# ========================================
+# Build / generator scripts (internal)
+# ========================================
+report_1/build_report.py
+report_1/generate_charts.py
+report_1/generate_detailed_erd.py
+report_1/render_mermaid.py
+report_1/screenshot_erd.py
+report_1/full_erd.html
+report_2/extract_ppt.py
+report_2/generate_hybrid_pipeline_diagram.py
+report_2/generate_physical_erd.py
+report_2/generate_physical_erd_v2.py
+report_2/generate_report2_erd.py
+report_3/dump_sql.py
+report_3/generate_docx.py
+report_3/generate_excel.py
+report_4/generate_docx.py
+report_4/generate_report4_v2.py
+
+# ========================================
+# Working guides (internal, not for public)
+# ========================================
+report_4/COMPLETION_GUIDE.md
+report_4/COMPLETION_GUIDE.docx
+report_4/BQ8_POWER_BI_COMPLETION_GUIDE.md
+report_4/BQ8_POWER_BI_COMPLETION_GUIDE.docx
+report_1/REPORT_SUBMISSION_GUIDE.md
+report_3/SSIS_SSMS_Implementation_Guide.md
+
+# ========================================
+# Duplicate assets in report subdirs
+# (canonical copies live in assets/)
+# ========================================
+report_4/etl_pipeline_diagram.png
+report_4/star_schema_erd.png
+
+# ========================================
+# Large PDFs (reports already in .docx)
+# ========================================
+report_4/CONSULTING_REPORT_3_Team_1-1.pdf
+report_4/CONSULTING_REPORT_4_Team_1.pdf
+report_4/sql/CONSULTING_REPORT_3_Team_1.docx
+report_4/sql/CONSULTING_REPORT_3_Team_1.pdf
+
+# Software installation guides
+1-software installation*
+2-software installation*
